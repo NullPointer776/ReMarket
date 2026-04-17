@@ -21,11 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Views\" />
-    <Folder Include="Areas\Buyer\Controllers\" />
-    <Folder Include="Areas\Buyer\Views\" />
-    <Folder Include="Areas\Seller\Controllers\" />
-    <Folder Include="Areas\Seller\Views\" />
+    <Folder Include="Controllers\" />
     <Folder Include="Models\" />
   </ItemGroup>
 

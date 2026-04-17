@@ -6,7 +6,7 @@ namespace ReMarket.Models
 {
     public enum ItemStatus
     {
-        Approved = 0,
+        Available = 0,
         SoldOut = 1,
         Pending = 2,
         Rejected = 3

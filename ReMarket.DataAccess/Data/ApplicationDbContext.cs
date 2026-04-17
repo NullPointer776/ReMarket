@@ -62,6 +62,11 @@ namespace ReMarket.Data
                 entity.Property(e => e.PostalCode).HasMaxLength(20);
                 entity.Property(e => e.Country).HasMaxLength(100);
             });
+            builder.Entity<Category>().HasData(
+                new Category { Id = 1, Name = "Electronics", Description = "Gadgets and devices" },
+                new Category { Id = 2, Name = "Furniture", Description = "Home and office furniture" },
+                new Category { Id = 3, Name = "Clothing", Description = "Apparel and accessories" }
+            );
         }
     }
 }

@@ -2,8 +2,9 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ReMarket.Models;
 
-namespace ReMarket.Controllers
+namespace ReMarket.Web.Areas.Buyer.Controllers
 {
+    [Area("Buyer")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

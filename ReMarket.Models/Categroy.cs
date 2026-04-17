@@ -25,7 +25,7 @@ namespace ReMarket.Models
         public bool IsActive { get; set; } = true;
 
         // Slug is a URL-friendly version of the category name, used for SEO and routing purposes
-        public string Slug { get; set; }
+        public string? Slug { get; set; }
         // Foreign key to the parent category, allowing for hierarchical categorization
         [ForeignKey("ParentCategoryId")]
         public int? ParentCategoryId { get; set; }

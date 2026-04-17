@@ -52,4 +52,5 @@ namespace ReMarket.DataAccess.Repository
             dbSet.Update(entity);
         }
     }
+
 }

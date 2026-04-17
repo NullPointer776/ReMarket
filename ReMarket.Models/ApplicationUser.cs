@@ -18,12 +18,6 @@ namespace ReMarket.Models
         public string LastName { get; set; }
         [PersonalData]
         [Required]
-        public string Email { get; set; }
-        [PersonalData]
-        [Required]
-        public string PhoneNumber { get; set; }
-        [PersonalData]
-        [Required]
         public string StreetAddress { get; set; }
         [PersonalData]
         [Required]
@@ -37,6 +31,6 @@ namespace ReMarket.Models
         [PersonalData]
         [Required]
         public string Country { get; set; }
-        public ICollection<Item> ItemsListed { get; set; }
+        public ICollection<Item> ItemsListed { get; set; } = new List<Item>();
     }
 }

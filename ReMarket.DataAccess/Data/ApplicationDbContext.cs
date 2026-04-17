@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ReMarket.Models;
 
@@ -11,10 +10,57 @@ namespace ReMarket.Data
             : base(options)
         {
         }
-        public DbSet<ApplicationUser> Users { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Item> Items { get; set; }
 
+        public DbSet<Category> Categories { get; set; } = null!;
+        public DbSet<Item> Items { get; set; } = null!;
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<Category>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.ParentCategory)
+                    .WithMany(e => e.SubCategories)
+                    .HasForeignKey(e => e.ParentCategoryId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(e => e.Items)
+                    .WithOne(e => e.Category)
+                    .HasForeignKey(e => e.CategoryId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<Item>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Name).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.Description).HasMaxLength(4000);
+                entity.Property(e => e.ImageUrl).HasMaxLength(2000);
+                entity.Property(e => e.Location).HasMaxLength(500);
+                entity.Property(e => e.Price).HasPrecision(18, 2);
+                entity.Property(e => e.QrCodeUrl).HasMaxLength(2000);
+                entity.Property(e => e.RejectionReason).HasMaxLength(1000);
+
+                entity.HasOne(e => e.Seller)
+                    .WithMany(e => e.ItemsListed)
+                    .HasForeignKey(e => e.SellerId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<ApplicationUser>(entity =>
+            {
+                entity.Property(e => e.FirstName).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.LastName).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.StreetAddress).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.Suburb).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.City).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.PostalCode).HasMaxLength(20).IsRequired();
+                entity.Property(e => e.Country).HasMaxLength(100).IsRequired();
+            });
+        }
     }
 }

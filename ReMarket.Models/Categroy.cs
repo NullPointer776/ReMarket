@@ -16,10 +16,11 @@ namespace ReMarket.Models
         // Required category name with a maximum length of 100 characters
         [Required]
         [MaxLength(100)]
+        [Display(Name = "Category Name")]
         public string Name { get; set; }
         // Optional category description with a maximum length of 500 characters
         [MaxLength(500)]
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; } = string.Empty;
         // Indicates whether the category is active or not, defaulting to true
         public bool IsActive { get; set; } = true;
 

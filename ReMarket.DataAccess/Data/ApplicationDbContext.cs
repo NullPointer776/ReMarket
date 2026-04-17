@@ -21,7 +21,8 @@ namespace ReMarket.Data
             builder.Entity<Category>(entity =>
             {
                 entity.HasKey(e => e.Id);
-
+                entity.Property(e => e.Name).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.Description).HasMaxLength(500);
                 entity.HasOne(e => e.ParentCategory)
                     .WithMany(e => e.SubCategories)
                     .HasForeignKey(e => e.ParentCategoryId)
@@ -53,13 +54,13 @@ namespace ReMarket.Data
 
             builder.Entity<ApplicationUser>(entity =>
             {
-                entity.Property(e => e.FirstName).HasMaxLength(100).IsRequired();
-                entity.Property(e => e.LastName).HasMaxLength(100).IsRequired();
-                entity.Property(e => e.StreetAddress).HasMaxLength(200).IsRequired();
-                entity.Property(e => e.Suburb).HasMaxLength(100).IsRequired();
-                entity.Property(e => e.City).HasMaxLength(100).IsRequired();
-                entity.Property(e => e.PostalCode).HasMaxLength(20).IsRequired();
-                entity.Property(e => e.Country).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.FirstName).HasMaxLength(100);
+                entity.Property(e => e.LastName).HasMaxLength(100);
+                entity.Property(e => e.StreetAddress).HasMaxLength(200);
+                entity.Property(e => e.Suburb).HasMaxLength(100);
+                entity.Property(e => e.City).HasMaxLength(100);
+                entity.Property(e => e.PostalCode).HasMaxLength(20);
+                entity.Property(e => e.Country).HasMaxLength(100);
             });
         }
     }

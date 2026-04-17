@@ -11,26 +11,26 @@ namespace ReMarket.Models
     public class ApplicationUser : IdentityUser
     {
         [PersonalData]
-        [Required]
-        public string FirstName { get; set; }
+        [Display(Name ="First Name")]
+        public string? FirstName { get; set; }
         [PersonalData]
-        [Required]
-        public string LastName { get; set; }
+        [Display(Name ="Last Name")]
+        public string? LastName { get; set; }
         [PersonalData]
-        [Required]
-        public string StreetAddress { get; set; }
+        [Display(Name ="StreetAddress")]
+        public string? StreetAddress { get; set; }
         [PersonalData]
-        [Required]
-        public string Suburb { get; set; }
+        [Display(Name = "Suburb")]
+        public string? Suburb { get; set; }
         [PersonalData]
-        [Required]
-        public string City { get; set; }
+        [Display(Name = "City")]
+        public string? City { get; set; }
         [PersonalData]
-        [Required]
-        public string PostalCode { get; set; }
+        [Display(Name = "Postal Code")]
+        public string? PostalCode { get; set; }
         [PersonalData]
-        [Required]
-        public string Country { get; set; }
+        [Display(Name = "Country")]
+        public string? Country { get; set; }
         public ICollection<Item> ItemsListed { get; set; } = new List<Item>();
     }
 }

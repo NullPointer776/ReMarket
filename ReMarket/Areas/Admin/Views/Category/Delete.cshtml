@@ -1,0 +1,53 @@
+﻿@model Category
+
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center my-3">
+        <h2 class="fw-semibold">Delete Category</h2>
+        <partial name="_Notification" />
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to List</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <p class="text-danger mb-3">Are you sure you want to delete this category?</p>
+
+            <table class="table table-hover align-middle mb-4">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Slug</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="fw-semibold">@Model.Name</td>
+                        <td>
+                            @if (Model.ParentCategoryId == null)
+                            {
+                                <span class="badge bg-primary-subtle text-primary-emphasis">Root</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary-subtle text-secondary-emphasis">Sub</span>
+                            }
+                        </td>
+                        <td><code class="text-muted small">@Model.Slug</code></td>
+                        <td class="text-muted small">@(Model.Description ?? "—")</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <form asp-action="Delete" method="post">
+                <input asp-for="Id" type="hidden" />
+                <button type="submit" class="btn btn-danger btn-sm">Confirm Delete</button>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm ms-2">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

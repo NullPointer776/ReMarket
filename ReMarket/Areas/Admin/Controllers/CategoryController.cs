@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ReMarket.DataAccess.Repository.IRepository;
 using ReMarket.Models;
 
@@ -14,14 +15,22 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string? slug = null)
         {
-            List<Category> allCategories = _unitOfWork.Category.GetAll().ToList();
-            return View(allCategories);
+
+            List<Category> rootCategories = _unitOfWork.Category
+                .GetAll(filter: c => c.ParentCategoryId == null,
+                        includeProperties: "SubCategories")
+                .ToList();
+            return View(rootCategories);
         }
 
         public IActionResult Create()
         {
+            ViewBag.ParentCategories = new SelectList(
+                _unitOfWork.Category.GetAll(filter: c => c.ParentCategoryId == null),
+                "Id", "Name"
+            );
             return View();
         }
 
@@ -32,7 +41,16 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             {
                 if (string.IsNullOrEmpty(obj.Slug))
                 {
-                    obj.Slug = obj.Name.ToLower().Replace(" ", "-");
+                    if (obj.ParentCategoryId.HasValue)
+                    {
+                        var parent = _unitOfWork.Category.Get(c => c.Id == obj.ParentCategoryId);
+                        obj.Slug = $"{parent.Slug}-{obj.Name.ToLower().Replace(" ", "-")}";
+                    }
+                    else
+                    {
+                        obj.Slug = obj.Name.ToLower().Replace(" ", "-");
+                    }
+
                 }
 
                 _unitOfWork.Category.Add(obj);
@@ -45,17 +63,15 @@ namespace ReMarket.Web.Areas.Admin.Controllers
 
         public IActionResult Edit(int? id)
         {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
+            if (id == null || id == 0) return NotFound();
 
             Category? categoryFromDb = _unitOfWork.Category.Get(u => u.Id == id);
-            if (categoryFromDb == null)
-            {
-                return NotFound();
-            }
+            if (categoryFromDb == null) return NotFound();
 
+            ViewBag.ParentCategories = new SelectList(
+                _unitOfWork.Category.GetAll(filter: c => c.ParentCategoryId == null && c.Id != id),
+                "Id", "Name"
+            );
             return View(categoryFromDb);
         }
 
@@ -96,6 +112,13 @@ namespace ReMarket.Web.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            if (_unitOfWork.Category
+                .GetAll(filter: c => c.ParentCategoryId == id)
+                .Any()) 
+            { 
+                TempData["error"] = "Cannot delete a category with subcategories."; 
+                return RedirectToAction("Index"); 
+            }
             _unitOfWork.Category.Remove(obj);
             _unitOfWork.Save();
             TempData["success"] = "Category deleted successfully";

@@ -1,127 +1,67 @@
-﻿@model List<ReMarket.Models.Category>
+﻿@model List<Category>
+
 @{
-    var allCategories = ViewBag.AllCategories as List<ReMarket.Models.Category> ?? Model;
+    ViewData["Title"] = "Category Management";
 }
 
-<div class="card shadow border-0 mt-4">
-    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
-        <div class="row">
-            <div class="col-12 text-center">
-                <h2 class="text-white py-2">
-                    @if (ViewBag.IsSubcategoryView != null && ViewBag.IsSubcategoryView)
-                    {
-                        var parent = ViewBag.ParentCategory as ReMarket.Models.Category;
-                        <span>Subcategories of @(parent?.Name ?? "Parent")</span>
-                    }
-                    else
-                    {
-                        <span>Category List</span>
-                    }
-                </h2>
-            </div>
-        </div>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center my-3">
+        <h2 class="fw-semibold">Category Management</h2>
+        <a asp-action="Create" class="btn btn-primary btn-sm">+ New Category</a>
     </div>
 
-    <div class="card-body p-4">
-        <div class="row pb-3">
-            <div class="col-6">
-                @if (ViewBag.IsSubcategoryView != null && ViewBag.IsSubcategoryView)
-                {
-                    <a asp-controller="Category" asp-action="Index" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Back to All Categories
-                    </a>
-                }
-            </div>
-            <div class="col-6 text-end">
-                <a asp-controller="Category" asp-action="Create" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Create New Category
-                </a>
-            </div>
-        </div>
+    <partial name="_Notification" />
 
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Category Name</th>
-                    <th>Description</th>
-                    <th>Slug</th>
-                    @if (ViewBag.IsSubcategoryView != null && ViewBag.IsSubcategoryView)
-                    {
-                        <th>Parent Category</th>
-                    }
-                    else
-                    {
-                        <th>Sub Categories</th>
-                    }
-                    <th>Actions</th>
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Slug</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var parent in Model)
+            {
+                <tr class="table-secondary">
+                    <td class="fw-semibold">
+                        @if (parent.SubCategories?.Any() == true)
+                        {
+                            <span class="text-muted me-1" style="font-size:11px;">▾</span>
+                        }
+                        @parent.Name
+                    </td>
+                    <td><span class="badge bg-primary-subtle text-primary-emphasis">Root</span></td>
+                    <td><code class="text-muted small">@parent.Slug</code></td>
+                    <td class="text-muted small">@(parent.Description ?? "—")</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@parent.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@parent.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var category in Model)
-                {
-                    <tr>
-                        <td>@category.Name</td>
-                        <td>@category.Description</td>
-                        <td>@category.Slug</td>
-                        <td>
-                            @if (ViewBag.IsSubcategoryView != null && ViewBag.IsSubcategoryView)
-                            {
-                                var parentCategory = allCategories.FirstOrDefault(c => c.Id == category.ParentCategoryId);
-                                if (parentCategory != null)
-                                {
-                                    <a asp-controller="Category" asp-action="Index" asp-route-parentId="@parentCategory.ParentCategoryId">
-                                        <i class="bi bi-arrow-up"></i> @parentCategory.Name
-                                    </a>
-                                }
-                                else
-                                {
-                                    <a asp-controller="Category" asp-action="Index">
-                                        <i class="bi bi-arrow-up"></i> All Categories
-                                    </a>
-                                }
-                            }
-                            else
-                            {
-                                var subCategories = allCategories.Where(c => c.ParentCategoryId == category.Id).ToList();
-                                if (subCategories.Any())
-                                {
-                                    <a asp-controller="Category" asp-action="Index" asp-route-parentId="@category.Id" class="btn btn-outline-info btn-sm">
-                                        <i class="bi bi-folder2-open"></i> View @subCategories.Count Subcategories
-                                    </a>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">No subcategories</span>
-                                }
-                            }
-                        </td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a asp-controller="Category" asp-action="Edit" asp-route-id="@category.Id" class="btn btn-primary btn-sm">
-                                    <i class="bi bi-pencil-square"></i> Edit
-                                </a>
-                                <a asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-danger btn-sm">
-                                    <i class="bi bi-trash-fill"></i> Delete
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
 
-        @if (!Model.Any())
-        {
-            <div class="alert alert-info">
-                @if (ViewBag.IsSubcategoryView != null && ViewBag.IsSubcategoryView)
+                @if (parent.SubCategories != null)
                 {
-                    <p>No subcategories found for this category.</p>
+                    @foreach (var sub in parent.SubCategories)
+                    {
+                        <tr>
+                            <td class="ps-4 text-muted">
+                                <span class="border-start border-2 me-2" style="height:14px; display:inline-block;"></span>
+                                @sub.Name
+                            </td>
+                            <td><span class="badge bg-secondary-subtle text-secondary-emphasis">Sub</span></td>
+                            <td><code class="text-muted small">@sub.Slug</code></td>
+                            <td class="text-muted small">@(sub.Description ?? "—")</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@sub.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@sub.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
                 }
-                else
-                {
-                    <p>No categories found. Click "Create New Category" to add one.</p>
-                }
-            </div>
-        }
-    </div>
+            }
+        </tbody>
+    </table>
 </div>

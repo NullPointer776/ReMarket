@@ -1,0 +1,55 @@
+﻿@model Category
+
+@{
+    ViewData["Title"] = "Create Category";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center my-3">
+        <h2 class="fw-semibold">Create Category</h2>
+        <partial name="_Notification" />
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to List</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Slug" class="form-label"></label>
+                    <input asp-for="Slug" class="form-control" placeholder="Leave blank to auto-generate" />
+                    <span asp-validation-for="Slug" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ParentCategoryId" class="form-label">Parent Category</label>
+                    <select asp-for="ParentCategoryId" asp-items="ViewBag.ParentCategories" class="form-select">
+                        <option value="">-- None (Root Category) --</option>
+                    </select>
+                    <span asp-validation-for="ParentCategoryId" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-sm">Create</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

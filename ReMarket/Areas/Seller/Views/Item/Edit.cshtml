@@ -1,0 +1,66 @@
+@model Item
+@{
+    ViewData["Title"] = "编辑商品";
+}
+
+<partial name="_Notification" />
+
+<h1 class="h3 mb-3">编辑商品</h1>
+<p class="text-muted small">当前状态：<strong>@Model.Status</strong>。若曾被拒绝，保存后将重新进入待审核。</p>
+
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" required />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Price" class="form-label"></label>
+            <input asp-for="Price" class="form-control" type="number" step="0.01" min="0.01" required />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="Quantity" class="form-label"></label>
+            <input asp-for="Quantity" class="form-control" type="number" min="0" required />
+        </div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Condition" class="form-label"></label>
+        <select asp-for="Condition" asp-items="Html.GetEnumSelectList<Condition>()" class="form-select"></select>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Location" class="form-label"></label>
+        <input asp-for="Location" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="CategoryId" class="form-label">分类</label>
+        <select asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-select" required></select>
+    </div>
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <div class="mb-2">
+            <span class="form-label d-block">当前图片</span>
+            <img src="@Model.ImageUrl" alt="" class="img-thumbnail" style="max-height:200px" />
+        </div>
+    }
+    <div class="mb-3">
+        <label class="form-label">更换图片（可选）</label>
+        <input name="imageFile" type="file" class="form-control" accept="image/*" capture="environment" />
+        <div class="form-text">留空则保留原图。</div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">保存</button>
+    <a asp-action="Index" class="btn btn-link">返回</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

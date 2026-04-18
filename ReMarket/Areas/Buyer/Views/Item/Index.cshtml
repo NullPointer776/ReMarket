@@ -1,0 +1,67 @@
+@model IEnumerable<Item>
+@{
+    ViewData["Title"] = "商品列表";
+    var selectedCategoryId = ViewBag.CategoryId as int?;
+}
+
+<partial name="_Notification" />
+
+<h1 class="h3 mb-3">在售商品</h1>
+
+<form method="get" class="row g-2 mb-4 align-items-end">
+    <div class="col-md-4">
+        <label class="form-label">关键词</label>
+        <input type="search" name="search" value="@ViewBag.Search" class="form-control" placeholder="名称或描述" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">分类</label>
+        <select name="categoryId" class="form-select">
+            <option value="">全部分类</option>
+            @if (ViewBag.CategoryList is IEnumerable<Category> cats)
+            {
+                foreach (var c in cats)
+                {
+                    if (selectedCategoryId == c.Id)
+                    {
+                        <option value="@c.Id" selected>@c.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@c.Id">@c.Name</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+    <div class="col-md-4">
+        <button type="submit" class="btn btn-primary">筛选</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">清除</a>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">暂无符合条件的商品。</p>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img src="@item.ImageUrl" class="card-img-top object-fit-cover" alt="@item.Name" style="height: 180px;" />
+                    }
+                    <div class="card-body d-flex flex-column">
+                        <h2 class="card-title h5">@item.Name</h2>
+                        <p class="card-text text-muted small flex-grow-1">@(item.Category?.Name ?? "")</p>
+                        <p class="fw-semibold mb-2">@item.Price.ToString("C")</p>
+                        <a asp-action="Detail" asp-route-slug="@item.Slug" class="btn btn-outline-primary mt-auto">查看</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

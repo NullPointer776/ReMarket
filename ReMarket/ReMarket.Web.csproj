@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="QRCoder" Version="1.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.25" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.25" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.25" />
@@ -27,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ReMarket.DataAccess\ReMarket.DataAccess.csproj" />
+    <ProjectReference Include="..\ReMarket.Utility\ReMarket.Utility.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,49 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<Item>
 @{
+    ViewData["Title"] = "商品审核";
+}
+
+<partial name="_Notification" />
+
+<h1 class="h3 mb-3">待审核商品</h1>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">当前没有待审核商品。</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>卖家</th>
+                    <th>分类</th>
+                    <th>提交时间</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@(item.Seller?.Email ?? item.SellerId)</td>
+                        <td>@(item.Category?.Name ?? "-")</td>
+                        <td>@item.DatePosted.ToLocalTime().ToString("g")</td>
+                        <td class="text-nowrap">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">详情</a>
+                            <form asp-action="Approve" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-sm btn-success">通过</button>
+                            </form>
+                            <a asp-action="Reject" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">拒绝</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }

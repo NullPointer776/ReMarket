@@ -39,6 +39,8 @@ namespace ReMarket.Data
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Name).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.Slug).HasMaxLength(200).IsRequired();
+                entity.HasIndex(e => e.Slug).IsUnique();
                 entity.Property(e => e.Description).HasMaxLength(4000);
                 entity.Property(e => e.ImageUrl).HasMaxLength(2000);
                 entity.Property(e => e.Location).HasMaxLength(500);

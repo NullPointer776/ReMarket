@@ -1,0 +1,65 @@
+@model Item
+@{
+    ViewData["Title"] = "发布商品";
+}
+
+<partial name="_Notification" />
+
+<h1 class="h3 mb-3">发布商品</h1>
+<p class="text-muted small">图片支持相册选择或使用移动设备相机拍摄（浏览器会弹出相机权限）。</p>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" required />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Price" class="form-label"></label>
+            <input asp-for="Price" class="form-control" type="number" step="0.01" min="0.01" required />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="Quantity" class="form-label"></label>
+            <input asp-for="Quantity" class="form-control" type="number" min="1" required />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Condition" class="form-label"></label>
+        <select asp-for="Condition" asp-items="Html.GetEnumSelectList<Condition>()" class="form-select"></select>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Location" class="form-label"></label>
+        <input asp-for="Location" class="form-control" />
+        <span asp-validation-for="Location" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="CategoryId" class="form-label">分类</label>
+        <select asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-select" required>
+            <option value="">请选择分类</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">商品图片</label>
+        <input name="imageFile" type="file" class="form-control" accept="image/*" capture="environment" required />
+        <div class="form-text">jpg / png / gif / webp，最大 5MB。</div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">提交审核</button>
+    <a asp-action="Index" class="btn btn-link">返回</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

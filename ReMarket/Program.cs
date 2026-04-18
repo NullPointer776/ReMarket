@@ -42,16 +42,18 @@ namespace ReMarket
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
             app.MapControllerRoute(
                 name: "category",
                 pattern: "category/{slug}",
-                defaults: new { controller = "Category", action = "Index" });
+                defaults: new { area = "Admin", controller = "Category", action = "Index" });
 
             app.MapControllerRoute(
                 name: "item",
                 pattern: "item/{slug}",
-                defaults: new { controller = "Item", action = "Index" });
+                defaults: new { area = "Buyer", controller = "Item", action = "Detail" });
 
             app.MapControllerRoute(
                 name: "default",

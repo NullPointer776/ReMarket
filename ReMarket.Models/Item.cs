@@ -29,6 +29,11 @@ namespace ReMarket.Models
         [MaxLength(200)]
         public string Name { get; set; } = null!;
 
+        /// <summary>URL-friendly unique identifier for SEO routes (e.g. /item/my-phone).</summary>
+        [Required]
+        [MaxLength(200)]
+        public string Slug { get; set; } = null!;
+
         [MaxLength(4000)]
         public string? Description { get; set; }
 
@@ -51,6 +56,7 @@ namespace ReMarket.Models
         [MaxLength(500)]
         public string? Location { get; set; }
 
+        [Range(1, int.MaxValue, ErrorMessage = "请选择分类。")]
         public int CategoryId { get; set; }
 
         public Category? Category { get; set; }

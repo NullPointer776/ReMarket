@@ -1,0 +1,42 @@
+@model Item
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<partial name="_Notification" />
+
+<article>
+    <div class="row g-4">
+        <div class="col-md-6">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" class="img-fluid rounded border" alt="@Model.Name" />
+            }
+            else
+            {
+                <div class="bg-light border rounded d-flex align-items-center justify-content-center" style="min-height:280px">
+                    <span class="text-muted">无图片</span>
+                </div>
+            }
+        </div>
+        <div class="col-md-6">
+            <h1 class="h3">@Model.Name</h1>
+            <p class="text-muted">@Model.Category?.Name · @Model.Condition · @Model.Location</p>
+            <p class="display-6">@Model.Price.ToString("C")</p>
+            <p class="small">库存：@Model.Quantity</p>
+            <p>@Model.Description</p>
+            @if (Model.Quantity > 0)
+            {
+                <a asp-action="Buy" asp-route-slug="@Model.Slug" class="btn btn-primary btn-lg">购买</a>
+            }
+            else
+            {
+                <button class="btn btn-secondary btn-lg" disabled>已售罄</button>
+            }
+        </div>
+    </div>
+</article>
+
+<p class="mt-4">
+    <a asp-action="Index" class="btn btn-link">返回列表</a>
+</p>

@@ -3,8 +3,15 @@ using System.Text;
 
 namespace ReMarket.Utility
 {
+    /// <summary>
+    /// Builds URL-friendly slugs from display text (ASCII letters and digits; other characters become hyphens).
+    /// </summary>
     public static class SlugHelper
     {
+        /// <summary>
+        /// Converts text to a lowercase slug suitable for routes. Returns "item" if the result would be empty.
+        /// </summary>
+        /// <param name="text">Source string (e.g. item or category title).</param>
         public static string ToSlug(string? text)
         {
             if (string.IsNullOrWhiteSpace(text))

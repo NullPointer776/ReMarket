@@ -4,6 +4,9 @@ using ReMarket.Models;
 
 namespace ReMarket.Data
 {
+    /// <summary>
+    /// EF Core database context for Identity, categories, and marketplace items.
+    /// </summary>
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

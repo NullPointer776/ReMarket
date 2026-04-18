@@ -17,6 +17,7 @@ namespace ReMarket.Data.Migrations
                 maxLength: 200,
                 nullable: true);
 
+            // Backfill unique slugs for existing rows before enforcing NOT NULL and unique index.
             migrationBuilder.Sql(
                 "UPDATE Items SET Slug = N'item-' + CAST(Id AS nvarchar(20)) WHERE Slug IS NULL OR Slug = N'';");
 

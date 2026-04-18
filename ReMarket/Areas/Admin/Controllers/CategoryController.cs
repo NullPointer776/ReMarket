@@ -8,21 +8,23 @@ namespace ReMarket.Web.Areas.Admin.Controllers
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+
         public CategoryController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
+
         public IActionResult Index()
         {
             List<Category> allCategories = _unitOfWork.Category.GetAll().ToList();
-            List<Category> topLevelCategories = allCategories.Where(c => c.ParentCategoryId == null).ToList();
-            return View(topLevelCategories);
+            return View(allCategories);
         }
-        //Create button
+
         public IActionResult Create()
         {
             return View();
         }
+
         [HttpPost]
         public IActionResult Create(Category obj)
         {
@@ -32,27 +34,31 @@ namespace ReMarket.Web.Areas.Admin.Controllers
                 {
                     obj.Slug = obj.Name.ToLower().Replace(" ", "-");
                 }
+
                 _unitOfWork.Category.Add(obj);
                 _unitOfWork.Save();
                 TempData["success"] = "Category created successfully";
                 return RedirectToAction("Index");
             }
-            return View();
+            return View(obj);
         }
-        //Edit button
+
         public IActionResult Edit(int? id)
         {
             if (id == null || id == 0)
             {
                 return NotFound();
             }
+
             Category? categoryFromDb = _unitOfWork.Category.Get(u => u.Id == id);
             if (categoryFromDb == null)
             {
                 return NotFound();
             }
+
             return View(categoryFromDb);
         }
+
         [HttpPost]
         public IActionResult Edit(int id, Category obj)
         {
@@ -60,6 +66,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
             if (ModelState.IsValid)
             {
                 _unitOfWork.Category.Update(obj);
@@ -69,7 +76,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             }
             return View(obj);
         }
-        //Delete
+
         public IActionResult Delete(int id)
         {
             Category? obj = _unitOfWork.Category.Get(u => u.Id == id);
@@ -79,6 +86,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             }
             return View(obj);
         }
+
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePost(int id)
         {
@@ -87,6 +95,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
             _unitOfWork.Category.Remove(obj);
             _unitOfWork.Save();
             TempData["success"] = "Category deleted successfully";

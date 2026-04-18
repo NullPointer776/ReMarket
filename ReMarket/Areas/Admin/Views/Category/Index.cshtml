@@ -1,9 +1,23 @@
-﻿@model List<Category>
-<div class=" card shadow border-0 mt-4">
-    <div class=" card-header bg-secondary bg-gradient ml-0 py-3">
+﻿@model List<ReMarket.Models.Category>
+@{
+    var allCategories = ViewBag.AllCategories as List<ReMarket.Models.Category> ?? Model;
+}
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="text-white py-2"> Category List </h2>
+                <h2 class="text-white py-2">
+                    @if (ViewBag.IsSubcategoryView != null && ViewBag.IsSubcategoryView)
+                    {
+                        var parent = ViewBag.ParentCategory as ReMarket.Models.Category;
+                        <span>Subcategories of @(parent?.Name ?? "Parent")</span>
+                    }
+                    else
+                    {
+                        <span>Category List</span>
+                    }
+                </h2>
             </div>
         </div>
     </div>
@@ -11,6 +25,12 @@
     <div class="card-body p-4">
         <div class="row pb-3">
             <div class="col-6">
+                @if (ViewBag.IsSubcategoryView != null && ViewBag.IsSubcategoryView)
+                {
+                    <a asp-controller="Category" asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to All Categories
+                    </a>
+                }
             </div>
             <div class="col-6 text-end">
                 <a asp-controller="Category" asp-action="Create" class="btn btn-primary">
@@ -18,40 +38,90 @@
                 </a>
             </div>
         </div>
+
         <table class="table table-bordered table-striped">
-            <thread>
+            <thead>
                 <tr>
                     <th>Category Name</th>
-                    <th>Display Order</th>
+                    <th>Description</th>
                     <th>Slug</th>
-                    <th>SubCategory</th>
-                    <th></th>
+                    @if (ViewBag.IsSubcategoryView != null && ViewBag.IsSubcategoryView)
+                    {
+                        <th>Parent Category</th>
+                    }
+                    else
+                    {
+                        <th>Sub Categories</th>
+                    }
+                    <th>Actions</th>
                 </tr>
-            </thread>
+            </thead>
             <tbody>
-                @foreach (var obj in Model.OrderBy(u => u.Name))
+                @foreach (var category in Model)
                 {
                     <tr>
+                        <td>@category.Name</td>
+                        <td>@category.Description</td>
+                        <td>@category.Slug</td>
                         <td>
-                            @obj.Name
+                            @if (ViewBag.IsSubcategoryView != null && ViewBag.IsSubcategoryView)
+                            {
+                                var parentCategory = allCategories.FirstOrDefault(c => c.Id == category.ParentCategoryId);
+                                if (parentCategory != null)
+                                {
+                                    <a asp-controller="Category" asp-action="Index" asp-route-parentId="@parentCategory.ParentCategoryId">
+                                        <i class="bi bi-arrow-up"></i> @parentCategory.Name
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="Category" asp-action="Index">
+                                        <i class="bi bi-arrow-up"></i> All Categories
+                                    </a>
+                                }
+                            }
+                            else
+                            {
+                                var subCategories = allCategories.Where(c => c.ParentCategoryId == category.Id).ToList();
+                                if (subCategories.Any())
+                                {
+                                    <a asp-controller="Category" asp-action="Index" asp-route-parentId="@category.Id" class="btn btn-outline-info btn-sm">
+                                        <i class="bi bi-folder2-open"></i> View @subCategories.Count Subcategories
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No subcategories</span>
+                                }
+                            }
                         </td>
                         <td>
-                            @obj.Description
-                        </td>
-                        <td>
-                            <div class="w-75 btn-group" role="group">
-                                <a asp-controller="Category" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary mx-2">
-                                    <i class="bi bi-pencil-square"></i>Edit
+                            <div class="btn-group" role="group">
+                                <a asp-controller="Category" asp-action="Edit" asp-route-id="@category.Id" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-pencil-square"></i> Edit
                                 </a>
-                                <a asp-controller="Category" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger mx-2">
-                                    <i class="bi bi-trash-fill"></i>Delete
+                                <a asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-danger btn-sm">
+                                    <i class="bi bi-trash-fill"></i> Delete
                                 </a>
-
                             </div>
                         </td>
                     </tr>
                 }
-
             </tbody>
         </table>
+
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info">
+                @if (ViewBag.IsSubcategoryView != null && ViewBag.IsSubcategoryView)
+                {
+                    <p>No subcategories found for this category.</p>
+                }
+                else
+                {
+                    <p>No categories found. Click "Create New Category" to add one.</p>
+                }
+            </div>
+        }
     </div>
+</div>

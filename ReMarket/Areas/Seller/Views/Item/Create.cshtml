@@ -1,12 +1,12 @@
 @model Item
 @{
-    ViewData["Title"] = "发布商品";
+    ViewData["Title"] = "List an item";
 }
 
 <partial name="_Notification" />
 
-<h1 class="h3 mb-3">发布商品</h1>
-<p class="text-muted small">图片支持相册选择或使用移动设备相机拍摄（浏览器会弹出相机权限）。</p>
+<h1 class="h3 mb-3">List an item</h1>
+<p class="text-muted small">Choose a file from your gallery or use your device camera (the browser may ask for permission).</p>
 
 <form asp-action="Create" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
     @Html.AntiForgeryToken()
@@ -44,20 +44,20 @@
         <span asp-validation-for="Location" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="CategoryId" class="form-label">分类</label>
+        <label asp-for="CategoryId" class="form-label">Category</label>
         <select asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-select" required>
-            <option value="">请选择分类</option>
+            <option value="">Select a category</option>
         </select>
         <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label class="form-label">商品图片</label>
+        <label class="form-label">Item image</label>
         <input name="imageFile" type="file" class="form-control" accept="image/*" capture="environment" required />
-        <div class="form-text">jpg / png / gif / webp，最大 5MB。</div>
+        <div class="form-text">jpg / png / gif / webp, max 5 MB.</div>
     </div>
 
-    <button type="submit" class="btn btn-primary">提交审核</button>
-    <a asp-action="Index" class="btn btn-link">返回</a>
+    <button type="submit" class="btn btn-primary">Submit for review</button>
+    <a asp-action="Index" class="btn btn-link">Back</a>
 </form>
 
 @section Scripts {

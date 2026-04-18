@@ -1,22 +1,22 @@
 @model IEnumerable<Item>
 @{
-    ViewData["Title"] = "商品列表";
+    ViewData["Title"] = "Items";
     var selectedCategoryId = ViewBag.CategoryId as int?;
 }
 
 <partial name="_Notification" />
 
-<h1 class="h3 mb-3">在售商品</h1>
+<h1 class="h3 mb-3">Items for sale</h1>
 
 <form method="get" class="row g-2 mb-4 align-items-end">
     <div class="col-md-4">
-        <label class="form-label">关键词</label>
-        <input type="search" name="search" value="@ViewBag.Search" class="form-control" placeholder="名称或描述" />
+        <label class="form-label">Search</label>
+        <input type="search" name="search" value="@ViewBag.Search" class="form-control" placeholder="Name or description" />
     </div>
     <div class="col-md-4">
-        <label class="form-label">分类</label>
+        <label class="form-label">Category</label>
         <select name="categoryId" class="form-select">
-            <option value="">全部分类</option>
+            <option value="">All categories</option>
             @if (ViewBag.CategoryList is IEnumerable<Category> cats)
             {
                 foreach (var c in cats)
@@ -34,14 +34,14 @@
         </select>
     </div>
     <div class="col-md-4">
-        <button type="submit" class="btn btn-primary">筛选</button>
-        <a asp-action="Index" class="btn btn-outline-secondary">清除</a>
+        <button type="submit" class="btn btn-primary">Apply</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
     </div>
 </form>
 
 @if (!Model.Any())
 {
-    <p class="text-muted">暂无符合条件的商品。</p>
+    <p class="text-muted">No items match your filters.</p>
 }
 else
 {
@@ -58,7 +58,7 @@ else
                         <h2 class="card-title h5">@item.Name</h2>
                         <p class="card-text text-muted small flex-grow-1">@(item.Category?.Name ?? "")</p>
                         <p class="fw-semibold mb-2">@item.Price.ToString("C")</p>
-                        <a asp-action="Detail" asp-route-slug="@item.Slug" class="btn btn-outline-primary mt-auto">查看</a>
+                        <a asp-action="Detail" asp-route-slug="@item.Slug" class="btn btn-outline-primary mt-auto">View</a>
                     </div>
                 </div>
             </div>

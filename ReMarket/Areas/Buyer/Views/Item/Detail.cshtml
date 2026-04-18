@@ -15,7 +15,7 @@
             else
             {
                 <div class="bg-light border rounded d-flex align-items-center justify-content-center" style="min-height:280px">
-                    <span class="text-muted">无图片</span>
+                    <span class="text-muted">No image</span>
                 </div>
             }
         </div>
@@ -23,20 +23,20 @@
             <h1 class="h3">@Model.Name</h1>
             <p class="text-muted">@Model.Category?.Name · @Model.Condition · @Model.Location</p>
             <p class="display-6">@Model.Price.ToString("C")</p>
-            <p class="small">库存：@Model.Quantity</p>
+            <p class="small">In stock: @Model.Quantity</p>
             <p>@Model.Description</p>
             @if (Model.Quantity > 0)
             {
-                <a asp-action="Buy" asp-route-slug="@Model.Slug" class="btn btn-primary btn-lg">购买</a>
+                <a asp-action="Buy" asp-route-slug="@Model.Slug" class="btn btn-primary btn-lg">Buy</a>
             }
             else
             {
-                <button class="btn btn-secondary btn-lg" disabled>已售罄</button>
+                <button class="btn btn-secondary btn-lg" disabled>Sold out</button>
             }
         </div>
     </div>
 </article>
 
 <p class="mt-4">
-    <a asp-action="Index" class="btn btn-link">返回列表</a>
+    <a asp-action="Index" class="btn btn-link">Back to list</a>
 </p>

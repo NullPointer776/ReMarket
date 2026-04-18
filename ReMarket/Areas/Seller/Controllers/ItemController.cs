@@ -77,7 +77,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             ModelState.Remove(nameof(Item.Slug));
 
             if (imageFile == null || imageFile.Length == 0)
-                ModelState.AddModelError(nameof(imageFile), "请上传一张商品图片。");
+                ModelState.AddModelError(nameof(imageFile), "Please upload an item image.");
             else
                 ValidateImage(imageFile);
 
@@ -91,7 +91,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
                 _unitOfWork.Item.Update(model);
                 _unitOfWork.Save();
 
-                TempData["success"] = "商品已提交，等待管理员审核。";
+                TempData["success"] = "Item submitted and is pending admin review.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -153,7 +153,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
                 _unitOfWork.Item.Update(existing);
                 _unitOfWork.Save();
 
-                TempData["success"] = "商品已更新。";
+                TempData["success"] = "Item updated.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -194,7 +194,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
 
             _unitOfWork.Item.Remove(item);
             _unitOfWork.Save();
-            TempData["success"] = "商品已删除。";
+            TempData["success"] = "Item deleted.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -224,9 +224,9 @@ namespace ReMarket.Web.Areas.Seller.Controllers
         {
             var ext = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
             if (!AllowedImageExtensions.Contains(ext))
-                ModelState.AddModelError(nameof(imageFile), "仅支持 jpg、png、gif、webp。");
+                ModelState.AddModelError(nameof(imageFile), "Only jpg, png, gif, or webp are allowed.");
             if (imageFile.Length > MaxImageBytes)
-                ModelState.AddModelError(nameof(imageFile), "图片不能超过 5MB。");
+                ModelState.AddModelError(nameof(imageFile), "Image must not exceed 5 MB.");
         }
 
         private string NextAvailableSlug(string baseSlug)

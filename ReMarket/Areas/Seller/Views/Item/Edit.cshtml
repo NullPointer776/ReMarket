@@ -1,12 +1,12 @@
 @model Item
 @{
-    ViewData["Title"] = "编辑商品";
+    ViewData["Title"] = "Edit item";
 }
 
 <partial name="_Notification" />
 
-<h1 class="h3 mb-3">编辑商品</h1>
-<p class="text-muted small">当前状态：<strong>@Model.Status</strong>。若曾被拒绝，保存后将重新进入待审核。</p>
+<h1 class="h3 mb-3">Edit item</h1>
+<p class="text-muted small">Current status: <strong>@Model.Status</strong>. If the item was rejected, saving will send it back to pending review.</p>
 
 <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
@@ -41,24 +41,24 @@
         <input asp-for="Location" class="form-control" />
     </div>
     <div class="mb-3">
-        <label asp-for="CategoryId" class="form-label">分类</label>
+        <label asp-for="CategoryId" class="form-label">Category</label>
         <select asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-select" required></select>
     </div>
     @if (!string.IsNullOrEmpty(Model.ImageUrl))
     {
         <div class="mb-2">
-            <span class="form-label d-block">当前图片</span>
+            <span class="form-label d-block">Current image</span>
             <img src="@Model.ImageUrl" alt="" class="img-thumbnail" style="max-height:200px" />
         </div>
     }
     <div class="mb-3">
-        <label class="form-label">更换图片（可选）</label>
+        <label class="form-label">Replace image (optional)</label>
         <input name="imageFile" type="file" class="form-control" accept="image/*" capture="environment" />
-        <div class="form-text">留空则保留原图。</div>
+        <div class="form-text">Leave empty to keep the current image.</div>
     </div>
 
-    <button type="submit" class="btn btn-primary">保存</button>
-    <a asp-action="Index" class="btn btn-link">返回</a>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-link">Back</a>
 </form>
 
 @section Scripts {

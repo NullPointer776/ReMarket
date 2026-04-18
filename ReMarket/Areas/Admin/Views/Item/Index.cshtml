@@ -1,15 +1,15 @@
 ﻿@model IEnumerable<Item>
 @{
-    ViewData["Title"] = "商品审核";
+    ViewData["Title"] = "Item audit";
 }
 
 <partial name="_Notification" />
 
-<h1 class="h3 mb-3">待审核商品</h1>
+<h1 class="h3 mb-3">Pending items</h1>
 
 @if (!Model.Any())
 {
-    <p class="text-muted">当前没有待审核商品。</p>
+    <p class="text-muted">There are no items waiting for review.</p>
 }
 else
 {
@@ -17,10 +17,10 @@ else
         <table class="table table-striped align-middle">
             <thead>
                 <tr>
-                    <th>名称</th>
-                    <th>卖家</th>
-                    <th>分类</th>
-                    <th>提交时间</th>
+                    <th>Name</th>
+                    <th>Seller</th>
+                    <th>Category</th>
+                    <th>Submitted</th>
                     <th></th>
                 </tr>
             </thead>
@@ -33,13 +33,13 @@ else
                         <td>@(item.Category?.Name ?? "-")</td>
                         <td>@item.DatePosted.ToLocalTime().ToString("g")</td>
                         <td class="text-nowrap">
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">详情</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Details</a>
                             <form asp-action="Approve" method="post" class="d-inline">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="id" value="@item.Id" />
-                                <button type="submit" class="btn btn-sm btn-success">通过</button>
+                                <button type="submit" class="btn btn-sm btn-success">Approve</button>
                             </form>
-                            <a asp-action="Reject" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">拒绝</a>
+                            <a asp-action="Reject" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Reject</a>
                         </td>
                     </tr>
                 }

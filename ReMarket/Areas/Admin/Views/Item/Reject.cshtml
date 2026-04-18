@@ -1,20 +1,19 @@
 @model Item
 @{
-    ViewData["Title"] = "拒绝商品";
+    ViewData["Title"] = "Reject item";
 }
 
 <partial name="_Notification" />
 
-<h1 class="h3 mb-3">拒绝：@Model.Name</h1>
+<h1 class="h3 mb-3">Reject: @Model.Name</h1>
 
 <form asp-action="Reject" method="post">
     @Html.AntiForgeryToken()
     <input type="hidden" name="id" value="@Model.Id" />
     <div class="mb-3">
-        <label for="rejectionReason" class="form-label">拒绝原因</label>
+        <label for="rejectionReason" class="form-label">Rejection reason</label>
         <textarea name="rejectionReason" id="rejectionReason" class="form-control" rows="4" required>@(ViewBag.RejectionReason as string)</textarea>
-        <span class="text-danger field-validation-valid" data-valmsg-for="rejectionReason"></span>
     </div>
-    <button type="submit" class="btn btn-danger">确认拒绝</button>
-    <a asp-action="Index" class="btn btn-outline-secondary">取消</a>
+    <button type="submit" class="btn btn-danger">Confirm reject</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
 </form>

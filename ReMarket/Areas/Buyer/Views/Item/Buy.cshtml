@@ -1,17 +1,17 @@
 @model Item
 @{
-    ViewData["Title"] = "确认购买";
+    ViewData["Title"] = "Confirm purchase";
 }
 
 <partial name="_Notification" />
 
-<h1 class="h3 mb-3">确认购买</h1>
-<p>您将购买：<strong>@Model.Name</strong></p>
-<p>价格：<strong>@Model.Price.ToString("C")</strong>（作业版未接入支付，仅扣减库存）</p>
+<h1 class="h3 mb-3">Confirm purchase</h1>
+<p>You are buying: <strong>@Model.Name</strong></p>
+<p>Price: <strong>@Model.Price.ToString("C")</strong> (assignment build: no payment; stock is reduced only)</p>
 
 <form asp-action="Purchase" method="post">
     @Html.AntiForgeryToken()
     <input type="hidden" name="slug" value="@Model.Slug" />
-    <button type="submit" class="btn btn-primary">确认</button>
-    <a asp-action="Detail" asp-route-slug="@Model.Slug" class="btn btn-outline-secondary">取消</a>
+    <button type="submit" class="btn btn-primary">Confirm</button>
+    <a asp-action="Detail" asp-route-slug="@Model.Slug" class="btn btn-outline-secondary">Cancel</a>
 </form>

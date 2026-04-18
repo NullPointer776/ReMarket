@@ -1,11 +1,11 @@
 @model Item
 @{
-    ViewData["Title"] = "商品详情";
+    ViewData["Title"] = "Item details";
 }
 
 <partial name="_Notification" />
 
-<h1 class="h3 mb-3">商品详情</h1>
+<h1 class="h3 mb-3">Item details</h1>
 
 <div class="row g-4">
     <div class="col-md-6">
@@ -16,23 +16,23 @@
     </div>
     <div class="col-md-6">
         <dl class="row">
-            <dt class="col-sm-4">名称</dt>
+            <dt class="col-sm-4">Name</dt>
             <dd class="col-sm-8">@Model.Name</dd>
             <dt class="col-sm-4">Slug</dt>
             <dd class="col-sm-8"><code>@Model.Slug</code></dd>
-            <dt class="col-sm-4">价格</dt>
+            <dt class="col-sm-4">Price</dt>
             <dd class="col-sm-8">@Model.Price.ToString("C")</dd>
-            <dt class="col-sm-4">库存</dt>
+            <dt class="col-sm-4">Quantity</dt>
             <dd class="col-sm-8">@Model.Quantity</dd>
-            <dt class="col-sm-4">状态</dt>
+            <dt class="col-sm-4">Status</dt>
             <dd class="col-sm-8">@Model.Status</dd>
-            <dt class="col-sm-4">分类</dt>
+            <dt class="col-sm-4">Category</dt>
             <dd class="col-sm-8">@Model.Category?.Name</dd>
-            <dt class="col-sm-4">卖家</dt>
+            <dt class="col-sm-4">Seller</dt>
             <dd class="col-sm-8">@(Model.Seller?.Email ?? Model.SellerId)</dd>
-            <dt class="col-sm-4">地点</dt>
+            <dt class="col-sm-4">Location</dt>
             <dd class="col-sm-8">@Model.Location</dd>
-            <dt class="col-sm-4">成色</dt>
+            <dt class="col-sm-4">Condition</dt>
             <dd class="col-sm-8">@Model.Condition</dd>
         </dl>
         <p>@Model.Description</p>
@@ -40,14 +40,14 @@
 </div>
 
 <div class="mt-4">
-    <a asp-action="Index" class="btn btn-outline-secondary">返回列表</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to list</a>
     @if (Model.Status == ItemStatus.Pending)
     {
         <form asp-action="Approve" method="post" class="d-inline">
             @Html.AntiForgeryToken()
             <input type="hidden" name="id" value="@Model.Id" />
-            <button type="submit" class="btn btn-success">通过</button>
+            <button type="submit" class="btn btn-success">Approve</button>
         </form>
-        <a asp-action="Reject" asp-route-id="@Model.Id" class="btn btn-danger">拒绝</a>
+        <a asp-action="Reject" asp-route-id="@Model.Id" class="btn btn-danger">Reject</a>
     }
 </div>

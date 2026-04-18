@@ -66,7 +66,7 @@ namespace ReMarket.Web.Areas.Buyer.Controllers
                 return NotFound();
             if (item.Quantity <= 0)
             {
-                TempData["error"] = "该商品已售罄。";
+                TempData["error"] = "This item is sold out.";
                 return RedirectToAction(nameof(Detail), new { slug });
             }
 
@@ -85,7 +85,7 @@ namespace ReMarket.Web.Areas.Buyer.Controllers
                 return NotFound();
             if (item.Quantity <= 0)
             {
-                TempData["error"] = "该商品已售罄。";
+                TempData["error"] = "This item is sold out.";
                 return RedirectToAction(nameof(Detail), new { slug });
             }
 
@@ -95,7 +95,7 @@ namespace ReMarket.Web.Areas.Buyer.Controllers
 
             _unitOfWork.Item.Update(item);
             _unitOfWork.Save();
-            TempData["success"] = "购买成功（作业版：未接入支付）。";
+            TempData["success"] = "Purchase recorded (assignment build: payment not integrated).";
             return RedirectToAction(nameof(Index));
         }
     }

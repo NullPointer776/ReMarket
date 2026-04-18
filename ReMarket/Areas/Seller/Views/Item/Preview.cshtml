@@ -1,11 +1,11 @@
 @model Item
 @{
-    ViewData["Title"] = "预览 · " + Model.Name;
+    ViewData["Title"] = "Preview · " + Model.Name;
 }
 
 <partial name="_Notification" />
 
-<p class="text-muted small">这是仅自己可见的预览。审核通过后的公开链接：<code>/item/@Model.Slug</code></p>
+<p class="text-muted small">Private preview. Public URL after approval: <code>/item/@Model.Slug</code></p>
 
 <div class="row g-4">
     <div class="col-md-6">
@@ -19,15 +19,15 @@
         <p><span class="badge bg-secondary">@Model.Status</span></p>
         <p class="text-muted">@Model.Category?.Name · @Model.Condition · @Model.Location</p>
         <p class="display-6">@Model.Price.ToString("C")</p>
-        <p class="small">库存：@Model.Quantity</p>
+        <p class="small">Stock: @Model.Quantity</p>
         <p>@Model.Description</p>
         @if (Model.Status == ItemStatus.Rejected && !string.IsNullOrEmpty(Model.RejectionReason))
         {
-            <div class="alert alert-warning">拒绝原因：@Model.RejectionReason</div>
+            <div class="alert alert-warning">Rejection reason: @Model.RejectionReason</div>
         }
     </div>
 </div>
 
 <p class="mt-4">
-    <a asp-action="Index" class="btn btn-outline-secondary">返回列表</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to list</a>
 </p>

@@ -51,7 +51,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             item.RejectionReason = null;
             _unitOfWork.Item.Update(item);
             _unitOfWork.Save();
-            TempData["success"] = "已通过审核。";
+            TempData["success"] = "Item approved.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -77,7 +77,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
 
             if (string.IsNullOrWhiteSpace(rejectionReason))
             {
-                ModelState.AddModelError(nameof(rejectionReason), "请填写拒绝原因。");
+                ModelState.AddModelError(nameof(rejectionReason), "Please enter a rejection reason.");
                 ViewBag.RejectionReason = rejectionReason;
                 return View(item);
             }
@@ -86,7 +86,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             item.RejectionReason = rejectionReason.Trim();
             _unitOfWork.Item.Update(item);
             _unitOfWork.Save();
-            TempData["success"] = "已拒绝该商品。";
+            TempData["success"] = "Item rejected.";
             return RedirectToAction(nameof(Index));
         }
     }

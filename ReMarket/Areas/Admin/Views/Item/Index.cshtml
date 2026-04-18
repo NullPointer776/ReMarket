@@ -1,5 +1,24 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿
 @{
+    ViewData["Title"] = "Item Auditing Management";
 }
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center my-3">
+        <h2 class="fw-semibold">Item Auditing Management</h2>
+    </div>
+
+    <partial name="_Notification" />
+
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>

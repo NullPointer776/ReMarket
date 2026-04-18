@@ -1,99 +1,93 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ReMarket.DataAccess.Repository.IRepository;
 using ReMarket.Models;
 
 namespace ReMarket.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
     public class ItemController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+
         public ItemController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
+
         public IActionResult Index()
         {
-            List<Item> allItems = _unitOfWork.Item.GetAll().ToList();
-            List<Item> pendingItems = allItems.Where(c => c.Status == ItemStatus.Pending).ToList();
-            return View(pendingItems);
+            var pending = _unitOfWork.Item
+                .GetAll(filter: i => i.Status == ItemStatus.Pending, includeProperties: "Category,Seller")
+                .OrderBy(i => i.DatePosted)
+                .ToList();
+            return View(pending);
         }
-        public IActionResult Approve(int? id)
-        {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-            Item? itemFromDb = _unitOfWork.Item.Get(u => u.Id == id);
-            if (itemFromDb == null)
-            {
-                return NotFound();
-            }
-            itemFromDb.Status = ItemStatus.Available;
-            _unitOfWork.Item.Update(itemFromDb);
-            _unitOfWork.Save();
-            TempData["success"] = "Item approved successfully";
-            return RedirectToAction("Index");
-        }
-        [HttpPost]
-        public IActionResult Approve(int id, Item obj)
-        {
-            if (id != obj.Id)
-            {
-                return NotFound();
-            }
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Item.Update(obj);
-                _unitOfWork.Save();
-                TempData["success"] = "Item approved successfully";
-                return RedirectToAction("Index");
-            }
-            return View(obj);
-        }
+
         public IActionResult Details(int? id)
         {
-            if (id == null || id == 0)
-            {
+            if (id is null or 0)
                 return NotFound();
-            }
-            Item? itemFromDb = _unitOfWork.Item.Get(u => u.Id == id);
-            if (itemFromDb == null)
-            {
+
+            var item = _unitOfWork.Item
+                .GetAll(filter: i => i.Id == id, includeProperties: "Category,Seller")
+                .FirstOrDefault();
+            if (item == null)
                 return NotFound();
-            }
-            return View(itemFromDb);
+
+            return View(item);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Approve(int id)
+        {
+            var item = _unitOfWork.Item.Get(u => u.Id == id);
+            if (item == null)
+                return NotFound();
+
+            item.Status = ItemStatus.Available;
+            item.RejectionReason = null;
+            _unitOfWork.Item.Update(item);
+            _unitOfWork.Save();
+            TempData["success"] = "Item approved.";
+            return RedirectToAction(nameof(Index));
+        }
+
         public IActionResult Reject(int? id)
         {
-            if (id == null || id == 0)
-            {
+            if (id is null or 0)
                 return NotFound();
-            }
-            Item? itemFromDb = _unitOfWork.Item.Get(u => u.Id == id);
-            if (itemFromDb == null)
-            {
+
+            var item = _unitOfWork.Item.Get(u => u.Id == id);
+            if (item == null)
                 return NotFound();
-            }
-            return View(itemFromDb);
+
+            return View(item);
         }
+
         [HttpPost]
-        public IActionResult Reject(int id, Item obj)
+        [ValidateAntiForgeryToken]
+        public IActionResult Reject(int id, string? rejectionReason)
         {
-            if (id != obj.Id)
-            {
+            var item = _unitOfWork.Item.Get(u => u.Id == id);
+            if (item == null)
                 return NotFound();
-            }
-            Item? itemFromDb = _unitOfWork.Item.Get(u => u.Id == id);
-            if (itemFromDb == null)
+
+            if (string.IsNullOrWhiteSpace(rejectionReason))
             {
-                return NotFound();
+                ModelState.AddModelError(nameof(rejectionReason), "Please enter a rejection reason.");
+                ViewBag.RejectionReason = rejectionReason;
+                return View(item);
             }
-            itemFromDb.Status = ItemStatus.Rejected;
-            _unitOfWork.Item.Update(itemFromDb);
+
+            item.Status = ItemStatus.Rejected;
+            item.RejectionReason = rejectionReason.Trim();
+            _unitOfWork.Item.Update(item);
             _unitOfWork.Save();
-            TempData["success"] = "Item rejected successfully";
-            return RedirectToAction("Index");
+            TempData["success"] = "Item rejected.";
+            return RedirectToAction(nameof(Index));
         }
-    } 
+    }
 }

@@ -1,6 +1,51 @@
-﻿
+﻿@model IEnumerable<Item>
 @{
-    ViewData["Title"] = "Item Auditing Management";
+    ViewData["Title"] = "Item audit";
+}
+
+<partial name="_Notification" />
+
+<h1 class="h3 mb-3">Pending items</h1>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">There are no items waiting for review.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Seller</th>
+                    <th>Category</th>
+                    <th>Submitted</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@(item.Seller?.Email ?? item.SellerId)</td>
+                        <td>@(item.Category?.Name ?? "-")</td>
+                        <td>@item.DatePosted.ToLocalTime().ToString("g")</td>
+                        <td class="text-nowrap">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                            <form asp-action="Approve" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                            </form>
+                            <a asp-action="Reject" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Reject</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 
 <div class="container-fluid">

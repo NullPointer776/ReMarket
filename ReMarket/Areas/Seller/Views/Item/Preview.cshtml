@@ -1,0 +1,33 @@
+@model Item
+@{
+    ViewData["Title"] = "Preview · " + Model.Name;
+}
+
+<partial name="_Notification" />
+
+<p class="text-muted small">Private preview. Public URL after approval: <code>/item/@Model.Slug</code></p>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl" class="img-fluid rounded border" alt="" />
+        }
+    </div>
+    <div class="col-md-6">
+        <h1 class="h3">@Model.Name</h1>
+        <p><span class="badge bg-secondary">@Model.Status</span></p>
+        <p class="text-muted">@Model.Category?.Name · @Model.Condition · @Model.Location</p>
+        <p class="display-6">@Model.Price.ToString("C")</p>
+        <p class="small">Stock: @Model.Quantity</p>
+        <p>@Model.Description</p>
+        @if (Model.Status == ItemStatus.Rejected && !string.IsNullOrEmpty(Model.RejectionReason))
+        {
+            <div class="alert alert-warning">Rejection reason: @Model.RejectionReason</div>
+        }
+    </div>
+</div>
+
+<p class="mt-4">
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to list</a>
+</p>

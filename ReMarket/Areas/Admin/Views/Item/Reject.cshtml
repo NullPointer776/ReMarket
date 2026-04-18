@@ -1,0 +1,19 @@
+@model Item
+@{
+    ViewData["Title"] = "Reject item";
+}
+
+<partial name="_Notification" />
+
+<h1 class="h3 mb-3">Reject: @Model.Name</h1>
+
+<form asp-action="Reject" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model.Id" />
+    <div class="mb-3">
+        <label for="rejectionReason" class="form-label">Rejection reason</label>
+        <textarea name="rejectionReason" id="rejectionReason" class="form-control" rows="4" required>@(ViewBag.RejectionReason as string)</textarea>
+    </div>
+    <button type="submit" class="btn btn-danger">Confirm reject</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+</form>

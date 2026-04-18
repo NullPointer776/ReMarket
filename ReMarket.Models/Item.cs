@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -27,16 +28,25 @@ namespace ReMarket.Models
 
         [Required]
         [MaxLength(200)]
+        [DisplayName("Name")]
         public string Name { get; set; } = null!;
 
+        /// <summary>URL-friendly unique identifier for SEO routes (e.g. /item/my-phone).</summary>
+        [Required]
+        [MaxLength(200)]
+        public string Slug { get; set; } = null!;
+
         [MaxLength(4000)]
+        [DisplayName("Description")]
         public string? Description { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
+        [DisplayName("Price")]
         [Range(typeof(decimal), "0.01", "999999999", ErrorMessage = "Price must be between 0.01 and 999999999.")]
         public decimal Price { get; set; }
 
         [Range(0, int.MaxValue)]
+        [DisplayName("Quantity")]
         public int Quantity { get; set; } = 1;
 
         [MaxLength(2000)]
@@ -46,11 +56,15 @@ namespace ReMarket.Models
 
         public ItemStatus Status { get; set; } = ItemStatus.Pending;
 
+        [DisplayName("Condition")]
         public Condition Condition { get; set; }
 
         [MaxLength(500)]
+        [DisplayName("Location")]
         public string? Location { get; set; }
 
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a category.")]
+        [DisplayName("Category")]
         public int CategoryId { get; set; }
 
         public Category? Category { get; set; }

@@ -1,0 +1,17 @@
+@model Item
+@{
+    ViewData["Title"] = "Confirm purchase";
+}
+
+<partial name="_Notification" />
+
+<h1 class="h3 mb-3">Confirm purchase</h1>
+<p>You are buying: <strong>@Model.Name</strong></p>
+<p>Price: <strong>@Model.Price.ToString("C")</strong> (assignment build: no payment; stock is reduced only)</p>
+
+<form asp-action="Purchase" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="slug" value="@Model.Slug" />
+    <button type="submit" class="btn btn-primary">Confirm</button>
+    <a asp-action="Detail" asp-route-slug="@Model.Slug" class="btn btn-outline-secondary">Cancel</a>
+</form>

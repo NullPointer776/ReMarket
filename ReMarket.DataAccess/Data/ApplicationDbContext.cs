@@ -1,9 +1,17 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ReMarket.Models;
 
 namespace ReMarket.Data
 {
+    /// <summary>
+    /// EF Core database context for Identity, categories, and marketplace items.
+    /// </summary>
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -39,6 +47,8 @@ namespace ReMarket.Data
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Name).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.Slug).HasMaxLength(200).IsRequired();
+                entity.HasIndex(e => e.Slug).IsUnique();
                 entity.Property(e => e.Description).HasMaxLength(4000);
                 entity.Property(e => e.ImageUrl).HasMaxLength(2000);
                 entity.Property(e => e.Location).HasMaxLength(500);

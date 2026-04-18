@@ -1,4 +1,10 @@
-﻿namespace ReMarket.DataAccess.Repository.IRepository
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ReMarket.DataAccess.Repository.IRepository
 {
     /// <summary>
     /// Coordinates repositories and persists changes in a single unit of work.

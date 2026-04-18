@@ -1,4 +1,9 @@
-﻿using ReMarket.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ReMarket.Data;
 using ReMarket.DataAccess.Repository.IRepository;
 
 namespace ReMarket.DataAccess.Repository
@@ -8,7 +13,7 @@ namespace ReMarket.DataAccess.Repository
     /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly ApplicationDbContext _db;
+        private ApplicationDbContext _db;
 
         public ICategoryRepository Category { get; private set; }
         public IItemRepository Item { get; private set; }
@@ -20,6 +25,9 @@ namespace ReMarket.DataAccess.Repository
             Item = new ItemRepository(_db);
         }
 
-        public void Save() => _db.SaveChanges();
+        public void Save()
+        {
+            _db.SaveChanges();
+        }
     }
 }

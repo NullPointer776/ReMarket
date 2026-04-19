@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using QRCoder;
@@ -11,11 +12,9 @@ namespace ReMarket.Web.Areas.Seller.Controllers
 {
     [Area("Seller")]
     [Authorize]
+    [RequestFormLimits(MultipartBodyLengthLimit = 10 * 1024 * 1024)]
     public class ItemController : Controller
     {
-        private static readonly string[] AllowedImageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
-        private const long MaxImageBytes = 5 * 1024 * 1024;
-
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _env;
 
@@ -76,14 +75,13 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             ClearNavigationModelState();
             ModelState.Remove(nameof(Item.Slug));
 
-            if (imageFile == null || imageFile.Length == 0)
-                ModelState.AddModelError(nameof(imageFile), "Please upload an item image.");
-            else
-                ValidateImage(imageFile);
+            var imageError = ItemImageUpload.Validate(imageFile, required: true);
+            if (imageError != null)
+                ModelState.AddModelError("imageFile", imageError);
 
             if (ModelState.IsValid)
             {
-                model.ImageUrl = await SaveImageAsync(imageFile!, model.Slug);
+                model.ImageUrl = await ItemImageUpload.SaveAsync(_env, imageFile!, model.Slug);
                 _unitOfWork.Item.Add(model);
                 _unitOfWork.Save();
 
@@ -128,7 +126,11 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             ClearNavigationModelState();
 
             if (imageFile is { Length: > 0 })
-                ValidateImage(imageFile);
+            {
+                var imageError = ItemImageUpload.Validate(imageFile, required: false);
+                if (imageError != null)
+                    ModelState.AddModelError("imageFile", imageError);
+            }
 
             if (ModelState.IsValid)
             {
@@ -147,7 +149,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
                 }
 
                 if (imageFile is { Length: > 0 })
-                    existing.ImageUrl = await SaveImageAsync(imageFile, existing.Slug);
+                    existing.ImageUrl = await ItemImageUpload.SaveAsync(_env, imageFile, existing.Slug);
 
                 await WriteQrPngAsync(existing);
                 _unitOfWork.Item.Update(existing);
@@ -220,15 +222,6 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             ModelState.Remove(nameof(Item.Category));
         }
 
-        private void ValidateImage(IFormFile imageFile)
-        {
-            var ext = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
-            if (!AllowedImageExtensions.Contains(ext))
-                ModelState.AddModelError(nameof(imageFile), "Only jpg, png, gif, or webp are allowed.");
-            if (imageFile.Length > MaxImageBytes)
-                ModelState.AddModelError(nameof(imageFile), "Image must not exceed 5 MB.");
-        }
-
         private string NextAvailableSlug(string baseSlug)
         {
             var slug = baseSlug;
@@ -238,22 +231,6 @@ namespace ReMarket.Web.Areas.Seller.Controllers
                 slug = $"{baseSlug}-{n++}";
             }
             return slug;
-        }
-
-        private async Task<string> SaveImageAsync(IFormFile file, string slugBase)
-        {
-            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-            if (string.IsNullOrEmpty(ext) || !AllowedImageExtensions.Contains(ext))
-                ext = ".jpg";
-            var dir = Path.Combine(_env.WebRootPath, "images", "items");
-            Directory.CreateDirectory(dir);
-            var name = $"{slugBase}{ext}";
-            var path = Path.Combine(dir, name);
-            await using (var stream = new FileStream(path, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-            return "/images/items/" + name;
         }
 
         private async Task WriteQrPngAsync(Item item)

@@ -10,7 +10,7 @@
 
 <form asp-action="Create" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
     @Html.AntiForgeryToken()
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="mb-3">
         <label asp-for="Name" class="form-label"></label>
@@ -51,9 +51,13 @@
         <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label class="form-label">Item image</label>
-        <input name="imageFile" type="file" class="form-control" accept="image/*" capture="environment" required />
-        <div class="form-text">jpg / png / gif / webp, max 5 MB.</div>
+        <label class="form-label" for="imageFileInput">Item image</label>
+        <input id="imageFileInput" name="imageFile" type="file" class="form-control" accept="image/jpeg,image/png,image/gif,image/webp,.jpg,.jpeg,.png,.gif,.webp" capture="environment" required />
+        <span class="text-danger d-block">@Html.ValidationMessage("imageFile")</span>
+        <div class="form-text">jpg / png / gif / webp, max 5 MB. Saved under wwwroot/images/items.</div>
+        <div class="mt-2">
+            <img id="imagePreview" src="" alt="Preview" class="img-thumbnail d-none" style="max-height:220px" />
+        </div>
     </div>
 
     <button type="submit" class="btn btn-primary">Submit for review</button>
@@ -62,4 +66,17 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('imageFileInput')?.addEventListener('change', function (e) {
+            const f = e.target.files && e.target.files[0];
+            const prev = document.getElementById('imagePreview');
+            if (!f || !prev) return;
+            const r = new FileReader();
+            r.onload = function (ev) {
+                prev.src = ev.target.result;
+                prev.classList.remove('d-none');
+            };
+            r.readAsDataURL(f);
+        });
+    </script>
 }

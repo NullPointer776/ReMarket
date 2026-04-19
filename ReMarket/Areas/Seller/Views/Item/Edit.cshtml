@@ -11,7 +11,7 @@
 <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Id" />
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="mb-3">
         <label asp-for="Name" class="form-label"></label>
@@ -52,9 +52,13 @@
         </div>
     }
     <div class="mb-3">
-        <label class="form-label">Replace image (optional)</label>
-        <input name="imageFile" type="file" class="form-control" accept="image/*" capture="environment" />
-        <div class="form-text">Leave empty to keep the current image.</div>
+        <label class="form-label" for="imageFileInput">Replace image (optional)</label>
+        <input id="imageFileInput" name="imageFile" type="file" class="form-control" accept="image/jpeg,image/png,image/gif,image/webp,.jpg,.jpeg,.png,.gif,.webp" capture="environment" />
+        <span class="text-danger d-block">@Html.ValidationMessage("imageFile")</span>
+        <div class="form-text">Leave empty to keep the current image. Max 5 MB.</div>
+        <div class="mt-2">
+            <img id="newImagePreview" src="" alt="New preview" class="img-thumbnail d-none" style="max-height:220px" />
+        </div>
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
@@ -63,4 +67,17 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('imageFileInput')?.addEventListener('change', function (e) {
+            const f = e.target.files && e.target.files[0];
+            const prev = document.getElementById('newImagePreview');
+            if (!f || !prev) return;
+            const r = new FileReader();
+            r.onload = function (ev) {
+                prev.src = ev.target.result;
+                prev.classList.remove('d-none');
+            };
+            r.readAsDataURL(f);
+        });
+    </script>
 }

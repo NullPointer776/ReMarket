@@ -73,7 +73,6 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             model.Slug = NextAvailableSlug(SlugHelper.ToSlug(model.Name));
 
             ClearNavigationModelState();
-            ModelState.Remove(nameof(Item.Slug));
 
             var imageError = ItemImageUpload.Validate(imageFile, required: true);
             if (imageError != null)
@@ -216,10 +215,15 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             ViewBag.CategoryId = new SelectList(list, "Id", "Name");
         }
 
+        /// <summary>
+        /// Clears validation for fields set on the server (not posted from the form), so ModelState.IsValid reflects user input only.
+        /// </summary>
         private void ClearNavigationModelState()
         {
             ModelState.Remove(nameof(Item.Seller));
             ModelState.Remove(nameof(Item.Category));
+            ModelState.Remove(nameof(Item.SellerId));
+            ModelState.Remove(nameof(Item.Slug));
         }
 
         private string NextAvailableSlug(string baseSlug)

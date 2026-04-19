@@ -10,7 +10,7 @@ using ReMarket.Utility;
 namespace ReMarket.Web.Areas.Seller.Controllers
 {
     [Area("Seller")]
-    [Authorize]
+    //[Authorize]
     public class ItemController : Controller
     {
         private static readonly string[] AllowedImageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];

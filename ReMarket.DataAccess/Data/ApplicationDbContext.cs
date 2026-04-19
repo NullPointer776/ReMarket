@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ReMarket.Models;
@@ -21,6 +22,7 @@ namespace ReMarket.Data
 
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<Item> Items { get; set; } = null!;
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -77,6 +79,7 @@ namespace ReMarket.Data
                 new Category { Id = 2, Name = "Furniture", Description = "Home and office furniture" },
                 new Category { Id = 3, Name = "Clothing", Description = "Apparel and accessories" }
             );
+
         }
     }
 }

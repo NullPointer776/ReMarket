@@ -9,11 +9,11 @@ using ReMarket.Data;
 
 #nullable disable
 
-namespace ReMarket.Data.Migrations
+namespace ReMarket.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260417013748_IdentityUserFix")]
-    partial class IdentityUserFix
+    [Migration("20260419004145_addSeedDataMigration")]
+    partial class addSeedDataMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -267,9 +267,6 @@ namespace ReMarket.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -279,7 +276,6 @@ namespace ReMarket.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Slug")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -287,6 +283,26 @@ namespace ReMarket.Data.Migrations
                     b.HasIndex("ParentCategoryId");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Gadgets and devices",
+                            Name = "Electronics"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Home and office furniture",
+                            Name = "Furniture"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Apparel and accessories",
+                            Name = "Clothing"
+                        });
                 });
 
             modelBuilder.Entity("ReMarket.Models.Item", b =>
@@ -343,6 +359,11 @@ namespace ReMarket.Data.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -351,6 +372,9 @@ namespace ReMarket.Data.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("SellerId");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
                     b.ToTable("Items");
                 });

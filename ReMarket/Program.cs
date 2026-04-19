@@ -1,14 +1,16 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ReMarket.Data;
+using ReMarket.DataAccess.Data;
 using ReMarket.DataAccess.Repository;
 using ReMarket.DataAccess.Repository.IRepository;
 using ReMarket.Models;
+
 namespace ReMarket
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
           
@@ -59,7 +61,8 @@ namespace ReMarket
                 name: "default",
                 pattern: "{area=Buyer}/{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
-
+            using (var scope = app.Services.CreateScope())
+                await SeedData.SeedAsync(scope.ServiceProvider);
             app.Run();
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,12 @@ namespace ReMarket.Web.Data
     /// </summary>
     public static class DbInitializer
     {
+        /// <summary>Squashed baseline migration id (must match <c>addSeedDataMigration</c> class attribute).</summary>
+        private const string BaselineSchemaMigrationId = "20260419004145_addSeedDataMigration";
+
+        /// <summary>EF Core product version written to <c>__EFMigrationsHistory</c> for that migration.</summary>
+        private const string EfCoreProductVersion = "9.0.2";
+
         public static async Task InitializeAsync(IServiceProvider services)
         {
             using var scope = services.CreateScope();
@@ -30,6 +37,8 @@ namespace ReMarket.Web.Data
             if (string.IsNullOrWhiteSpace(adminEmail))
                 adminEmail = SD.DefaultAdminEmail;
             var adminPassword = configuration["Seed:AdminPassword"];
+
+            await RecordSquashedBaselineIfDatabaseAlreadyExistsAsync(db, logger);
 
             if ((await db.Database.GetPendingMigrationsAsync()).Any())
             {
@@ -123,6 +132,35 @@ namespace ReMarket.Web.Data
             }
 
             await BackfillBuyerAndSellerRolesAsync(db, normalizedAdminEmail, logger);
+        }
+
+        /// <summary>
+        /// When the database already has Identity tables from a prior migration chain that is no longer in this assembly,
+        /// <c>20260419004145_addSeedDataMigration</c> is still "pending" and its <c>Up</c> would try to recreate <c>AspNetRoles</c>.
+        /// This records that migration as applied without running its DDL so EF Core can apply only newer migrations.
+        /// </summary>
+        private static async Task RecordSquashedBaselineIfDatabaseAlreadyExistsAsync(ApplicationDbContext db, ILogger logger)
+        {
+            try
+            {
+                var rows = await db.Database.ExecuteSqlInterpolatedAsync($@"
+IF OBJECT_ID(N'[dbo].[AspNetRoles]', N'U') IS NOT NULL
+   AND OBJECT_ID(N'[dbo].[__EFMigrationsHistory]', N'U') IS NOT NULL
+   AND NOT EXISTS (SELECT 1 FROM [__EFMigrationsHistory] WHERE [MigrationId] = {BaselineSchemaMigrationId})
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES ({BaselineSchemaMigrationId}, {EfCoreProductVersion});
+END
+");
+                if (rows > 0)
+                    logger.LogInformation(
+                        "Recorded {MigrationId} in __EFMigrationsHistory because the schema already exists (squashed migration baseline).",
+                        BaselineSchemaMigrationId);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Could not auto-record squashed baseline migration; Migrate may fail on duplicate objects.");
+            }
         }
 
         /// <summary>

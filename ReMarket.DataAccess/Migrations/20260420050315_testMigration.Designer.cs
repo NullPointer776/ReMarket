@@ -12,8 +12,8 @@ using ReMarket.Data;
 namespace ReMarket.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260420031353_CategoryIconAndActiveAndRoles")]
-    partial class CategoryIconAndActiveAndRoles
+    [Migration("20260420050315_testMigration")]
+    partial class testMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -293,32 +293,6 @@ namespace ReMarket.DataAccess.Migrations
                         .HasFilter("[Slug] IS NOT NULL");
 
                     b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Gadgets and devices",
-                            IsActive = true,
-                            Name = "Electronics",
-                            Slug = "electronics"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Home and office furniture",
-                            IsActive = true,
-                            Name = "Furniture",
-                            Slug = "furniture"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Apparel and accessories",
-                            IsActive = true,
-                            Name = "Clothing",
-                            Slug = "clothing"
-                        });
                 });
 
             modelBuilder.Entity("ReMarket.Models.Item", b =>

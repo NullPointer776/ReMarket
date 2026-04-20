@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ReMarket.Data;
+using ReMarket.DataAccess.Data;
 using ReMarket.DataAccess.Repository;
 using ReMarket.DataAccess.Repository.IRepository;
 using ReMarket.Models;
-using ReMarket.Web.Data;
 
 namespace ReMarket
 {
@@ -77,7 +77,7 @@ namespace ReMarket
             app.MapControllerRoute(
                 name: "category",
                 pattern: "category/{slug}",
-                defaults: new { area = "Buyer", controller = "Category", action = "Detail" });
+                defaults: new { area = "Buyer", controller = "Category", action = "Index" });
 
             app.MapControllerRoute(
                 name: "item",
@@ -89,8 +89,8 @@ namespace ReMarket
                 pattern: "{area=Buyer}/{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
 
-            await DbInitializer.InitializeAsync(app.Services);
-
+            using (var scope = app.Services.CreateScope())
+                await SeedData.SeedAsync(scope.ServiceProvider);
             await app.RunAsync();
         }
     }

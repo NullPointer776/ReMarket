@@ -9,7 +9,6 @@ using ReMarket.Models;
 
 namespace ReMarket.DataAccess.Repository
 {
-    /// <summary>EF Core repository for <see cref="Item"/>.</summary>
     public class ItemRepository : Repository<Item>, IItemRepository
     {
         public ItemRepository(ApplicationDbContext db)

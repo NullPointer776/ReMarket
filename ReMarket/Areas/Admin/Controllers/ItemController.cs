@@ -22,9 +22,6 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             _env = env;
         }
 
-        /// <summary>
-        /// Admin dashboard listing every item with optional status/keyword filters.
-        /// </summary>
         public IActionResult Index(ItemStatus? status, string? search)
         {
             var items = _unitOfWork.Item
@@ -48,8 +45,6 @@ namespace ReMarket.Web.Areas.Admin.Controllers
 
             return View(items.OrderByDescending(i => i.DatePosted).ToList());
         }
-
-        /// <summary>Pending queue (what sellers submitted for review).</summary>
         public IActionResult Pending()
         {
             var pending = _unitOfWork.Item

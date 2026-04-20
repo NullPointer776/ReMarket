@@ -10,7 +10,6 @@ using ReMarket.Models;
 
 namespace ReMarket.DataAccess.Repository
 {
-    /// <summary>EF Core repository for <see cref="Category"/>.</summary>
     public class CategoryRepository : Repository<Category>, ICategoryRepository
     {
         private ApplicationDbContext _db;

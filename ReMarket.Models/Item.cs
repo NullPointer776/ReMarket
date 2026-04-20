@@ -31,7 +31,6 @@ namespace ReMarket.Models
         [DisplayName("Name")]
         public string Name { get; set; } = null!;
 
-        /// <summary>URL-friendly unique identifier for SEO routes (e.g. /item/my-phone).</summary>
         [Required]
         [MaxLength(200)]
         public string Slug { get; set; } = null!;

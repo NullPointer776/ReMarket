@@ -8,9 +8,6 @@ using ReMarket.DataAccess.Repository.IRepository;
 
 namespace ReMarket.DataAccess.Repository
 {
-    /// <summary>
-    /// Default <see cref="IUnitOfWork"/> implementation sharing one <see cref="ApplicationDbContext"/> per request.
-    /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
         private ApplicationDbContext _db;

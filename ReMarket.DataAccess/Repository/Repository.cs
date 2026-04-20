@@ -10,9 +10,6 @@ using ReMarket.DataAccess.Repository.IRepository;
 
 namespace ReMarket.DataAccess.Repository
 {
-    /// <summary>
-    /// EF Core-backed generic repository implementation.
-    /// </summary>
     public class Repository<T> : IRepository<T> where T : class
     {
         private readonly ApplicationDbContext _db;

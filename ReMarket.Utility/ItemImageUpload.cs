@@ -9,17 +9,12 @@ using Microsoft.AspNetCore.Http;
 
 namespace ReMarket.Utility
 {
-    /// <summary>
-    /// Server-side validation and storage for item listing images under wwwroot/images/items.
-    /// </summary>
+
     public static class ItemImageUpload
     {
         public static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
         public const long MaxBytes = 5 * 1024 * 1024;
 
-        /// <summary>
-        /// Returns an error message if invalid; null if valid. When <paramref name="required"/> is false, an empty upload is allowed.
-        /// </summary>
         public static string? Validate(IFormFile? file, bool required)
         {
             if (file == null || file.Length == 0)
@@ -35,9 +30,6 @@ namespace ReMarket.Utility
             return null;
         }
 
-        /// <summary>
-        /// Saves the file to wwwroot/images/items/{slugBase}{ext} and returns the app-relative URL (e.g. /images/items/foo.jpg).
-        /// </summary>
         public static async Task<string> SaveAsync(IWebHostEnvironment env, IFormFile file, string slugBase)
         {
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();

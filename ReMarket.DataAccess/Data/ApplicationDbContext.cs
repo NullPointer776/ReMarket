@@ -10,9 +10,6 @@ using ReMarket.Models;
 
 namespace ReMarket.Data
 {
-    /// <summary>
-    /// EF Core database context for Identity, categories, and marketplace items.
-    /// </summary>
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -22,7 +19,6 @@ namespace ReMarket.Data
 
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<Item> Items { get; set; } = null!;
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -78,7 +74,7 @@ namespace ReMarket.Data
                 entity.Property(e => e.PostalCode).HasMaxLength(20);
                 entity.Property(e => e.Country).HasMaxLength(100);
             });
-           
+            
 
         }
     }

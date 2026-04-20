@@ -2,14 +2,31 @@
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace ReMarket.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class CategoryIconAndActiveAndRoles : Migration
+    public partial class newChangeMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DeleteData(
+                table: "Categories",
+                keyColumn: "Id",
+                keyValue: 1);
+
+            migrationBuilder.DeleteData(
+                table: "Categories",
+                keyColumn: "Id",
+                keyValue: 2);
+
+            migrationBuilder.DeleteData(
+                table: "Categories",
+                keyColumn: "Id",
+                keyValue: 3);
+
             migrationBuilder.AlterColumn<string>(
                 name: "Slug",
                 table: "Categories",
@@ -69,27 +86,6 @@ namespace ReMarket.DataAccess.Migrations
                 oldClrType: typeof(string),
                 oldType: "nvarchar(128)",
                 oldMaxLength: 128);
-
-            migrationBuilder.UpdateData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 1,
-                columns: new[] { "IconImagePath", "IsActive", "Slug" },
-                values: new object[] { null, true, "electronics" });
-
-            migrationBuilder.UpdateData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 2,
-                columns: new[] { "IconImagePath", "IsActive", "Slug" },
-                values: new object[] { null, true, "furniture" });
-
-            migrationBuilder.UpdateData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 3,
-                columns: new[] { "IconImagePath", "IsActive", "Slug" },
-                values: new object[] { null, true, "clothing" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_Slug",
@@ -160,26 +156,15 @@ namespace ReMarket.DataAccess.Migrations
                 oldClrType: typeof(string),
                 oldType: "nvarchar(450)");
 
-            migrationBuilder.UpdateData(
+            migrationBuilder.InsertData(
                 table: "Categories",
-                keyColumn: "Id",
-                keyValue: 1,
-                column: "Slug",
-                value: null);
-
-            migrationBuilder.UpdateData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 2,
-                column: "Slug",
-                value: null);
-
-            migrationBuilder.UpdateData(
-                table: "Categories",
-                keyColumn: "Id",
-                keyValue: 3,
-                column: "Slug",
-                value: null);
+                columns: new[] { "Id", "Description", "Name", "ParentCategoryId", "Slug" },
+                values: new object[,]
+                {
+                    { 1, "Gadgets and devices", "Electronics", null, null },
+                    { 2, "Home and office furniture", "Furniture", null, null },
+                    { 3, "Apparel and accessories", "Clothing", null, null }
+                });
         }
     }
 }

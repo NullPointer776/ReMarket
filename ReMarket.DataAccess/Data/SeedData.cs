@@ -52,11 +52,7 @@ namespace ReMarket.DataAccess.Data
                 };
                 await userManager.CreateAsync(customer, "Customer@123");
                 await userManager.AddToRoleAsync(customer, "Customer");
-                await db.Categories.AddRangeAsync(
-               new Category { Id = 1, Name = "Electronics", Description = "Gadgets and devices" },
-               new Category { Id = 2, Name = "Furniture", Description = "Home and office furniture" },
-               new Category { Id = 3, Name = "Clothing", Description = "Apparel and accessories" }
-                 );
+
                 await db.Items.AddRangeAsync(
                new Item { Name = "iPhone 12", Slug = "iphone-12", Description = "A used iPhone 12 in good condition.", Price = 499.99m, Condition = Condition.Good, Status = ItemStatus.Pending, CategoryId = 1, SellerId = customer.Id },
                new Item { Name = "Office Chair", Slug = "office-chair", Description = "Ergonomic office chair with adjustable height.", Price = 149.99m, Condition = Condition.Good, Status = ItemStatus.Available, CategoryId = 2, SellerId = customer.Id },

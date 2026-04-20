@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace ReMarket.Data.Migrations
+namespace ReMarket.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class CategoryIconAndActiveAndRoles : Migration

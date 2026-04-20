@@ -29,12 +29,6 @@ namespace ReMarket.Models
         // Whether the category is visible to buyers on the public site.
         [Display(Name = "Active")]
         public bool IsActive { get; set; } = true;
-
-        // Optional icon image shown in navigation / listing pages.
-        [MaxLength(2000)]
-        [Display(Name = "Icon image")]
-        public string? IconImagePath { get; set; }
-
         // Foreign key to the parent category, allowing for hierarchical categorization
         [ForeignKey("ParentCategoryId")]
         [Display(Name = "Parent Category")]

@@ -8,20 +8,12 @@ using ReMarket.Utility;
 namespace ReMarket.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = SD.Role_Admin)]
-    [RequestFormLimits(MultipartBodyLengthLimit = 5 * 1024 * 1024)]
     public class CategoryController : Controller
     {
-        private static readonly string[] AllowedIconExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"];
-        private const long MaxIconBytes = 2 * 1024 * 1024;
-
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IWebHostEnvironment _env;
-
-        public CategoryController(IUnitOfWork unitOfWork, IWebHostEnvironment env)
+        public CategoryController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _env = env;
         }
 
         public IActionResult Index()
@@ -41,20 +33,15 @@ namespace ReMarket.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Category obj, IFormFile? iconFile)
+        public IActionResult Create(Category obj)
         {
-            ValidateIcon(iconFile, nameof(iconFile));
-
             if (ModelState.IsValid)
             {
                 obj.Slug = EnsureSlug(obj.Slug, obj.Name, obj.ParentCategoryId, ignoreId: null);
-                if (iconFile is { Length: > 0 })
-                    obj.IconImagePath = await SaveIconAsync(iconFile, obj.Slug);
-
                 _unitOfWork.Category.Add(obj);
                 _unitOfWork.Save();
                 TempData["success"] = "Category created successfully";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
 
             PopulateParents(obj.ParentCategoryId);
@@ -74,26 +61,19 @@ namespace ReMarket.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Category obj, IFormFile? iconFile)
+        public Task<IActionResult> Edit(int id, Category obj)
         {
-            if (id != obj.Id) return NotFound();
-
-            ValidateIcon(iconFile, nameof(iconFile));
-
+            if (id != obj.Id) return Task.FromResult<IActionResult>(NotFound());
             if (ModelState.IsValid)
             {
-                obj.Slug = EnsureSlug(obj.Slug, obj.Name, obj.ParentCategoryId, ignoreId: id);
-                if (iconFile is { Length: > 0 })
-                    obj.IconImagePath = await SaveIconAsync(iconFile, obj.Slug);
-
                 _unitOfWork.Category.Update(obj);
                 _unitOfWork.Save();
                 TempData["success"] = "Category updated successfully";
-                return RedirectToAction(nameof(Index));
+                return Task.FromResult<IActionResult>(RedirectToAction(nameof(Index)));
             }
 
             PopulateParents(obj.ParentCategoryId, excludeId: id);
-            return View(obj);
+            return Task.FromResult<IActionResult>(View(obj));
         }
 
         public IActionResult Delete(int id)
@@ -152,7 +132,6 @@ namespace ReMarket.Web.Areas.Admin.Controllers
                         baseSlug = $"{parent.Slug}-{baseSlug}";
                 }
             }
-
             var candidate = baseSlug;
             var n = 1;
             while (true)
@@ -161,31 +140,6 @@ namespace ReMarket.Web.Areas.Admin.Controllers
                     return candidate;
                 candidate = $"{baseSlug}-{n++}";
             }
-        }
-
-        private void ValidateIcon(IFormFile? file, string fieldName)
-        {
-            if (file == null || file.Length == 0) return;
-            if (file.Length > MaxIconBytes)
-                ModelState.AddModelError(fieldName, "Icon must not exceed 2 MB.");
-            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-            if (string.IsNullOrEmpty(ext) || !AllowedIconExtensions.Contains(ext))
-                ModelState.AddModelError(fieldName, "Allowed icon formats: jpg, png, gif, webp, svg.");
-        }
-
-        private async Task<string> SaveIconAsync(IFormFile file, string slug)
-        {
-            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-            if (string.IsNullOrEmpty(ext) || !AllowedIconExtensions.Contains(ext))
-                ext = ".png";
-
-            var dir = Path.Combine(_env.WebRootPath, "images", "categories");
-            Directory.CreateDirectory(dir);
-            var name = $"{slug}{ext}";
-            var path = Path.Combine(dir, name);
-            await using var stream = new FileStream(path, FileMode.Create);
-            await file.CopyToAsync(stream);
-            return "/images/categories/" + name;
         }
     }
 }

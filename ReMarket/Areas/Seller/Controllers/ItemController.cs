@@ -11,7 +11,6 @@ using ReMarket.Utility;
 namespace ReMarket.Web.Areas.Seller.Controllers
 {
     [Area("Seller")]
-    [Authorize(Roles = SD.Role_Seller + "," + SD.Role_Admin)]
     [RequestFormLimits(MultipartBodyLengthLimit = 10 * 1024 * 1024)]
     public class ItemController : Controller
     {

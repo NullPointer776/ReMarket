@@ -9,7 +9,7 @@ namespace ReMarket.DataAccess.Repository.IRepository
 {
     public interface ICategoryRepository : IRepository<Category>
     {
-        void Update(Category obj);
+        new void Update(Category obj);
 
         bool IsSlugTaken(string slug, int? ignoreCategoryId);
     }

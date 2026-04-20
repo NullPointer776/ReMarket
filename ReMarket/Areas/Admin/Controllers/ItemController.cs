@@ -9,7 +9,6 @@ using ReMarket.Utility;
 namespace ReMarket.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = SD.Role_Admin)]
     [RequestFormLimits(MultipartBodyLengthLimit = 10 * 1024 * 1024)]
     public class ItemController : Controller
     {
@@ -53,7 +52,6 @@ namespace ReMarket.Web.Areas.Admin.Controllers
                 .ToList();
             return View(pending);
         }
-
         public IActionResult Details(int? id)
         {
             if (id is null or 0) return NotFound();
@@ -108,8 +106,6 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             TempData["success"] = "Item rejected.";
             return RedirectToAction(nameof(Pending));
         }
-
-        /// <summary>Admin edit for any item (bypasses the seller-ownership check).</summary>
         public IActionResult Edit(int? id)
         {
             if (id is null or 0) return NotFound();

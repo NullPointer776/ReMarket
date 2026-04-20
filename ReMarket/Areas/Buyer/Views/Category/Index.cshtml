@@ -1,0 +1,43 @@
+@model IEnumerable<Category>
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<partial name="_Notification" />
+
+<h1 class="h3 mb-3">Categories</h1>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No categories are available.</p>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+        @foreach (var cat in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    @if (!string.IsNullOrEmpty(cat.IconImagePath))
+                    {
+                        <img src="@cat.IconImagePath" class="card-img-top" alt="@cat.Name" style="height:140px;object-fit:cover" />
+                    }
+                    <div class="card-body">
+                        <h2 class="h5">@cat.Name</h2>
+                        <p class="small text-muted">@(cat.Description ?? "")</p>
+                        @if (cat.SubCategories != null && cat.SubCategories.Any(s => s.IsActive))
+                        {
+                            <div class="small mb-2">
+                                @foreach (var sub in cat.SubCategories.Where(s => s.IsActive))
+                                {
+                                    <a asp-action="Detail" asp-route-slug="@sub.Slug" class="badge text-bg-light border me-1 mb-1 text-decoration-none">@sub.Name</a>
+                                }
+                            </div>
+                        }
+                        <a asp-action="Detail" asp-route-slug="@cat.Slug" class="btn btn-sm btn-outline-primary">Browse @cat.Name</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

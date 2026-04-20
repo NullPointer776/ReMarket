@@ -1,4 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using ReMarket.Models
+@using ReMarket.Utility
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var isSignedIn = SignInManager.IsSignedIn(User);
+    var isAdmin = isSignedIn && User.IsInRole(SD.Role_Admin);
+    var isSeller = isSignedIn && User.IsInRole(SD.Role_Seller);
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,17 +33,25 @@
                             <a class="nav-link text-dark" asp-area="Buyer" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
+                            <a class="nav-link text-dark" asp-area="Buyer" asp-controller="Category" asp-action="Index">Categories</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Item" asp-action="Index">Item audit</a>
+                            <a class="nav-link text-dark" asp-area="Buyer" asp-controller="Item" asp-action="Index">Buy items</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Buyer" asp-controller="Item" asp-action="Index">Item</a>
+                            <a class="nav-link text-dark" asp-area="Seller" asp-controller="Item" asp-action="Index">Sell items</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Seller" asp-controller="Item" asp-action="Index">Seller · Items</a>
-                        </li>
+                        @if (isAdmin)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown">Admin</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Categories</a></li>
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Item" asp-action="Index">All items</a></li>
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Item" asp-action="Pending">Review queue</a></li>
+                                </ul>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Buyer" asp-controller="Home" asp-action="Privacy">About</a>
                         </li>

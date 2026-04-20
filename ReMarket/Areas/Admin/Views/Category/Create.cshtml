@@ -1,4 +1,4 @@
-﻿@model Category
+@model Category
 
 @{
     ViewData["Title"] = "Create Category";
@@ -7,14 +7,16 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center my-3">
         <h2 class="fw-semibold">Create Category</h2>
-        <partial name="_Notification" />
         <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to List</a>
     </div>
 
+    <partial name="_Notification" />
+
     <div class="card">
         <div class="card-body">
-            <form asp-action="Create" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
                 <div class="mb-3">
                     <label asp-for="Name" class="form-label"></label>
@@ -35,11 +37,23 @@
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="ParentCategoryId" class="form-label">Parent Category</label>
+                    <label asp-for="ParentCategoryId" class="form-label"></label>
                     <select asp-for="ParentCategoryId" asp-items="ViewBag.ParentCategories" class="form-select">
                         <option value="">-- None (Root Category) --</option>
                     </select>
                     <span asp-validation-for="ParentCategoryId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input asp-for="IsActive" class="form-check-input" />
+                    <label asp-for="IsActive" class="form-check-label"></label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="iconFile" class="form-label">Icon image</label>
+                    <input id="iconFile" name="iconFile" type="file" class="form-control" accept="image/*" />
+                    <span class="text-danger small d-block">@Html.ValidationMessage("iconFile")</span>
+                    <div class="form-text">Optional. jpg / png / gif / webp / svg, max 2 MB.</div>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-sm">Create</button>
@@ -49,7 +63,5 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

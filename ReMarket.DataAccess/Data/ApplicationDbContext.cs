@@ -33,6 +33,10 @@ namespace ReMarket.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Name).HasMaxLength(100).IsRequired();
                 entity.Property(e => e.Description).HasMaxLength(500);
+                entity.Property(e => e.Slug).HasMaxLength(120);
+                entity.HasIndex(e => e.Slug).IsUnique().HasFilter("[Slug] IS NOT NULL");
+                entity.Property(e => e.IconImagePath).HasMaxLength(2000);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
                 entity.HasOne(e => e.ParentCategory)
                     .WithMany(e => e.SubCategories)
                     .HasForeignKey(e => e.ParentCategoryId)

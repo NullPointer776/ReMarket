@@ -1,4 +1,4 @@
-﻿@model List<Category>
+@model List<Category>
 
 @{
     ViewData["Title"] = "Category Management";
@@ -15,28 +15,40 @@
     <table class="table table-hover align-middle">
         <thead class="table-light">
             <tr>
+                <th style="width:64px"></th>
                 <th>Name</th>
                 <th>Type</th>
                 <th>Slug</th>
+                <th>Active</th>
                 <th>Description</th>
-                <th>Actions</th>
+                <th class="text-end">Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var parent in Model)
             {
                 <tr class="table-secondary">
-                    <td class="fw-semibold">
-                        @if (parent.SubCategories?.Any() == true)
+                    <td>
+                        @if (!string.IsNullOrEmpty(parent.IconImagePath))
                         {
-                            <span class="text-muted me-1" style="font-size:11px;">▾</span>
+                            <img src="@parent.IconImagePath" alt="" width="32" height="32" class="rounded border" />
                         }
-                        @parent.Name
                     </td>
+                    <td class="fw-semibold">@parent.Name</td>
                     <td><span class="badge bg-primary-subtle text-primary-emphasis">Root</span></td>
                     <td><code class="text-muted small">@parent.Slug</code></td>
-                    <td class="text-muted small">@(parent.Description ?? "—")</td>
                     <td>
+                        @if (parent.IsActive)
+                        {
+                            <span class="badge bg-success-subtle text-success-emphasis">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary-subtle text-secondary-emphasis">No</span>
+                        }
+                    </td>
+                    <td class="text-muted small">@(parent.Description ?? "—")</td>
+                    <td class="text-end text-nowrap">
                         <a asp-action="Edit" asp-route-id="@parent.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
                         <a asp-action="Delete" asp-route-id="@parent.Id" class="btn btn-sm btn-outline-danger">Delete</a>
                     </td>
@@ -44,17 +56,33 @@
 
                 @if (parent.SubCategories != null)
                 {
-                    @foreach (var sub in parent.SubCategories)
+                    foreach (var sub in parent.SubCategories)
                     {
                         <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(sub.IconImagePath))
+                                {
+                                    <img src="@sub.IconImagePath" alt="" width="28" height="28" class="rounded border" />
+                                }
+                            </td>
                             <td class="ps-4 text-muted">
                                 <span class="border-start border-2 me-2" style="height:14px; display:inline-block;"></span>
                                 @sub.Name
                             </td>
                             <td><span class="badge bg-secondary-subtle text-secondary-emphasis">Sub</span></td>
                             <td><code class="text-muted small">@sub.Slug</code></td>
-                            <td class="text-muted small">@(sub.Description ?? "—")</td>
                             <td>
+                                @if (sub.IsActive)
+                                {
+                                    <span class="badge bg-success-subtle text-success-emphasis">Yes</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary-subtle text-secondary-emphasis">No</span>
+                                }
+                            </td>
+                            <td class="text-muted small">@(sub.Description ?? "—")</td>
+                            <td class="text-end text-nowrap">
                                 <a asp-action="Edit" asp-route-id="@sub.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
                                 <a asp-action="Delete" asp-route-id="@sub.Id" class="btn btn-sm btn-outline-danger">Delete</a>
                             </td>

@@ -1,0 +1,72 @@
+@model Item
+@{
+    ViewData["Title"] = "Edit item";
+}
+
+<partial name="_Notification" />
+
+<h1 class="h3 mb-3">Edit item</h1>
+<p class="text-muted small">Seller: <strong>@(Model.Seller?.Email ?? Model.SellerId)</strong> · Slug <code>@Model.Slug</code></p>
+
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" required />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="Price" class="form-label"></label>
+            <input asp-for="Price" class="form-control" type="number" step="0.01" min="0.01" required />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="Quantity" class="form-label"></label>
+            <input asp-for="Quantity" class="form-control" type="number" min="0" required />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="Condition" class="form-label"></label>
+            <select asp-for="Condition" asp-items="Html.GetEnumSelectList<Condition>()" class="form-select"></select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Location" class="form-label"></label>
+            <input asp-for="Location" class="form-control" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="CategoryId" class="form-label">Category</label>
+            <select asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-select" required></select>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Status" class="form-label">Status</label>
+        <select asp-for="Status" asp-items="Html.GetEnumSelectList<ItemStatus>()" class="form-select"></select>
+    </div>
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <div class="mb-2">
+            <span class="form-label d-block">Current image</span>
+            <img src="@Model.ImageUrl" alt="" class="img-thumbnail" style="max-height:200px" />
+        </div>
+    }
+    <div class="mb-3">
+        <label class="form-label">Replace image (optional)</label>
+        <input name="imageFile" type="file" class="form-control" accept="image/*" />
+        <span class="text-danger d-block">@Html.ValidationMessage("imageFile")</span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-link">Back</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

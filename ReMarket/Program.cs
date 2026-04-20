@@ -5,7 +5,7 @@ using ReMarket.Data;
 using ReMarket.DataAccess.Repository;
 using ReMarket.DataAccess.Repository.IRepository;
 using ReMarket.Models;
-using ReMarket.Web.Data;
+using ReMarket.Utility;
 
 namespace ReMarket
 {
@@ -89,7 +89,17 @@ namespace ReMarket
                 pattern: "{area=Buyer}/{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
 
-            await DbInitializer.InitializeAsync(app.Services);
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                await db.Database.MigrateAsync();
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                foreach (var roleName in new[] { SD.Role_Admin, SD.Role_Seller, SD.Role_Buyer })
+                {
+                    if (!await roleManager.RoleExistsAsync(roleName))
+                        await roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
 
             await app.RunAsync();
         }

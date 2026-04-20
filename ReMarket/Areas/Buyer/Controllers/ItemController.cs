@@ -61,7 +61,6 @@ namespace ReMarket.Web.Areas.Buyer.Controllers
             return View(item);
         }
 
-        [Authorize(Roles = SD.Role_Buyer + "," + SD.Role_Admin)]
         public IActionResult Buy(string slug)
         {
             if (string.IsNullOrWhiteSpace(slug))
@@ -78,8 +77,6 @@ namespace ReMarket.Web.Areas.Buyer.Controllers
 
             return View(item);
         }
-
-        [Authorize(Roles = SD.Role_Buyer + "," + SD.Role_Admin)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Purchase(string slug)

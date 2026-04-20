@@ -77,12 +77,12 @@ namespace ReMarket
             app.MapControllerRoute(
                 name: "category",
                 pattern: "category/{slug}",
-                defaults: new { area = "Buyer", controller = "Category", action = "Index" });
+                defaults: new { area = "Admin", controller = "Category", action = "Index" });
 
             app.MapControllerRoute(
                 name: "item",
                 pattern: "item/{slug}",
-                defaults: new { area = "Buyer", controller = "Item", action = "Detail" });
+                defaults: new { area = "Buyer", controller = "Item", action = "Index" });
 
             app.MapControllerRoute(
                 name: "default",
@@ -90,7 +90,9 @@ namespace ReMarket
             app.MapRazorPages();
 
             using (var scope = app.Services.CreateScope())
+            {
                 await SeedData.SeedAsync(scope.ServiceProvider);
+            }
             await app.RunAsync();
         }
     }

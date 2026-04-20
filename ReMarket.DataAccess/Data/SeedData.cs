@@ -19,7 +19,7 @@ namespace ReMarket.DataAccess.Data
             var db = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
             // Create roles
-            if (!await roleManager.RoleExistsAsync("Admin"))
+            /*if (!await roleManager.RoleExistsAsync("Admin"))
                 await roleManager.CreateAsync(new IdentityRole("Admin"));
             if (!await roleManager.RoleExistsAsync("Customer"))
                 await roleManager.CreateAsync(new IdentityRole("Customer"));
@@ -37,7 +37,7 @@ namespace ReMarket.DataAccess.Data
                 };
                 await userManager.CreateAsync(admin, "Admin@123");
                 await userManager.AddToRoleAsync(admin, "Admin");
-            }
+            }*/
 
             // Create Customer user
             if (await userManager.FindByEmailAsync("customer@remarket.com") == null)

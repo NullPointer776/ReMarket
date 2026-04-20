@@ -28,12 +28,6 @@
             @foreach (var parent in Model)
             {
                 <tr class="table-secondary">
-                    <td>
-                        @if (!string.IsNullOrEmpty(parent.IconImagePath))
-                        {
-                            <img src="@parent.IconImagePath" alt="" width="32" height="32" class="rounded border" />
-                        }
-                    </td>
                     <td class="fw-semibold">@parent.Name</td>
                     <td><span class="badge bg-primary-subtle text-primary-emphasis">Root</span></td>
                     <td><code class="text-muted small">@parent.Slug</code></td>
@@ -58,13 +52,7 @@
                 {
                     foreach (var sub in parent.SubCategories)
                     {
-                        <tr>
-                            <td>
-                                @if (!string.IsNullOrEmpty(sub.IconImagePath))
-                                {
-                                    <img src="@sub.IconImagePath" alt="" width="28" height="28" class="rounded border" />
-                                }
-                            </td>
+                        <tr>                            
                             <td class="ps-4 text-muted">
                                 <span class="border-start border-2 me-2" style="height:14px; display:inline-block;"></span>
                                 @sub.Name

@@ -19,7 +19,6 @@
                 <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
                 <input asp-for="Id" type="hidden" />
-                <input asp-for="IconImagePath" type="hidden" />
 
                 <div class="mb-3">
                     <label asp-for="Name" class="form-label"></label>
@@ -51,21 +50,6 @@
                     <input asp-for="IsActive" class="form-check-input" />
                     <label asp-for="IsActive" class="form-check-label"></label>
                 </div>
-
-                @if (!string.IsNullOrEmpty(Model.IconImagePath))
-                {
-                    <div class="mb-2">
-                        <span class="form-label d-block">Current icon</span>
-                        <img src="@Model.IconImagePath" alt="" class="img-thumbnail" style="max-height:120px" />
-                    </div>
-                }
-                <div class="mb-3">
-                    <label for="iconFile" class="form-label">Replace icon (optional)</label>
-                    <input id="iconFile" name="iconFile" type="file" class="form-control" accept="image/*" />
-                    <span class="text-danger small d-block">@Html.ValidationMessage("iconFile")</span>
-                    <div class="form-text">Leave empty to keep the current icon.</div>
-                </div>
-
                 <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
             </form>
         </div>

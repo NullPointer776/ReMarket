@@ -31,7 +31,6 @@ namespace ReMarket.Data
                 entity.Property(e => e.Description).HasMaxLength(500);
                 entity.Property(e => e.Slug).HasMaxLength(120);
                 entity.HasIndex(e => e.Slug).IsUnique().HasFilter("[Slug] IS NOT NULL");
-                entity.Property(e => e.IconImagePath).HasMaxLength(2000);
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
                 entity.HasOne(e => e.ParentCategory)
                     .WithMany(e => e.SubCategories)
@@ -74,7 +73,52 @@ namespace ReMarket.Data
                 entity.Property(e => e.PostalCode).HasMaxLength(20);
                 entity.Property(e => e.Country).HasMaxLength(100);
             });
-            
+            // Seed Categories
+            builder.Entity<Category>().HasData(
+                new Category
+                {
+                    Id = 1,
+                    Name = "Electronics",
+                    Description = "Gadgets and devices",
+                    Slug = "electronics",
+                    IsActive = true
+                },
+                new Category
+                {
+                    Id = 2,
+                    Name = "Furniture",
+                    Description = "Home and office furniture",
+                    Slug = "furniture",
+                    IsActive = true
+                },
+                new Category
+                {
+                    Id = 3,
+                    Name = "Clothing",
+                    Description = "Apparel and accessories",
+                    Slug = "clothing",
+                    IsActive = true
+                },
+                // Subcategories example
+                new Category
+                {
+                    Id = 4,
+                    Name = "Mobile Phones",
+                    Description = "Smartphones and accessories",
+                    Slug = "mobile-phones",
+                    ParentCategoryId = 1,
+                    IsActive = true
+                },
+                new Category
+                {
+                    Id = 5,
+                    Name = "Laptops",
+                    Description = "Notebooks and accessories",
+                    Slug = "laptops",
+                    ParentCategoryId = 1,
+                    IsActive = true
+                }
+            );
 
         }
     }

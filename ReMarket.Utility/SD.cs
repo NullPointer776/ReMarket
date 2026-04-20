@@ -12,6 +12,5 @@ namespace ReMarket.Utility
         public const string Role_Seller = "Seller";
         public const string Role_Buyer = "Buyer";
 
-        public const string DefaultAdminEmail = "admin@remarket.local";
     }
 }

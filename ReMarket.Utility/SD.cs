@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +15,7 @@ namespace ReMarket.Utility
         public const string Role_Seller = "Seller";
         public const string Role_Buyer = "Buyer";
 
+        /// <summary>Fallback admin email when configuration <c>Seed:AdminEmail</c> is not set.</summary>
         public const string DefaultAdminEmail = "admin@remarket.local";
-        public const string DefaultAdminPassword = "Admin#12345";
     }
 }

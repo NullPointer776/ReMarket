@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ReMarket.DataAccess.Repository.IRepository;
@@ -157,8 +157,8 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             var n = 1;
             while (true)
             {
-                var existing = _unitOfWork.Category.Get(c => c.Slug == candidate);
-                if (existing == null || existing.Id == ignoreId) return candidate;
+                if (!_unitOfWork.Category.IsSlugTaken(candidate, ignoreId))
+                    return candidate;
                 candidate = $"{baseSlug}-{n++}";
             }
         }

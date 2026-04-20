@@ -15,27 +15,56 @@ namespace ReMarket.DataAccess.Data
         public static async Task SeedAsync(IServiceProvider serviceProvider)
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var db = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
-            if (await userManager.FindByEmailAsync("test@2test.com") != null) return;
+            // Create roles
+            if (!await roleManager.RoleExistsAsync("Admin"))
+                await roleManager.CreateAsync(new IdentityRole("Admin"));
+            if (!await roleManager.RoleExistsAsync("Customer"))
+                await roleManager.CreateAsync(new IdentityRole("Customer"));
 
-            var user = new ApplicationUser
+            // Create Admin user
+            if (await userManager.FindByEmailAsync("admin@remarket.com") == null)
             {
-                UserName = "testuser",
-                Email = "test@2test.com",
-                NormalizedUserName = "TESTUSER",
-                NormalizedEmail = "TEST@2TEST.COM",
-            };
+                var admin = new ApplicationUser
+                {
+                    UserName = "admin@remarket.com",
+                    Email = "admin@remarket.com",
+                    NormalizedUserName = "ADMIN@REMARKET.COM",
+                    NormalizedEmail = "ADMIN@REMARKET.COM",
+                    EmailConfirmed = true
+                };
+                await userManager.CreateAsync(admin, "Admin@123");
+                await userManager.AddToRoleAsync(admin, "Admin");
+            }
 
-            await userManager.CreateAsync(user, "Test@123");
+            // Create Customer user
+            if (await userManager.FindByEmailAsync("customer@remarket.com") == null)
+            {
+                var customer = new ApplicationUser
+                {
+                    UserName = "customer@remarket.com",
+                    Email = "customer@remarket.com",
+                    NormalizedUserName = "CUSTOMER@REMARKET.COM",
+                    NormalizedEmail = "CUSTOMER@REMARKET.COM",
+                    EmailConfirmed = true
+                };
+                await userManager.CreateAsync(customer, "Customer@123");
+                await userManager.AddToRoleAsync(customer, "Customer");
+                await db.Categories.AddRangeAsync(
+               new Category { Id = 1, Name = "Electronics", Description = "Gadgets and devices" },
+               new Category { Id = 2, Name = "Furniture", Description = "Home and office furniture" },
+               new Category { Id = 3, Name = "Clothing", Description = "Apparel and accessories" }
+                 );
+                await db.Items.AddRangeAsync(
+               new Item { Name = "iPhone 12", Slug = "iphone-12", Description = "A used iPhone 12 in good condition.", Price = 499.99m, Condition = Condition.Good, Status = ItemStatus.Pending, CategoryId = 1, SellerId = customer.Id },
+               new Item { Name = "Office Chair", Slug = "office-chair", Description = "Ergonomic office chair with adjustable height.", Price = 149.99m, Condition = Condition.Good, Status = ItemStatus.Available, CategoryId = 2, SellerId = customer.Id },
+               new Item { Name = "Leather Jacket", Slug = "leather-jacket", Description = "Stylish leather jacket, barely worn.", Price = 199.99m, Condition = Condition.Good, Status = ItemStatus.Rejected, CategoryId = 3, SellerId = customer.Id }
+                );
 
-            await db.Items.AddRangeAsync(
-                new Item { Name = "iPhone 12", Slug = "iphone-12", Description = "A used iPhone 12 in good condition.", Price = 499.99m, Condition = Condition.Good, Status = ItemStatus.Pending, CategoryId = 1, SellerId = user.Id },
-                new Item { Name = "Office Chair", Slug = "office-chair", Description = "Ergonomic office chair with adjustable height.", Price = 149.99m, Condition = Condition.Good, Status = ItemStatus.Available, CategoryId = 2, SellerId = user.Id },
-                new Item { Name = "Leather Jacket", Slug = "leather-jacket", Description = "Stylish leather jacket, barely worn.", Price = 199.99m, Condition = Condition.Good, Status = ItemStatus.Rejected, CategoryId = 3, SellerId = user.Id }
-            );
-
-            await db.SaveChangesAsync();
+                await db.SaveChangesAsync();
+            }
         }
     }
 }

@@ -1,0 +1,27 @@
+@model Item
+@{
+    ViewData["Title"] = "Delete item";
+}
+
+<partial name="_Notification" />
+
+<h1 class="h3 mb-3">Delete item</h1>
+<p>Are you sure you want to delete <strong>@Model.Name</strong>?</p>
+<div class="d-flex align-items-center gap-3 mb-3">
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <img src="@Model.ImageUrl" alt="" class="rounded border" style="width:80px;height:80px;object-fit:cover" />
+    }
+    <div class="small text-muted">
+        Seller: @(Model.Seller?.Email ?? Model.SellerId)<br />
+        Category: @(Model.Category?.Name ?? "-")<br />
+        Status: @Model.Status
+    </div>
+</div>
+
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+</form>

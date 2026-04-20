@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ReMarket.DataAccess.Repository.IRepository;
 using ReMarket.Models;
+using ReMarket.Utility;
 
 namespace ReMarket.Web.Areas.Buyer.Controllers
 {
@@ -35,7 +37,10 @@ namespace ReMarket.Web.Areas.Buyer.Controllers
 
             ViewBag.Search = search;
             ViewBag.CategoryId = categoryId;
-            ViewBag.CategoryList = _unitOfWork.Category.GetAll().OrderBy(c => c.Name).ToList();
+            ViewBag.CategoryList = _unitOfWork.Category
+                .GetAll(filter: c => c.IsActive)
+                .OrderBy(c => c.Name)
+                .ToList();
 
             return View(list);
         }
@@ -56,6 +61,7 @@ namespace ReMarket.Web.Areas.Buyer.Controllers
             return View(item);
         }
 
+        [Authorize(Roles = SD.Role_Buyer + "," + SD.Role_Admin)]
         public IActionResult Buy(string slug)
         {
             if (string.IsNullOrWhiteSpace(slug))
@@ -73,6 +79,7 @@ namespace ReMarket.Web.Areas.Buyer.Controllers
             return View(item);
         }
 
+        [Authorize(Roles = SD.Role_Buyer + "," + SD.Role_Admin)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Purchase(string slug)

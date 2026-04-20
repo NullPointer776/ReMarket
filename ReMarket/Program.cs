@@ -5,11 +5,13 @@ using ReMarket.Data;
 using ReMarket.DataAccess.Repository;
 using ReMarket.DataAccess.Repository.IRepository;
 using ReMarket.Models;
+using ReMarket.Web.Data;
+
 namespace ReMarket
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +24,7 @@ namespace ReMarket
             {
                 options.Limits.MaxRequestBodySize = 10 * 1024 * 1024;
             });
-          
+
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -30,13 +32,30 @@ namespace ReMarket
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services
+                .AddIdentity<ApplicationUser, IdentityRole>(options =>
+                {
+                    options.SignIn.RequireConfirmedAccount = false;
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                })
+                .AddDefaultTokenProviders()
+                .AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Identity/Account/Login";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            });
+
             builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseMigrationsEndPoint();
@@ -44,7 +63,6 @@ namespace ReMarket
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -59,7 +77,7 @@ namespace ReMarket
             app.MapControllerRoute(
                 name: "category",
                 pattern: "category/{slug}",
-                defaults: new { area = "Admin", controller = "Category", action = "Index" });
+                defaults: new { area = "Buyer", controller = "Category", action = "Detail" });
 
             app.MapControllerRoute(
                 name: "item",
@@ -71,7 +89,9 @@ namespace ReMarket
                 pattern: "{area=Buyer}/{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
 
-            app.Run();
+            await DbInitializer.InitializeAsync(app.Services);
+
+            await app.RunAsync();
         }
     }
 }

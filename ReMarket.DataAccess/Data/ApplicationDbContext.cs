@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,6 +31,10 @@ namespace ReMarket.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Name).HasMaxLength(100).IsRequired();
                 entity.Property(e => e.Description).HasMaxLength(500);
+                entity.Property(e => e.Slug).HasMaxLength(120);
+                entity.HasIndex(e => e.Slug).IsUnique().HasFilter("[Slug] IS NOT NULL");
+                entity.Property(e => e.IconImagePath).HasMaxLength(2000);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
                 entity.HasOne(e => e.ParentCategory)
                     .WithMany(e => e.SubCategories)
                     .HasForeignKey(e => e.ParentCategoryId)
@@ -73,9 +77,9 @@ namespace ReMarket.Data
                 entity.Property(e => e.Country).HasMaxLength(100);
             });
             builder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Electronics", Description = "Gadgets and devices" },
-                new Category { Id = 2, Name = "Furniture", Description = "Home and office furniture" },
-                new Category { Id = 3, Name = "Clothing", Description = "Apparel and accessories" }
+                new Category { Id = 1, Name = "Electronics", Description = "Gadgets and devices", Slug = "electronics", IsActive = true },
+                new Category { Id = 2, Name = "Furniture", Description = "Home and office furniture", Slug = "furniture", IsActive = true },
+                new Category { Id = 3, Name = "Clothing", Description = "Apparel and accessories", Slug = "clothing", IsActive = true }
             );
         }
     }

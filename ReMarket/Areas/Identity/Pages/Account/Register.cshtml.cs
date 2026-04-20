@@ -103,7 +103,7 @@ namespace ReMarket.Web.Areas.Identity.Pages.Account
                 return Page();
             }
 
-            // Every registered user can both buy and sell. Administrators are seeded separately.
+            // Every registered user can both buy and sell.
             await _userManager.AddToRolesAsync(user, new[] { SD.Role_Buyer, SD.Role_Seller });
             _logger.LogInformation("User {Email} registered as Buyer + Seller.", Input.Email);
 

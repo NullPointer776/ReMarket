@@ -41,7 +41,9 @@ else
                         <td>
                             @if (!string.IsNullOrEmpty(item.QrCodeUrl))
                             {
+                                <a href="@item.QrCodeUrl" target="_blank">
                                 <img src="@item.QrCodeUrl" alt="QR" width="64" height="64" class="border rounded" />
+                                </a>
                             }
                         </td>
                         <td class="text-nowrap">

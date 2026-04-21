@@ -35,6 +35,11 @@ namespace ReMarket.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Category obj)
         {
+            var existing = _unitOfWork.Category.Get(c => c.Name == obj.Name && c.ParentCategoryId == obj.ParentCategoryId);
+            if (existing != null)
+            {
+                ModelState.AddModelError("Name", "A category with the same name already exists.");
+            }
             if (ModelState.IsValid)
             {
                 obj.Slug = EnsureSlug(obj.Slug, obj.Name, obj.ParentCategoryId, ignoreId: null);

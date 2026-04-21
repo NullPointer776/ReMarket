@@ -214,9 +214,6 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             ViewBag.CategoryId = new SelectList(list, "Id", "Name");
         }
 
-        /// <summary>
-        /// Clears validation for fields set on the server (not posted from the form), so ModelState.IsValid reflects user input only.
-        /// </summary>
         private void ClearNavigationModelState()
         {
             ModelState.Remove(nameof(Item.Seller));

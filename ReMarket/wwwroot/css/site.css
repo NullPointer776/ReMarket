@@ -177,6 +177,23 @@ body {
   z-index: 1200;
   border: 1px solid #e2daef;
   box-shadow: 0 10px 24px rgba(67, 47, 107, 0.14);
+  /* Bootswatch Quartz uses frosted-glass/transparent menu styling; override with solid white */
+  background-color: #ffffff !important;
+  background-image: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Buyer item page: keep category dropdown above item cards */
+#category,
+#category .card,
+#category .card-body,
+#category .dropdown {
+  position: relative;
+}
+
+#category .dropdown-menu.show {
+  z-index: 3000 !important;
 }
 
 .tab-content,
@@ -184,6 +201,12 @@ body {
 .card,
 .card-body {
   overflow: visible;
+}
+
+/* Item grid is a following sibling of .tab-content; it paints on top and can cover category dropdowns—lift .tab-content stacking */
+.tab-content {
+  position: relative;
+  z-index: 2;
 }
 
 .table {

@@ -111,7 +111,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Description,Price,Quantity,Condition,Location,CategoryId")] Item model, IFormFile? imageFile)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,Description,Price,Quantity,Condition,DeliveryOption,Location,CategoryId")] Item model, IFormFile? imageFile)
         {
             var uid = UserId;
             if (uid == null)

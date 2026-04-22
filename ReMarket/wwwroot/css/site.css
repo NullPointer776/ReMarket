@@ -338,13 +338,91 @@ a:hover {
   --bs-btn-color: #a23d76;
   --bs-btn-border-color: #d7a2c1;
   --bs-btn-bg: #ffffff;
-  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-color: #2f2b45;
   --bs-btn-hover-bg: #b24f88;
   --bs-btn-hover-border-color: #b24f88;
-  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-color: #2f2b45;
   --bs-btn-active-bg: #9a3f72;
   --bs-btn-active-border-color: #9a3f72;
   color: #a23d76 !important;
   background: #ffffff !important;
   border-color: #d7a2c1 !important;
+}
+
+/* Global safety net: never render white text */
+.text-white,
+[class*="text-white"],
+.btn,
+.btn-primary,
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-danger {
+  color: #2f2b45 !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus,
+.btn-outline-danger:hover,
+.btn-outline-danger:focus {
+  color: #2f2b45 !important;
+}
+
+/* Form input text visibility: force dark typing color */
+input,
+textarea,
+select,
+.form-control,
+.form-select {
+  color: #2f2b45 !important;
+  -webkit-text-fill-color: #2f2b45 !important;
+  caret-color: #2f2b45;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.form-control:focus,
+.form-select:focus {
+  color: #2f2b45 !important;
+  -webkit-text-fill-color: #2f2b45 !important;
+  caret-color: #2f2b45;
+}
+
+input::placeholder,
+textarea::placeholder,
+.form-control::placeholder {
+  color: #8f88a8 !important;
+}
+
+/* Keep Bootstrap floating-label behavior (avoid label/placeholder overlap) */
+.form-floating > .form-control::placeholder,
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-select::placeholder {
+  color: transparent !important;
+  opacity: 0 !important;
+}
+
+.form-floating > .form-control::-webkit-input-placeholder,
+.form-floating > .form-control-plaintext::-webkit-input-placeholder,
+.form-floating > .form-select::-webkit-input-placeholder {
+  color: transparent !important;
+  opacity: 0 !important;
+}
+
+.form-floating > label {
+  color: #5e5679 !important;
+  opacity: 1 !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: #2f2b45 !important;
+  transition: background-color 5000s ease-in-out 0s;
 }

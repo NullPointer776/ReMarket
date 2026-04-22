@@ -74,6 +74,7 @@ body {
   border-radius: 16px;
   box-shadow: 0 14px 30px rgba(65, 42, 99, 0.08);
   padding: 1rem 1rem 0.5rem;
+  overflow: visible;
 }
 
 .app-footer {
@@ -92,15 +93,57 @@ body {
   border-color: transparent;
 }
 
-.btn-outline-primary {
-  color: #7a40d8;
-  border-color: #c9b8ef;
+.btn {
+  font-weight: 500;
 }
 
-.btn-outline-primary:hover {
-  background: #efe8ff;
-  color: #5f2db5;
-  border-color: #c9b8ef;
+.btn-outline-primary {
+  --bs-btn-color: #6d33cf;
+  --bs-btn-border-color: #9b6ee0;
+  --bs-btn-bg: #ffffff;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #8a4ddb;
+  --bs-btn-hover-border-color: #7a40d8;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: #6d33cf;
+  --bs-btn-active-border-color: #5d29b4;
+  color: #6d33cf !important;
+  background: #ffffff !important;
+  border-color: #9b6ee0 !important;
+}
+
+.btn-outline-secondary {
+  --bs-btn-color: #3f3560;
+  --bs-btn-border-color: #8c82a8;
+  --bs-btn-bg: #ffffff;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #6b5f88;
+  --bs-btn-hover-border-color: #6b5f88;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: #554b77;
+  --bs-btn-active-border-color: #554b77;
+  color: #3f3560 !important;
+  background: #ffffff !important;
+  border-color: #8c82a8 !important;
+}
+
+.nav-tabs .nav-link {
+  color: #655f7a;
+  background: #f7f4fc;
+  border-color: #e2daef;
+}
+
+.nav-tabs .nav-link:hover {
+  color: #4b416e;
+  border-color: #d5cae8;
+  background: #efe8fb;
+}
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+  color: #32294f;
+  background: #ffffff;
+  border-color: #ddd2ee #ddd2ee #ffffff;
 }
 
 .card,
@@ -111,9 +154,42 @@ body {
   box-shadow: 0 8px 20px rgba(67, 47, 107, 0.06);
 }
 
+.card,
+.card-body,
+.card-title,
+.card-text,
+.card p,
+.card th,
+.card td,
+.tab-content,
+.dropdown-menu,
+.dropdown-item,
+.form-label {
+  color: #2f2b45 !important;
+}
+
+.dropdown-toggle {
+  color: #4f2da6 !important;
+  background: #ffffff !important;
+}
+
+.dropdown-menu {
+  z-index: 1200;
+  border: 1px solid #e2daef;
+  box-shadow: 0 10px 24px rgba(67, 47, 107, 0.14);
+}
+
+.tab-content,
+.tab-pane,
+.card,
+.card-body {
+  overflow: visible;
+}
+
 .table {
   --bs-table-bg: transparent;
   --bs-table-border-color: #ece7f4;
+  color: #2f2b45;
 }
 
 .table thead th {
@@ -139,6 +215,18 @@ body {
   color: #8f88a8 !important;
 }
 
+.table .text-muted,
+td.text-muted,
+th.text-muted,
+code.text-muted {
+  color: #5e5679 !important;
+}
+
+.table-secondary > :not(caption) > * {
+  --bs-table-color: #2f2b45;
+  --bs-table-bg: #f2ecfb;
+}
+
 a {
   color: #6e37cb;
 }
@@ -147,7 +235,6 @@ a:hover {
   color: #4f2da6;
 }
 
-/* Home hero + highlight cards */
 .hero-card {
   border-radius: 18px;
   border: 1px solid #e9e3f3;
@@ -208,4 +295,56 @@ a:hover {
   color: #5f2db5;
   font-weight: 600;
   margin-bottom: 0.45rem;
+}
+/* Admin Category page consistency */
+.admin-category-page .fw-semibold {
+  color: #2f2b45;
+}
+
+.admin-category-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.admin-category-table thead th {
+  background: #f2ecfb;
+  color: #4a3f6e;
+}
+
+.admin-category-table tbody tr.table-secondary > * {
+  --bs-table-bg: #f7f3ff;
+  --bs-table-color: #2f2b45;
+}
+
+.admin-category-table tbody td {
+  padding-top: 0.62rem;
+  padding-bottom: 0.62rem;
+  vertical-align: middle;
+}
+
+.admin-category-table tbody tr.admin-parent-row > * {
+  --bs-table-bg: #f7f3ff;
+  --bs-table-color: #2f2b45;
+  border-top: 1px solid #e6deef;
+}
+
+.admin-category-table tbody tr.admin-sub-row > * {
+  --bs-table-bg: #f7f3ff;
+  --bs-table-color: #2f2b45;
+  border-top: 1px solid #e6deef;
+}
+
+.btn-outline-danger {
+  --bs-btn-color: #a23d76;
+  --bs-btn-border-color: #d7a2c1;
+  --bs-btn-bg: #ffffff;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #b24f88;
+  --bs-btn-hover-border-color: #b24f88;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: #9a3f72;
+  --bs-btn-active-border-color: #9a3f72;
+  color: #a23d76 !important;
+  background: #ffffff !important;
+  border-color: #d7a2c1 !important;
 }

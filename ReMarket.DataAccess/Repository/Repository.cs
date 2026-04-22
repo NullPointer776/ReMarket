@@ -26,9 +26,25 @@ namespace ReMarket.DataAccess.Repository
             dbSet.Add(entity);
         }
 
-        T IRepository<T>.Get(Expression<Func<T, bool>> filter)
+        public T Get(Expression<Func<T, bool>> filter)
         {
             IQueryable<T> query = dbSet;
+            query = query.Where(filter);
+            return query.FirstOrDefault()!;
+        }
+
+        public T Get(Expression<Func<T, bool>> filter, string? includeProperties)
+        {
+            IQueryable<T> query = dbSet;
+
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+
             query = query.Where(filter);
             return query.FirstOrDefault()!;
         }

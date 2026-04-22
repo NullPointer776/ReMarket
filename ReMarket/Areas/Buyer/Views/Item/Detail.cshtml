@@ -1,42 +1,119 @@
-@model Item
+@model ReMarket.Models.ViewModel.ItemDetailViewModel
 @{
-    ViewData["Title"] = Model.Name;
+    ViewData["Title"] = Model.Item.Name;
 }
 
-<partial name="_Notification" />
+<div class="row g-4">
+    <div class="col-md-6">
+        @if (!string.IsNullOrEmpty(Model.Item.ImageUrl))
+        {
+            <img src="@Model.Item.ImageUrl" class="img-fluid rounded border" alt="@Model.Item.Name" />
+        }
+        else
+        {
+            <div class="bg-light border rounded d-flex align-items-center justify-content-center" style="min-height: 300px;">
+                <span class="text-muted">No image</span>
+            </div>
+        }
+    </div>
 
-<article>
-    <div class="row g-4">
-        <div class="col-md-6">
-            @if (!string.IsNullOrEmpty(Model.ImageUrl))
-            {
-                <img src="@Model.ImageUrl" class="img-fluid rounded border" alt="@Model.Name" />
-            }
-            else
-            {
-                <div class="bg-light border rounded d-flex align-items-center justify-content-center" style="min-height:280px">
-                    <span class="text-muted">No image</span>
-                </div>
-            }
+    <div class="col-md-6">
+        <h1 class="h2 mb-3">@Model.Item.Name</h1>
+
+        <div class="mb-3">
+            <span class="display-6 text-primary fw-bold">@Model.Item.Price.ToString("C")</span>
         </div>
-        <div class="col-md-6">
-            <h1 class="h3">@Model.Name</h1>
-            <p class="text-muted">@Model.Category?.Name · @Model.Condition · @Model.Location</p>
-            <p class="display-6">@Model.Price.ToString("C")</p>
-            <p class="small">In stock: @Model.Quantity</p>
-            <p>@Model.Description</p>
-            @if (Model.Quantity > 0)
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Item Details</h5>
+                <table class="table table-sm table-borderless mb-0">
+                    <tr>
+                        <th style="width: 120px;">Condition:</th>
+                        <td>@Model.Item.Condition</td>
+                    </tr>
+                    <tr>
+                        <th>Quantity:</th>
+                        <td>
+                            @if (Model.Item.Quantity > 0)
+                            {
+                                <span class="text-success">@Model.Item.Quantity in stock</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">Sold out</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Location:</th>
+                        <td>@(string.IsNullOrEmpty(Model.Item.Location) ? "N/A" : Model.Item.Location)</td>
+                    </tr>
+                    <tr>
+                        <th>Category:</th>
+                        <td>@(Model.Item.Category?.Name ?? "No category")</td>
+                    </tr>
+                    <tr>
+                        <th>Delivery Option:</th>
+                        <td>@Model.Item.DeliveryOption</td>
+                    </tr>
+                    <tr>
+                        <th>Posted:</th>
+                        <td>@Model.Item.DatePosted.ToString("MMMM dd, yyyy")</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Seller Information</h5>
+                <table class="table table-sm table-borderless mb-0">
+                    <tr>
+                        <th style="width: 120px;">Name:</th>
+                        <td>@Model.SellerName</td>
+                    </tr>
+                    <tr>
+                        <th>Email:</th>
+                        <td>@Model.SellerEmail</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Item.QrCodeUrl))
+        {
+            <div class="mb-3">
+                <a href="@Model.Item.QrCodeUrl" target="_blank" title="Click to view QR code" class="btn btn-outline-secondary">
+                    <i class="bi bi-qr-code me-1"></i>View QR Code
+                </a>
+            </div>
+        }
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Description</h5>
+                <p class="card-text">@(string.IsNullOrEmpty(Model.Item.Description) ? "No description provided." : Model.Item.Description)</p>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2">
+            @if (Model.Item.Quantity > 0 && Model.Item.Status == ItemStatus.Available)
             {
-                <a asp-action="Buy" asp-route-slug="@Model.Slug" class="btn btn-primary btn-lg">Buy</a>
+                <a asp-action="Buy" asp-route-slug="@Model.Item.Slug" class="btn btn-primary btn-lg">
+                    <i class="bi bi-cart-plus me-2"></i>Buy Now
+                </a>
             }
             else
             {
-                <button class="btn btn-secondary btn-lg" disabled>Sold out</button>
+                <button class="btn btn-secondary btn-lg" disabled>Sold Out</button>
             }
         </div>
     </div>
-</article>
+</div>
 
 <p class="mt-4">
-    <a asp-action="Index" class="btn btn-link">Back to list</a>
+    <a asp-action="Index" class="btn btn-link">
+        <i class="bi bi-arrow-left me-1"></i>Back to list
+    </a>
 </p>

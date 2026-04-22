@@ -12,6 +12,7 @@ namespace ReMarket.DataAccess.Repository.IRepository
         IEnumerable<T> GetAll();
         IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null);
         T Get(Expression<Func<T, bool>> filter);
+        T Get(Expression<Func<T, bool>> filter, string? includeProperties);
         void Add(T entity);
         void Update(T entity);
         void Remove(T entity);

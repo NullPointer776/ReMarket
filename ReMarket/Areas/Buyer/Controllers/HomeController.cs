@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ReMarket.DataAccess.Repository.IRepository;
 using ReMarket.Models;
+using ReMarket.Models.ViewModel;
 
 namespace ReMarket.Web.Areas.Buyer.Controllers
 {

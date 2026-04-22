@@ -3,7 +3,6 @@
     ViewData["Title"] = "My items";
 }
 
-<partial name="_Notification" />
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h3">My items</h1>
@@ -41,7 +40,7 @@ else
                         <td>
                             @if (!string.IsNullOrEmpty(item.QrCodeUrl))
                             {
-                                <a href="@item.QrCodeUrl" target="_blank">
+                                <a href="@item.QrCodeUrl" title="Click on the picture to enlarge it." target="_blank">
                                 <img src="@item.QrCodeUrl" alt="QR" width="64" height="64" class="border rounded" />
                                 </a>
                             }

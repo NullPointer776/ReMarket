@@ -1,4 +1,4 @@
-namespace ReMarket.Models
+namespace ReMarket.Models.ViewModel
 {
     public class ErrorViewModel
     {

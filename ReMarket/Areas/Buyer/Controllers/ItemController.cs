@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReMarket.DataAccess.Repository.IRepository;
 using ReMarket.Models;
+using ReMarket.Models.ViewModel;
 using ReMarket.Utility;
 
 namespace ReMarket.Web.Areas.Buyer.Controllers
@@ -16,15 +17,19 @@ namespace ReMarket.Web.Areas.Buyer.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index(string? search, int? categoryId)
+        public IActionResult Index(string? search, int? categoryId, string? condition, string? location, string? deliveryOption, string? sortBy, string? activeTab)
         {
             var items = _unitOfWork.Item
-                .GetAll(filter: i => i.Status == ItemStatus.Available, includeProperties: "Category")
+                .GetAll(filter: i => i.Status == ItemStatus.Available, includeProperties: "Category,Seller")
                 .AsEnumerable();
 
+            // Filtering by category
             if (categoryId.HasValue)
+            {
                 items = items.Where(i => i.CategoryId == categoryId.Value);
+            }
 
+            // search
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var q = search.Trim();
@@ -33,32 +38,73 @@ namespace ReMarket.Web.Areas.Buyer.Controllers
                     || (i.Description != null && i.Description.Contains(q, StringComparison.OrdinalIgnoreCase)));
             }
 
-            var list = items.OrderByDescending(i => i.DatePosted).ToList();
+            // Condition filter
+            if (!string.IsNullOrWhiteSpace(condition) && Enum.TryParse<Condition>(condition, out var conditionEnum))
+            {
+                items = items.Where(i => i.Condition == conditionEnum);
+            }
 
-            ViewBag.Search = search;
-            ViewBag.CategoryId = categoryId;
-            ViewBag.CategoryList = _unitOfWork.Category
-                .GetAll(filter: c => c.IsActive)
-                .OrderBy(c => c.Name)
-                .ToList();
+            // Location filter
+            if (!string.IsNullOrWhiteSpace(location))
+            {
+                items = items.Where(i => i.Location != null && i.Location.Contains(location, StringComparison.OrdinalIgnoreCase));
+            }
 
-            return View(list);
+            // Delivery Option Filter
+            if (!string.IsNullOrWhiteSpace(deliveryOption) && Enum.TryParse<DeliveryOption>(deliveryOption, out var deliveryEnum))
+            {
+                items = items.Where(i => i.DeliveryOption == deliveryEnum);
+            }
+
+            // Sorting
+            items = sortBy switch
+            {
+                "oldest" => items.OrderBy(i => i.DatePosted),
+                "price_high" => items.OrderByDescending(i => i.Price),
+                "price_low" => items.OrderBy(i => i.Price),
+                _ => items.OrderByDescending(i => i.DatePosted)  // Default newest
+            };
+
+            var viewModel = new ItemIndexViewModel
+            {
+                Items = items.ToList(),
+                Categories = _unitOfWork.Category
+                    .GetAll(filter: c => c.IsActive, includeProperties: "SubCategories")
+                    .OrderBy(c => c.Name)
+                    .ToList(),
+                Search = search,
+                CategoryId = categoryId,
+                Condition = condition,
+                Location = location,
+                DeliveryOption = deliveryOption,
+                SortBy = sortBy,
+                ActiveTab = activeTab ?? "category"
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult Detail(string slug)
         {
-            if (string.IsNullOrWhiteSpace(slug))
+            if (string.IsNullOrEmpty(slug))
                 return NotFound();
 
-            var item = _unitOfWork.Item
-                .GetAll(
-                    filter: i => i.Slug == slug && i.Status == ItemStatus.Available,
-                    includeProperties: "Category,Seller")
-                .FirstOrDefault();
+            var item = _unitOfWork.Item.Get(
+                filter: i => i.Slug == slug && i.Status == ItemStatus.Available,
+                includeProperties: "Category,Seller"
+            );
+
             if (item == null)
                 return NotFound();
 
-            return View(item);
+            var viewModel = new ItemDetailViewModel
+            {
+                Item = item,
+                SellerName = item.Seller?.UserName ?? "Unknown",
+                SellerEmail = item.Seller?.Email ?? "Not provided"
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult Buy(string slug)

@@ -21,7 +21,11 @@ namespace ReMarket.Models
         Fair,
         Poor
     }
-
+    public enum DeliveryOption
+    {
+        Shipping,
+        Pickup
+    }
     public class Item
     {
         public int Id { get; set; }
@@ -63,6 +67,8 @@ namespace ReMarket.Models
         public string? Location { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "Please select a category.")]
+        [DisplayName("Delivery Option")]
+        public DeliveryOption DeliveryOption { get; set; } = DeliveryOption.Pickup;
         [DisplayName("Category")]
         public int CategoryId { get; set; }
 
@@ -79,5 +85,6 @@ namespace ReMarket.Models
 
         [MaxLength(1000)]
         public string? RejectionReason { get; set; }
+        
     }
 }

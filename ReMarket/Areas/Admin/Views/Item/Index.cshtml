@@ -5,17 +5,8 @@
     int pending = ViewBag.PendingCount ?? 0;
 }
 
-<partial name="_Notification" />
-
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h3 mb-0">All items</h1>
-    <a asp-action="Pending" class="btn btn-warning btn-sm">
-        Review queue
-        @if (pending > 0)
-        {
-            <span class="badge bg-dark ms-1">@pending</span>
-        }
-    </a>
 </div>
 
 <form method="get" class="row g-2 mb-3 align-items-end">

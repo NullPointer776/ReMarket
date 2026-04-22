@@ -177,6 +177,11 @@ body {
   z-index: 1200;
   border: 1px solid #e2daef;
   box-shadow: 0 10px 24px rgba(67, 47, 107, 0.14);
+  /* Bootswatch Quartz 默认毛玻璃+透明底，覆盖为不透明白底 */
+  background-color: #ffffff !important;
+  background-image: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }
 
 /* Buyer item page: keep category dropdown above item cards */

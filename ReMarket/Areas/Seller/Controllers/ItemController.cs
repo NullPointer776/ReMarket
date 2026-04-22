@@ -58,6 +58,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             return View(new Item { Quantity = 1, Condition = Condition.Good });
         }
 
+        // Creates listing; saves 1–8 images to the gallery.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Item model, IFormFile[]? imageFiles)
@@ -119,6 +120,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             return View(item);
         }
 
+        // Updates fields on [Bind] list; can append more images.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Name,Description,Price,Quantity,Condition,DeliveryOption,Location,CategoryId")] Item model, IFormFile[]? additionalImageFiles)
@@ -246,6 +248,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             ViewBag.CategoryId = new SelectList(list, "Id", "Name");
         }
 
+        // Removes model keys that the form does not post.
         private void ClearNavigationModelState()
         {
             ModelState.Remove(nameof(Item.Seller));

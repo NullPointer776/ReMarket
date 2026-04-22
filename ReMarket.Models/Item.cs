@@ -76,7 +76,7 @@ namespace ReMarket.Models
 
         public string? ImageUrl { get; set; }
 
-        /// <summary>JSON array of image URLs for images 2–8 (the first is always <see cref="ImageUrl"/>).</summary>
+        // JSON list of image URLs after the first (ImageUrl is the first one).
         [MaxLength(8000)]
         public string? MoreImageUrlsJson { get; set; }
 

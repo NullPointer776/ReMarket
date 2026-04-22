@@ -71,6 +71,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // Shows reject form (reason required when posted).
         public IActionResult Reject(int? id)
         {
             if (id is null or 0) return NotFound();
@@ -93,6 +94,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
+                // ItemName is display-only.
                 model.ItemName = item.Name;
                 return View(model);
             }
@@ -151,6 +153,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
+                // Copy posted fields back so the user sees what they submitted.
                 item.Name = posted.Name;
                 item.Description = posted.Description;
                 item.Price = posted.Price;

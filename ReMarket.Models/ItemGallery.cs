@@ -5,6 +5,7 @@ using System.Text.Json;
 
 namespace ReMarket.Models
 {
+    // Combines cover image + extra URLs stored as JSON (max 8 total).
     public static class ItemGallery
     {
         public const int MaxImages = 8;

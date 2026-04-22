@@ -31,6 +31,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             return View(new Category { IsActive = true });
         }
 
+        // Ensures category name is unique under the same parent.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Category obj)
@@ -64,6 +65,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             return View(categoryFromDb);
         }
 
+        // Same duplicate-name check as Create, except for this category id.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public Task<IActionResult> Edit(int id, Category obj)

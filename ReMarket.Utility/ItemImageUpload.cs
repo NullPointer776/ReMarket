@@ -30,7 +30,7 @@ namespace ReMarket.Utility
             return null;
         }
 
-        /// <summary>Validates a batch of uploads: count and each file (max 8 by default).</summary>
+        // Validates number of files and each file (size, extension).
         public static string? ValidateImageFiles(IFormFile[]? files, bool requireAtLeastOne, int maxFiles = 8)
         {
             var list = files == null
@@ -51,8 +51,7 @@ namespace ReMarket.Utility
 
             return null;
         }
-
-        /// <param name="imageIndex">0 = primary <c>{slug}{ext}</c>, 1+ = <c>{slug}-2{ext}</c>, etc.</param>
+        
         public static async Task<string> SaveAsync(IWebHostEnvironment env, IFormFile file, string slugBase, int imageIndex = 0)
         {
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();

@@ -139,12 +139,8 @@ namespace ReMarket.Web.Areas.Seller.Controllers
                 existing.Condition = model.Condition;
                 existing.Location = model.Location;
                 existing.CategoryId = model.CategoryId;
-
-                if (existing.Status == ItemStatus.Rejected)
-                {
-                    existing.RejectionReason = null;
-                    existing.Status = ItemStatus.Pending;
-                }
+                existing.Status = ItemStatus.Pending;
+                existing.RejectionReason = null;
 
                 if (imageFile is { Length: > 0 })
                     existing.ImageUrl = await ItemImageUpload.SaveAsync(_env, imageFile, existing.Slug);
@@ -153,7 +149,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
                 _unitOfWork.Item.Update(existing);
                 _unitOfWork.Save();
 
-                TempData["success"] = "Item updated.";
+                TempData["success"] = "Item updated and is pending admin review.";
                 return RedirectToAction(nameof(Index));
             }
 

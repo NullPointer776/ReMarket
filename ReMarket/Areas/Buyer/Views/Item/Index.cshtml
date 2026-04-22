@@ -4,7 +4,7 @@
 }
 
 <h1 class="h3 mb-3">Items for sale</h1>
-
+@*Search bar*@
 <form method="get" class="mb-3">
     <div class="input-group">
         <input type="search" name="search" value="@Model.Search" class="form-control" placeholder="Search by name or description..." />
@@ -14,7 +14,7 @@
         </button>
     </div>
 </form>
-
+@*Category and Filters swith Tabs*@
 <ul class="nav nav-tabs mb-3" id="filterTabs" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link @(Model.ActiveTab == "category" ? "active" : "")" id="category-tab" data-bs-toggle="tab" data-bs-target="#category" type="button" role="tab">Categories</button>
@@ -23,7 +23,7 @@
         <button class="nav-link @(Model.ActiveTab == "filter" ? "active" : "")" id="filter-tab" data-bs-toggle="tab" data-bs-target="#filter" type="button" role="tab">Filters & Sort</button>
     </li>
 </ul>
-
+@*Categroy bar*@
 <div class="tab-content mb-4">
 
     <div class="tab-pane fade @(Model.ActiveTab == "category" ? "show active" : "")" id="category" role="tabpanel">
@@ -33,6 +33,7 @@
                     <a asp-action="Index" asp-route-search="@Model.Search" asp-route-activeTab="category" class="btn btn-outline-secondary">
                         All Categories
                     </a>
+                    @*All root catrgories*@
                     @foreach (var parent in Model.Categories.Where(c => c.ParentCategoryId == null && c.IsActive))
                     {
                         <div class="dropdown">
@@ -72,7 +73,7 @@
             </div>
         </div>
     </div>
-
+@*Filter and sort bar*@
     <div class="tab-pane fade @(Model.ActiveTab == "filter" ? "show active" : "")" id="filter" role="tabpanel">
         <div class="card">
             <div class="card-body">
@@ -111,8 +112,8 @@
                     <div class="col-md-3">
                         <label class="form-label">Sort By</label>
                         <select name="sortBy" class="form-select">
-                            <option value="">Newest First</option>
-                            <option value="oldest" selected="@(Model.SortBy == "oldest")">Oldest First</option>
+                            <option value="">Posted Date: Newest First</option>
+                            <option value="oldest" selected="@(Model.SortBy == "oldest")">Posted Date: Oldest First</option>
                             <option value="price_high" selected="@(Model.SortBy == "price_high")">Price: High to Low</option>
                             <option value="price_low" selected="@(Model.SortBy == "price_low")">Price: Low to High</option>
                         </select>
@@ -127,7 +128,7 @@
         </div>
     </div>
 </div>
-
+@*Item contents*@
 @if (!Model.Items.Any())
 {
     <p class="text-muted">No items match your filters.</p>

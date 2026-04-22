@@ -28,19 +28,16 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1 align-items-sm-center gap-sm-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Buyer" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Category" asp-action="Index">Categories</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
+                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Item" asp-action="Index">Audit Items</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Item" asp-action="Index">Audit Item</a>
+                            <a class="nav-link text-dark" asp-area="Buyer" asp-controller="Item" asp-action="Index">Buy Items</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Buyer" asp-controller="Item" asp-action="Index">Buy items</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Seller" asp-controller="Item" asp-action="Index">Upload items</a>
+                            <a class="nav-link text-dark" asp-area="Seller" asp-controller="Item" asp-action="Index">Listing Items</a>
                         </li>
                         <form method="get" asp-area="Buyer" asp-controller="Item" asp-action="Index" class="d-flex ms-sm-2 app-search-form">
                             <div class="input-group input-group-sm">

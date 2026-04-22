@@ -3,57 +3,65 @@
     ViewData["Title"] = "List an item";
 }
 
+<h1 class="h3 mb-3">List an item for sale</h1>
 
-<h1 class="h3 mb-3">List an item</h1>
-<p class="text-muted small">Choose a file from your gallery or use your device camera (the browser may ask for permission).</p>
-
-<form asp-action="Create" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+<form asp-action="Create" method="post" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
     <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="mb-3">
         <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" required />
+        <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
+
     <div class="mb-3">
         <label asp-for="Description" class="form-label"></label>
         <textarea asp-for="Description" class="form-control" rows="4"></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
+
     <div class="row">
         <div class="col-md-6 mb-3">
             <label asp-for="Price" class="form-label"></label>
-            <input asp-for="Price" class="form-control" type="number" step="0.01" min="0.01" required />
+            <input asp-for="Price" class="form-control" type="number" step="0.01" min="0.01" />
             <span asp-validation-for="Price" class="text-danger"></span>
         </div>
         <div class="col-md-6 mb-3">
             <label asp-for="Quantity" class="form-label"></label>
-            <input asp-for="Quantity" class="form-control" type="number" min="1" required />
+            <input asp-for="Quantity" class="form-control" type="number" min="1" />
             <span asp-validation-for="Quantity" class="text-danger"></span>
         </div>
     </div>
+
     <div class="mb-3">
         <label asp-for="Condition" class="form-label"></label>
         <select asp-for="Condition" asp-items="Html.GetEnumSelectList<Condition>()" class="form-select"></select>
     </div>
+
+    <div class="mb-3">
+        <label asp-for="DeliveryOption" class="form-label"></label>
+        <select asp-for="DeliveryOption" asp-items="Html.GetEnumSelectList<DeliveryOption>()" class="form-select"></select>
+    </div>
+
     <div class="mb-3">
         <label asp-for="Location" class="form-label"></label>
         <input asp-for="Location" class="form-control" />
         <span asp-validation-for="Location" class="text-danger"></span>
     </div>
+
     <div class="mb-3">
         <label asp-for="CategoryId" class="form-label">Category</label>
-        <select asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-select" required>
+        <select asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-select">
             <option value="">Select a category</option>
         </select>
         <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
+
     <div class="mb-3">
         <label class="form-label" for="imageFileInput">Item image</label>
-        <input id="imageFileInput" name="imageFile" type="file" class="form-control" accept="image/jpeg,image/png,image/gif,image/webp,.jpg,.jpeg,.png,.gif,.webp" capture="environment" required />
-        <span class="text-danger d-block">@Html.ValidationMessage("imageFile")</span>
-        <div class="form-text">jpg / png / gif / webp, max 5 MB. Saved under wwwroot/images/items.</div>
+        <input id="imageFileInput" name="imageFile" type="file" class="form-control" accept="image/*" />
+        <div class="form-text">jpg / png / gif / webp, max 5 MB</div>
         <div class="mt-2">
             <img id="imagePreview" src="" alt="Preview" class="img-thumbnail d-none" style="max-height:220px" />
         </div>
@@ -66,16 +74,17 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        document.getElementById('imageFileInput')?.addEventListener('change', function (e) {
-            const f = e.target.files && e.target.files[0];
-            const prev = document.getElementById('imagePreview');
-            if (!f || !prev) return;
-            const r = new FileReader();
-            r.onload = function (ev) {
-                prev.src = ev.target.result;
-                prev.classList.remove('d-none');
+        document.getElementById('imageFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('imagePreview');
+            if (!file || !preview) return;
+
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                preview.src = ev.target.result;
+                preview.classList.remove('d-none');
             };
-            r.readAsDataURL(f);
+            reader.readAsDataURL(file);
         });
     </script>
 }

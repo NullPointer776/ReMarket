@@ -25,11 +25,8 @@ namespace ReMarket
                 options.Limits.MaxRequestBodySize = 10 * 1024 * 1024;
             });
 
-            // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services
@@ -44,11 +41,11 @@ namespace ReMarket
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            builder.Services.ConfigureApplicationCookie(options =>
+            /*builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Identity/Account/Login";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-            });
+            });*/
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
@@ -56,11 +53,7 @@ namespace ReMarket
 
             var app = builder.Build();
 
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseMigrationsEndPoint();
-            }
-            else
+            if (!app.Environment.IsDevelopment())          
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
@@ -86,7 +79,7 @@ namespace ReMarket
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{area=Buyer}/{controller=Home}/{action=Index}/{id?}");
+                pattern: "{area=Buyer}/{controller=Item}/{action=Index}/{id?}");
             app.MapRazorPages();
 
             using (var scope = app.Services.CreateScope())

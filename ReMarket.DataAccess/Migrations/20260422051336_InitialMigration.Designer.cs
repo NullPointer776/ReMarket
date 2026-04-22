@@ -12,8 +12,8 @@ using ReMarket.Data;
 namespace ReMarket.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260419004145_addSeedDataMigration")]
-    partial class addSeedDataMigration
+    [Migration("20260422051336_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,12 +105,10 @@ namespace ReMarket.DataAccess.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -147,12 +145,10 @@ namespace ReMarket.DataAccess.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -267,6 +263,11 @@ namespace ReMarket.DataAccess.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -276,11 +277,16 @@ namespace ReMarket.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Slug")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ParentCategoryId");
+
+                    b.HasIndex("Slug")
+                        .IsUnique()
+                        .HasFilter("[Slug] IS NOT NULL");
 
                     b.ToTable("Categories");
 
@@ -289,19 +295,43 @@ namespace ReMarket.DataAccess.Migrations
                         {
                             Id = 1,
                             Description = "Gadgets and devices",
-                            Name = "Electronics"
+                            IsActive = true,
+                            Name = "Electronics",
+                            Slug = "electronics"
                         },
                         new
                         {
                             Id = 2,
                             Description = "Home and office furniture",
-                            Name = "Furniture"
+                            IsActive = true,
+                            Name = "Furniture",
+                            Slug = "furniture"
                         },
                         new
                         {
                             Id = 3,
                             Description = "Apparel and accessories",
-                            Name = "Clothing"
+                            IsActive = true,
+                            Name = "Clothing",
+                            Slug = "clothing"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Smartphones and accessories",
+                            IsActive = true,
+                            Name = "Mobile Phones",
+                            ParentCategoryId = 1,
+                            Slug = "mobile-phones"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Notebooks and accessories",
+                            IsActive = true,
+                            Name = "Laptops",
+                            ParentCategoryId = 1,
+                            Slug = "laptops"
                         });
                 });
 
@@ -316,21 +346,29 @@ namespace ReMarket.DataAccess.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Condition")
-                        .HasColumnType("int");
+                    b.Property<string>("Condition")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("DatePosted")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DeliveryOption")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("Description")
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("ImageUrl")
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
                     b.Property<string>("Location")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -356,16 +394,16 @@ namespace ReMarket.DataAccess.Migrations
 
                     b.Property<string>("SellerId")
                         .IsRequired()
-                        .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Slug")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
@@ -374,7 +412,8 @@ namespace ReMarket.DataAccess.Migrations
                     b.HasIndex("SellerId");
 
                     b.HasIndex("Slug")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Slug] IS NOT NULL");
 
                     b.ToTable("Items");
                 });

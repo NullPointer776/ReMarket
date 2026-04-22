@@ -19,7 +19,7 @@ namespace ReMarket.DataAccess.Data
             var db = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
             // Create roles
-            /*if (!await roleManager.RoleExistsAsync("Admin"))
+            if (!await roleManager.RoleExistsAsync("Admin"))
                 await roleManager.CreateAsync(new IdentityRole("Admin"));
             if (!await roleManager.RoleExistsAsync("Customer"))
                 await roleManager.CreateAsync(new IdentityRole("Customer"));
@@ -37,7 +37,7 @@ namespace ReMarket.DataAccess.Data
                 };
                 await userManager.CreateAsync(admin, "Admin@123");
                 await userManager.AddToRoleAsync(admin, "Admin");
-            }*/
+            }
 
             // Create Customer user
             if (await userManager.FindByEmailAsync("customer@remarket.com") == null)
@@ -52,12 +52,50 @@ namespace ReMarket.DataAccess.Data
                 };
                 await userManager.CreateAsync(customer, "Customer@123");
                 await userManager.AddToRoleAsync(customer, "Customer");
-
                 await db.Items.AddRangeAsync(
-               new Item { Name = "iPhone 12", Slug = "iphone-12", Description = "A used iPhone 12 in good condition.", Price = 499.99m, Condition = Condition.Good, Status = ItemStatus.Pending, CategoryId = 1, SellerId = customer.Id },
-               new Item { Name = "Office Chair", Slug = "office-chair", Description = "Ergonomic office chair with adjustable height.", Price = 149.99m, Condition = Condition.Good, Status = ItemStatus.Available, CategoryId = 2, SellerId = customer.Id },
-               new Item { Name = "Leather Jacket", Slug = "leather-jacket", Description = "Stylish leather jacket, barely worn.", Price = 199.99m, Condition = Condition.Good, Status = ItemStatus.Rejected, CategoryId = 3, SellerId = customer.Id }
+                    new Item
+                    {
+                        Name = "iPhone 12",
+                        Slug = "iphone-12",
+                        Description = "A used iPhone 12 in good condition.",
+                        Price = 499.99m,
+                        DeliveryOption = DeliveryOption.Pickup,
+                        Condition = Condition.Good,
+                        Status = ItemStatus.Pending,
+                        CategoryId = 1,
+                        SellerId = customer.Id,
+                        Location = "Auckland CBD"     
+                      },
+                    new Item
+                    {
+                        Name = "Office Chair",
+                        Slug = "office-chair",
+                        Description = "Ergonomic office chair with adjustable height.",
+                        Price = 149.99m,
+                        DeliveryOption = DeliveryOption.Shipping,
+                        Condition = Condition.New,
+                        Status = ItemStatus.Available,
+                        CategoryId = 2,
+                        SellerId = customer.Id,
+                        Location = "Wellington",
+                        Quantity = 2
+                    },
+                    new Item
+                    {
+                        Name = "Leather Jacket",
+                        Slug = "leather-jacket",
+                        Description = "Stylish leather jacket, barely worn.",
+                        Price = 199.99m,
+                        DeliveryOption = DeliveryOption.ShippingAndPickup,
+                        Condition = Condition.Good,
+                        Status = ItemStatus.Rejected,
+                        CategoryId = 3,
+                        SellerId = customer.Id,
+                        Location = "Wellington",
+                        Quantity = 1
+                      }
                 );
+
 
                 await db.SaveChangesAsync();
             }

@@ -17,7 +17,6 @@ namespace ReMarket.Models.ViewModel
         public string? Condition { get; set; }
         public string? Location { get; set; }
         public string? DeliveryOption { get; set; }
-        // "newest", "oldest", "price_high", "price_low"
         public string? SortBy { get; set; }  
         public string? ActiveTab { get; set; }
     }

@@ -179,11 +179,29 @@ body {
   box-shadow: 0 10px 24px rgba(67, 47, 107, 0.14);
 }
 
+/* Buyer item page: keep category dropdown above item cards */
+#category,
+#category .card,
+#category .card-body,
+#category .dropdown {
+  position: relative;
+}
+
+#category .dropdown-menu.show {
+  z-index: 3000 !important;
+}
+
 .tab-content,
 .tab-pane,
 .card,
 .card-body {
   overflow: visible;
+}
+
+/* 下方商品卡片与 tab-content 为兄弟节点，后渲染会盖住分类下拉；提升整块标签内容区域的堆叠顺序 */
+.tab-content {
+  position: relative;
+  z-index: 2;
 }
 
 .table {

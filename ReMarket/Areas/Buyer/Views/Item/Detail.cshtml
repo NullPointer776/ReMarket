@@ -20,14 +20,25 @@
             }
             else
             {
-                @foreach (var url in Model.ImageUrls)
+                @for (var i = 0; i < Model.ImageUrls.Count; i++)
                 {
-                    <div class="col-6 col-lg-3">
+                    var url = Model.ImageUrls[i];
+                    <div class="col-6 col-lg-3 position-relative">
                         <div class="ratio ratio-1x1 border rounded overflow-hidden bg-light position-relative">
-                            <a href="@url" title="Open image" target="_blank" class="d-block w-100 h-100 position-absolute top-0 start-0">
+                            <a href="@url" title="Open image" target="_blank" class="d-block w-100 h-100 position-absolute top-0 start-0" style="z-index: 1;">
                                 <img src="@url" class="w-100 h-100" alt="@Model.Item.Name" style="object-fit: cover;" />
                             </a>
                         </div>
+                        @if (Model.IsListingOwner && Model.ImageUrls.Count > 1)
+                        {
+                            <form asp-area="Seller" asp-controller="Item" asp-action="DeleteImage" method="post" class="position-absolute" style="top: 0.25rem; right: 0.25rem; z-index: 2;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@Model.Item.Id" />
+                                <input type="hidden" name="imageIndex" value="@i" />
+                                <input type="hidden" name="returnSlug" value="@Model.Item.Slug" />
+                                <button type="submit" class="btn btn-sm btn-danger shadow-sm" title="Remove this photo" aria-label="Remove this photo">×</button>
+                            </form>
+                        }
                     </div>
                 }
             }

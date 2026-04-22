@@ -51,7 +51,20 @@ namespace ReMarket.Utility
 
             return null;
         }
-        
+
+        // Deletes a file under wwwroot/images/items/ only (safety: path must stay inside that folder).
+        public static void TryDeleteItemImageFile(IWebHostEnvironment env, string? publicUrl)
+        {
+            if (string.IsNullOrEmpty(publicUrl)) return;
+            var normalized = publicUrl.Replace('\\', '/');
+            if (!normalized.StartsWith("/images/items/", StringComparison.OrdinalIgnoreCase)) return;
+            var relative = string.Join(Path.DirectorySeparatorChar, normalized.TrimStart('/').Split('/'));
+            var fullPath = Path.GetFullPath(Path.Combine(env.WebRootPath, relative));
+            var itemsRoot = Path.GetFullPath(Path.Combine(env.WebRootPath, "images", "items"));
+            if (!fullPath.StartsWith(itemsRoot, StringComparison.OrdinalIgnoreCase) || !File.Exists(fullPath)) return;
+            try { File.Delete(fullPath); } catch { /* ignore I/O */ }
+        }
+
         public static async Task<string> SaveAsync(IWebHostEnvironment env, IFormFile file, string slugBase, int imageIndex = 0)
         {
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();

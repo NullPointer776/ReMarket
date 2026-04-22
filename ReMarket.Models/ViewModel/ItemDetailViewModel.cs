@@ -14,6 +14,7 @@ namespace ReMarket.Models.ViewModel
         public string SellerName { get; set; } = string.Empty;
         public string SellerEmail { get; set; } = string.Empty;
         public IReadOnlyList<string> ImageUrls { get; set; } = System.Array.Empty<string>();
+        public bool IsListingOwner { get; set; }
         public bool CanAddMoreImages { get; set; }
         public string? AddMoreImagesUrl { get; set; }
     }

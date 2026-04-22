@@ -99,9 +99,8 @@ namespace ReMarket.Web.Areas.Buyer.Controllers
 
             var imageUrls = ItemGallery.GetAllImageUrls(item);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var canAddMore = userId != null
-                && userId == item.SellerId
-                && imageUrls.Count < ItemGallery.MaxImages;
+            var isOwner = userId != null && userId == item.SellerId;
+            var canAddMore = isOwner && imageUrls.Count < ItemGallery.MaxImages;
 
             var viewModel = new ItemDetailViewModel
             {
@@ -109,6 +108,7 @@ namespace ReMarket.Web.Areas.Buyer.Controllers
                 SellerName = item.Seller?.UserName ?? "Unknown",
                 SellerEmail = item.Seller?.Email ?? "Not provided",
                 ImageUrls = imageUrls,
+                IsListingOwner = isOwner,
                 CanAddMoreImages = canAddMore,
                 AddMoreImagesUrl = canAddMore
                     ? Url.Action("Edit", "Item", new { area = "Seller", id = item.Id }) + "#add-images"

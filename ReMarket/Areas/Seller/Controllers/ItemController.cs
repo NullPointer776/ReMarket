@@ -214,6 +214,40 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             return View(item);
         }
 
+        // Removes one image from the gallery; at least one image must remain. Redirects back to public item detail.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteImage(int id, int imageIndex, string? returnSlug)
+        {
+            var uid = UserId;
+            if (uid == null)
+                return Challenge();
+
+            var item = GetOwnedItem(id, uid);
+            if (item == null)
+                return NotFound();
+
+            var urls = ItemGallery.GetAllImageUrls(item).ToList();
+            if (imageIndex < 0 || imageIndex >= urls.Count)
+                return NotFound();
+
+            if (urls.Count <= 1)
+            {
+                TempData["error"] = "Add another image before removing the only one.";
+                return RedirectToDetail(returnSlug, item);
+            }
+
+            var removed = urls[imageIndex];
+            urls.RemoveAt(imageIndex);
+            ItemImageUpload.TryDeleteItemImageFile(_env, removed);
+            ItemGallery.SetGalleryFromUrls(item, urls);
+            _unitOfWork.Item.Update(item);
+            _unitOfWork.Save();
+
+            TempData["success"] = "Image removed.";
+            return RedirectToDetail(returnSlug, item);
+        }
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
@@ -240,6 +274,14 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             if (item == null || item.SellerId != uid)
                 return null;
             return item;
+        }
+
+        private IActionResult RedirectToDetail(string? returnSlug, Item item)
+        {
+            var slug = !string.IsNullOrWhiteSpace(returnSlug) ? returnSlug : item.Slug;
+            if (string.IsNullOrEmpty(slug))
+                return RedirectToAction(nameof(Index));
+            return RedirectToAction("Detail", "Item", new { area = "Buyer", slug });
         }
 
         private void LoadCategories()

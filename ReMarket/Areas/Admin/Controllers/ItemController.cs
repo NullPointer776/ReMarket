@@ -44,14 +44,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
 
             return View(items.OrderByDescending(i => i.DatePosted).ToList());
         }
-        public IActionResult Pending()
-        {
-            var pending = _unitOfWork.Item
-                .GetAll(filter: i => i.Status == ItemStatus.Pending, includeProperties: "Category,Seller")
-                .OrderBy(i => i.DatePosted)
-                .ToList();
-            return View(pending);
-        }
+
         public IActionResult Details(int? id)
         {
             if (id is null or 0) return NotFound();
@@ -74,7 +67,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             _unitOfWork.Item.Update(item);
             _unitOfWork.Save();
             TempData["success"] = "Item approved.";
-            return RedirectToAction(nameof(Pending));
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Reject(int? id)
@@ -104,7 +97,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             _unitOfWork.Item.Update(item);
             _unitOfWork.Save();
             TempData["success"] = "Item rejected.";
-            return RedirectToAction(nameof(Pending));
+            return RedirectToAction(nameof(Index));
         }
         public IActionResult Edit(int? id)
         {
@@ -120,7 +113,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,Quantity,Condition,Location,CategoryId,Status")] Item posted, IFormFile? imageFile)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,Quantity,Condition,DeliveryOption,Location,CategoryId,Status")] Item posted, IFormFile? imageFile)
         {
             var item = _unitOfWork.Item.Get(i => i.Id == id);
             if (item == null) return NotFound();
@@ -147,6 +140,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             item.Price = posted.Price;
             item.Quantity = posted.Quantity;
             item.Condition = posted.Condition;
+            item.DeliveryOption = posted.DeliveryOption;
             item.Location = posted.Location;
             item.CategoryId = posted.CategoryId;
             item.Status = posted.Status;
@@ -184,7 +178,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             TempData["success"] = "Item deleted.";
             return RedirectToAction(nameof(Index));
         }
-
+        //Get all categories 
         private void LoadCategories(int? selected)
         {
             var list = _unitOfWork.Category.GetAll().OrderBy(c => c.Name).ToList();

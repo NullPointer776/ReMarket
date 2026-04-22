@@ -16,15 +16,17 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom shadow-sm mb-3 app-navbar">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="Buyer" asp-controller="Home" asp-action="Index">ReMarket</a>
+                <a class="navbar-brand fw-semibold" asp-area="Buyer" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-shop me-1"></i>ReMarket
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1 align-items-sm-center gap-sm-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Buyer" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
@@ -40,8 +42,8 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Seller" asp-controller="Item" asp-action="Index">Upload items</a>
                         </li>
-                        <form method="get" asp-area="Buyer" asp-controller="Item" asp-action="Index" class="d-flex">
-                            <div class="input-group">
+                        <form method="get" asp-area="Buyer" asp-controller="Item" asp-action="Index" class="d-flex ms-sm-2 app-search-form">
+                            <div class="input-group input-group-sm">
                                 <input class="form-control border-primary" type="search" name="search" placeholder="Search all items" aria-label="Search">
                                 <button class="btn btn-primary" type="submit"> 
                                     <i class="bi bi-search"></i>
@@ -54,14 +56,14 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container page-shell">
         <main role="main" class="pb-3">
             <partial name="_Notification" />
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted app-footer">
         <div class="text-center">
             &copy; 2026 - ReMarket  <i class="bi bi-shop"></i>
         </div>

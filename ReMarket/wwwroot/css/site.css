@@ -1,5 +1,7 @@
 html {
   font-size: 14px;
+  position: relative;
+  min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -8,15 +10,202 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
+  margin: 0;
   margin-bottom: 60px;
+  background: linear-gradient(180deg, #f7f6fb 0%, #f2f0f8 100%);
+  color: #2f2b45;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem #fff, 0 0 0 0.2rem rgba(178, 97, 255, 0.35);
+}
+
+.app-navbar {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(8px);
+  border-bottom-color: #ece8f4 !important;
+}
+
+.navbar-brand {
+  letter-spacing: 0.2px;
+  color: #352f52 !important;
+}
+
+.navbar .nav-link {
+  border-radius: 999px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  color: #4a4560 !important;
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
+}
+
+.navbar .nav-link:hover {
+  background-color: #eee9fb;
+  color: #4f2da6 !important;
+}
+
+.app-search-form {
+  min-width: 260px;
+}
+
+.app-search-form .form-control {
+  background: #ffffff;
+  border-color: #d9d2ea;
+  color: #2f2b45;
+}
+
+.app-search-form .form-control::placeholder {
+  color: #9b95b1;
+}
+
+.app-search-form .btn {
+  border-color: #d9d2ea;
+}
+
+.page-shell {
+  background: #ffffff;
+  border: 1px solid #ebe6f3;
+  border-radius: 16px;
+  box-shadow: 0 14px 30px rgba(65, 42, 99, 0.08);
+  padding: 1rem 1rem 0.5rem;
+}
+
+.app-footer {
+  background: transparent;
+  border-top-color: #e6deef !important;
+  color: #8b84a3 !important;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #b14dff 0%, #ff4da2 100%);
+  border-color: transparent;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #9e3df2 0%, #f33a94 100%);
+  border-color: transparent;
+}
+
+.btn-outline-primary {
+  color: #7a40d8;
+  border-color: #c9b8ef;
+}
+
+.btn-outline-primary:hover {
+  background: #efe8ff;
+  color: #5f2db5;
+  border-color: #c9b8ef;
+}
+
+.card,
+.alert,
+.modal-content {
+  border-radius: 14px;
+  border: 1px solid #ece7f4;
+  box-shadow: 0 8px 20px rgba(67, 47, 107, 0.06);
+}
+
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-border-color: #ece7f4;
+}
+
+.table thead th {
+  font-weight: 600;
+  color: #554b77;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+  --bs-table-accent-bg: rgba(181, 151, 244, 0.08);
+}
+
+.form-control,
+.form-select {
+  border-color: #d9d2ea;
+  color: #2f2b45;
+}
+
+.form-control::placeholder {
+  color: #9b95b1;
+}
+
+.text-muted {
+  color: #8f88a8 !important;
+}
+
+a {
+  color: #6e37cb;
+}
+
+a:hover {
+  color: #4f2da6;
+}
+
+/* Home hero + highlight cards */
+.hero-card {
+  border-radius: 18px;
+  border: 1px solid #e9e3f3;
+  padding: 2rem;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.82)),
+    radial-gradient(circle at 80% 20%, rgba(167, 139, 250, 0.35), transparent 35%),
+    radial-gradient(circle at 70% 80%, rgba(244, 114, 182, 0.28), transparent 32%),
+    #f7f4ff;
+  box-shadow: 0 14px 30px rgba(67, 47, 107, 0.12);
+}
+
+.hero-chip {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6a35be;
+  background: #efe8ff;
+  border: 1px solid #daccf6;
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+}
+
+.hero-title {
+  font-weight: 700;
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+  line-height: 1.15;
+  color: #2f2350;
+}
+
+.hero-subtitle {
+  color: #6c618f;
+  max-width: 38rem;
+}
+
+.highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 992px) {
+  .highlight-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.highlight-card {
+  background: #fff;
+  border: 1px solid #ece7f4;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.highlight-title {
+  color: #5f2db5;
+  font-weight: 600;
+  margin-bottom: 0.45rem;
 }

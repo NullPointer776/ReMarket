@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ReMarket.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class addSeedDataMigration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -67,7 +67,8 @@ namespace ReMarket.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    Slug = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Slug = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     ParentCategoryId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -127,8 +128,8 @@ namespace ReMarket.DataAccess.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -172,8 +173,8 @@ namespace ReMarket.DataAccess.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -194,19 +195,20 @@ namespace ReMarket.DataAccess.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Slug = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
                     DatePosted = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    Condition = table.Column<int>(type: "int", nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    SellerId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    RejectionReason = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Condition = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    DeliveryOption = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
                     QrCodeUrl = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
-                    RejectionReason = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    SellerId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -227,12 +229,14 @@ namespace ReMarket.DataAccess.Migrations
 
             migrationBuilder.InsertData(
                 table: "Categories",
-                columns: new[] { "Id", "Description", "Name", "ParentCategoryId", "Slug" },
+                columns: new[] { "Id", "Description", "IsActive", "Name", "ParentCategoryId", "Slug" },
                 values: new object[,]
                 {
-                    { 1, "Gadgets and devices", "Electronics", null, null },
-                    { 2, "Home and office furniture", "Furniture", null, null },
-                    { 3, "Apparel and accessories", "Clothing", null, null }
+                    { 1, "Gadgets and devices", true, "Electronics", null, "electronics" },
+                    { 2, "Home and office furniture", true, "Furniture", null, "furniture" },
+                    { 3, "Apparel and accessories", true, "Clothing", null, "clothing" },
+                    { 4, "Smartphones and accessories", true, "Mobile Phones", 1, "mobile-phones" },
+                    { 5, "Notebooks and accessories", true, "Laptops", 1, "laptops" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -280,6 +284,13 @@ namespace ReMarket.DataAccess.Migrations
                 column: "ParentCategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Categories_Slug",
+                table: "Categories",
+                column: "Slug",
+                unique: true,
+                filter: "[Slug] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Items_CategoryId",
                 table: "Items",
                 column: "CategoryId");
@@ -293,7 +304,8 @@ namespace ReMarket.DataAccess.Migrations
                 name: "IX_Items_Slug",
                 table: "Items",
                 column: "Slug",
-                unique: true);
+                unique: true,
+                filter: "[Slug] IS NOT NULL");
         }
 
         /// <inheritdoc />

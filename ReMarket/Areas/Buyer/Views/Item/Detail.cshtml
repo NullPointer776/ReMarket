@@ -7,7 +7,9 @@
     <div class="col-md-6">
         @if (!string.IsNullOrEmpty(Model.Item.ImageUrl))
         {
+            <a href="@Model.Item.ImageUrl" title="Click on the picture to enlarge it." target="_blank">
             <img src="@Model.Item.ImageUrl" class="img-fluid rounded border" alt="@Model.Item.Name" />
+            </a>
         }
         else
         {

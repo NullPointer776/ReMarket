@@ -36,6 +36,10 @@
         <select asp-for="Condition" asp-items="Html.GetEnumSelectList<Condition>()" class="form-select"></select>
     </div>
     <div class="mb-3">
+        <label asp-for="DeliveryOption" class="form-label"></label>
+        <select asp-for="DeliveryOption" asp-items="Html.GetEnumSelectList<DeliveryOption>()" class="form-select"></select>
+    </div>
+    <div class="mb-3">
         <label asp-for="Location" class="form-label"></label>
         <input asp-for="Location" class="form-control" />
     </div>

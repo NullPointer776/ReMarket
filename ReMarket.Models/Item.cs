@@ -7,10 +7,10 @@ namespace ReMarket.Models
 {
     public enum ItemStatus
     {
-        Available = 0,
-        SoldOut = 1,
-        Pending = 2,
-        Rejected = 3
+        Available,
+        SoldOut,
+        Pending,
+        Rejected    
     }
 
     public enum Condition
@@ -24,67 +24,70 @@ namespace ReMarket.Models
     public enum DeliveryOption
     {
         Shipping,
-        Pickup
+        Pickup,
+        ShippingAndPickup
     }
     public class Item
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
         [MaxLength(200)]
-        [DisplayName("Name")]
-        public string Name { get; set; } = null!;
+        [DisplayName("Item Name")]
+        public string Name { get; set; } = string.Empty;   
+
+        [MaxLength(1000)]
+        [DisplayName("Item Description")]
+        [DataType(DataType.MultilineText)]
+        public string? Description { get; set; } 
+
+        [DisplayName("URL Slug")]
+        public string? Slug { get; set; }
 
         [Required]
-        [MaxLength(200)]
-        public string Slug { get; set; } = null!;
-
-        [MaxLength(4000)]
-        [DisplayName("Description")]
-        public string? Description { get; set; }
-
-        [Column(TypeName = "decimal(18,2)")]
         [DisplayName("Price")]
-        [Range(typeof(decimal), "0.01", "999999999", ErrorMessage = "Price must be between 0.01 and 999999999.")]
+        [Range(0.01, 999999999, ErrorMessage = "Price must be between 0.01 and 999999999.")]
         public decimal Price { get; set; }
 
-        [Range(0, int.MaxValue)]
-        [DisplayName("Quantity")]
+        [Range(1, 999999999, ErrorMessage = "Please enter a quantity between 1 and 999999999.")]
+        [DisplayName("Quantity number of the item")]
         public int Quantity { get; set; } = 1;
-
-        [MaxLength(2000)]
-        public string? ImageUrl { get; set; }
 
         public DateTime DatePosted { get; set; } = DateTime.UtcNow;
 
+        [DisplayName("Item auditing Status")]
         public ItemStatus Status { get; set; } = ItemStatus.Pending;
 
-        [DisplayName("Condition")]
-        public Condition Condition { get; set; }
-
         [MaxLength(500)]
-        [DisplayName("Location")]
-        public string? Location { get; set; }
+        public string? RejectionReason { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Please select a category.")]
+        [DisplayName("Condition")]
+        public Condition Condition { get; set; } = Condition.Good;
+
+        [Required]
+        [MaxLength(500)]
+        [DisplayName("Item current Location")]
+        public string Location { get; set; } = string.Empty;
+
         [DisplayName("Delivery Option")]
         public DeliveryOption DeliveryOption { get; set; } = DeliveryOption.Pickup;
+
+        public string? ImageUrl { get; set; } 
+
+        public string? QrCodeUrl { get; set; }
+
+        [Required]
         [DisplayName("Category")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a category.")]    
         public int CategoryId { get; set; }
 
+        [ForeignKey("CategoryId")]
         public Category? Category { get; set; }
 
         [Required]
-        [MaxLength(450)]
-        public string SellerId { get; set; } = null!;
-
-        public ApplicationUser? Seller { get; set; }
-
-        [MaxLength(2000)]
-        public string? QrCodeUrl { get; set; }
-
-        [MaxLength(1000)]
-        public string? RejectionReason { get; set; }
-        
+        public string SellerId { get; set; } = string.Empty;
+        [ForeignKey("SellerId")]
+        public ApplicationUser? Seller { get; set; }    
     }
 }

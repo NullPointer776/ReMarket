@@ -1,22 +1,37 @@
+@using System.Globalization
 @model ReMarket.Models.ViewModel.ItemDetailViewModel
 @{
     ViewData["Title"] = Model.Item.Name;
+    var enUs = CultureInfo.GetCultureInfo("en-US");
 }
 
 <div class="row g-4">
     <div class="col-md-6">
-        @if (!string.IsNullOrEmpty(Model.Item.ImageUrl))
-        {
-            <a href="@Model.Item.ImageUrl" title="Click on the picture to enlarge it." target="_blank">
-            <img src="@Model.Item.ImageUrl" class="img-fluid rounded border" alt="@Model.Item.Name" />
-            </a>
-        }
-        else
-        {
-            <div class="bg-light border rounded d-flex align-items-center justify-content-center" style="min-height: 300px;">
-                <span class="text-muted">No image</span>
-            </div>
-        }
+        <div class="row g-2 item-detail-gallery">
+            @{
+                var imageUrl = string.IsNullOrEmpty(Model.Item.ImageUrl) ? null : Model.Item.ImageUrl;
+            }
+            @for (var i = 0; i < 8; i++)
+            {
+                var url = imageUrl;
+                <div class="col-6 col-lg-3">
+                    <div class="ratio ratio-1x1 border rounded overflow-hidden bg-light position-relative">
+                        @if (url is not null)
+                        {
+                            <a href="@url" title="Click to enlarge" target="_blank" class="d-block w-100 h-100 position-absolute top-0 start-0">
+                                <img src="@url" class="w-100 h-100" alt="@Model.Item.Name" style="object-fit: cover;" />
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                                <span class="text-muted small">No image</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 
     <div class="col-md-6">
@@ -61,7 +76,7 @@
                     </tr>
                     <tr>
                         <th>Posted:</th>
-                        <td>@Model.Item.DatePosted.ToString("MMMM dd, yyyy")</td>
+                        <td>@Model.Item.DatePosted.ToString("MMMM dd, yyyy", enUs)</td>
                     </tr>
                 </table>
             </div>

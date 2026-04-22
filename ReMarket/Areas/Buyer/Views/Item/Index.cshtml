@@ -48,11 +48,10 @@
                                 </li>
                                 @if (parent.SubCategories != null && parent.SubCategories.Any(c => c.IsActive))
                                 {
-                                    <li><hr class="dropdown-divider"></li>
                                     foreach (var child in parent.SubCategories.Where(c => c.IsActive))
                                     {
                                         <li>
-                                            <a class="dropdown-item" asp-action="Index" asp-route-categoryId="@child.Id" asp-route-search="@Model.Search" asp-route-activeTab="category" title="@parent.Description">
+                                            <a class="dropdown-item" asp-action="Index" asp-route-categoryId="@child.Id" asp-route-search="@Model.Search" asp-route-activeTab="category" title="@child.Description">
                                                 @child.Name
                                             </a>
                                         </li>

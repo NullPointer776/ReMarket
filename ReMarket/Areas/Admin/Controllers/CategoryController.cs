@@ -69,6 +69,16 @@ namespace ReMarket.Web.Areas.Admin.Controllers
         public Task<IActionResult> Edit(int id, Category obj)
         {
             if (id != obj.Id) return Task.FromResult<IActionResult>(NotFound());
+
+            var duplicate = _unitOfWork.Category.Get(c =>
+                c.Name == obj.Name
+                && c.ParentCategoryId == obj.ParentCategoryId
+                && c.Id != obj.Id);
+            if (duplicate != null)
+            {
+                ModelState.AddModelError(nameof(Category.Name), "A category with the same name already exists.");
+            }
+
             if (ModelState.IsValid)
             {
                 _unitOfWork.Category.Update(obj);

@@ -14,38 +14,47 @@
 
     <div class="mb-3">
         <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" required />
+        <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="mb-3">
         <label asp-for="Description" class="form-label"></label>
         <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
     <div class="row">
         <div class="col-md-6 mb-3">
             <label asp-for="Price" class="form-label"></label>
-            <input asp-for="Price" class="form-control" type="number" step="0.01" min="0.01" required />
+            <input asp-for="Price" class="form-control" type="number" step="0.01" />
+            <span asp-validation-for="Price" class="text-danger"></span>
         </div>
         <div class="col-md-6 mb-3">
             <label asp-for="Quantity" class="form-label"></label>
-            <input asp-for="Quantity" class="form-control" type="number" min="0" required />
+            <input asp-for="Quantity" class="form-control" type="number" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
         </div>
     </div>
     <div class="mb-3">
         <label asp-for="Condition" class="form-label"></label>
         <select asp-for="Condition" asp-items="Html.GetEnumSelectList<Condition>()" class="form-select"></select>
+        <span asp-validation-for="Condition" class="text-danger"></span>
     </div>
     <div class="mb-3">
         <label asp-for="DeliveryOption" class="form-label"></label>
         <select asp-for="DeliveryOption" asp-items="Html.GetEnumSelectList<DeliveryOption>()" class="form-select"></select>
+        <span asp-validation-for="DeliveryOption" class="text-danger"></span>
     </div>
     <div class="mb-3">
         <label asp-for="Location" class="form-label"></label>
         <input asp-for="Location" class="form-control" />
+        <span asp-validation-for="Location" class="text-danger"></span>
     </div>
     <div class="mb-3">
         <label asp-for="CategoryId" class="form-label">Category</label>
-        <select asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-select" required></select>
+        <select asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-select">
+            <option value="">Select a category</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
     @if (!string.IsNullOrEmpty(Model.ImageUrl))
     {

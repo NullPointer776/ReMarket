@@ -24,6 +24,7 @@ namespace ReMarket.Models
     public enum DeliveryOption
     {
         Shipping,
+        FreeShipping,
         Pickup,
         ShippingAndPickup
     }

@@ -32,7 +32,6 @@ namespace ReMarket.Models
 
         [Display(Name = "Active Status")]
         public bool IsActive { get; set; } = true;
-
         
         public int? ParentCategoryId { get; set; }
 

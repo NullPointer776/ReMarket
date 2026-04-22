@@ -37,12 +37,12 @@
                     @foreach (var parent in Model.Categories.Where(c => c.ParentCategoryId == null && c.IsActive))
                     {
                         <div class="dropdown">
-                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" title="@parent.Description">
                                 @parent.Name
                             </button>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" asp-action="Index" asp-route-categoryId="@parent.Id" asp-route-search="@Model.Search" asp-route-activeTab="category">
+                                    <a class="dropdown-item" asp-action="Index" asp-route-categoryId="@parent.Id" asp-route-search="@Model.Search" asp-route-activeTab="category" title="@parent.Description">
                                         All @parent.Name
                                     </a>
                                 </li>
@@ -52,7 +52,7 @@
                                     foreach (var child in parent.SubCategories.Where(c => c.IsActive))
                                     {
                                         <li>
-                                            <a class="dropdown-item" asp-action="Index" asp-route-categoryId="@child.Id" asp-route-search="@Model.Search" asp-route-activeTab="category">
+                                            <a class="dropdown-item" asp-action="Index" asp-route-categoryId="@child.Id" asp-route-search="@Model.Search" asp-route-activeTab="category" title="@parent.Description">
                                                 @child.Name
                                             </a>
                                         </li>

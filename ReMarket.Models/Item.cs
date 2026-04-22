@@ -74,7 +74,11 @@ namespace ReMarket.Models
         [DisplayName("Delivery Option")]
         public DeliveryOption DeliveryOption { get; set; } = DeliveryOption.Pickup;
 
-        public string? ImageUrl { get; set; } 
+        public string? ImageUrl { get; set; }
+
+        /// <summary>JSON array of image URLs for images 2–8 (the first is always <see cref="ImageUrl"/>).</summary>
+        [MaxLength(8000)]
+        public string? MoreImageUrlsJson { get; set; }
 
         public string? QrCodeUrl { get; set; }
 

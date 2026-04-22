@@ -1,9 +1,9 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReMarket.DataAccess.Repository.IRepository;
 using ReMarket.Models;
 using ReMarket.Models.ViewModel;
-using ReMarket.Utility;
 
 namespace ReMarket.Web.Areas.Buyer.Controllers
 {
@@ -97,11 +97,22 @@ namespace ReMarket.Web.Areas.Buyer.Controllers
             if (item == null)
                 return NotFound();
 
+            var imageUrls = ItemGallery.GetAllImageUrls(item);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var canAddMore = userId != null
+                && userId == item.SellerId
+                && imageUrls.Count < ItemGallery.MaxImages;
+
             var viewModel = new ItemDetailViewModel
             {
                 Item = item,
                 SellerName = item.Seller?.UserName ?? "Unknown",
-                SellerEmail = item.Seller?.Email ?? "Not provided"
+                SellerEmail = item.Seller?.Email ?? "Not provided",
+                ImageUrls = imageUrls,
+                CanAddMoreImages = canAddMore,
+                AddMoreImagesUrl = canAddMore
+                    ? Url.Action("Edit", "Item", new { area = "Seller", id = item.Id }) + "#add-images"
+                    : null
             };
 
             return View(viewModel);

@@ -1,6 +1,9 @@
 @model Item
 @{
     ViewData["Title"] = "Edit item";
+    var adminGallery = ItemGallery.GetAllImageUrls(Model);
+    var adminGalleryCount = adminGallery.Count;
+    var adminCanAdd = adminGalleryCount < ItemGallery.MaxImages;
 }
 
 
@@ -63,18 +66,24 @@
         <select asp-for="Status" asp-items="Html.GetEnumSelectList<ItemStatus>()" class="form-select"></select>
         <span asp-validation-for="Status" class="text-danger"></span>
     </div>
-    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    <div class="mb-2">
+        <span class="form-label d-block">Current images (@adminGalleryCount of @ItemGallery.MaxImages)</span>
+        <div class="d-flex flex-wrap gap-2">
+            @foreach (var u in adminGallery)
+            {
+                <img src="@u" alt="" class="img-thumbnail" style="max-height:100px" />
+            }
+        </div>
+    </div>
+    @if (adminCanAdd)
     {
-        <div class="mb-2">
-            <span class="form-label d-block">Current image</span>
-            <img src="@Model.ImageUrl" alt="" class="img-thumbnail" style="max-height:200px" />
+        <div class="mb-3" id="add-images">
+            <label class="form-label">Add more images (optional)</label>
+            <input name="additionalImageFiles" type="file" class="form-control" accept="image/*" multiple />
+            <span class="text-danger d-block">@Html.ValidationMessage("additionalImageFiles")</span>
+            <div class="form-text">Add up to @(ItemGallery.MaxImages - adminGalleryCount) more. Max 5 MB each.</div>
         </div>
     }
-    <div class="mb-3">
-        <label class="form-label">Replace image (optional)</label>
-        <input name="imageFile" type="file" class="form-control" accept="image/*" />
-        <span class="text-danger d-block">@Html.ValidationMessage("imageFile")</span>
-    </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-action="Index" class="btn btn-link">Back</a>

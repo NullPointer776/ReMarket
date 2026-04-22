@@ -1,6 +1,9 @@
 @model Item
 @{
     ViewData["Title"] = "Edit item";
+    var galleryUrls = ItemGallery.GetAllImageUrls(Model);
+    var galleryCount = galleryUrls.Count;
+    var canAdd = galleryCount < ItemGallery.MaxImages;
 }
 
 
@@ -56,22 +59,29 @@
         </select>
         <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
-    @if (!string.IsNullOrEmpty(Model.ImageUrl))
-    {
-        <div class="mb-2">
-            <span class="form-label d-block">Current image</span>
-            <img src="@Model.ImageUrl" alt="" class="img-thumbnail" style="max-height:200px" />
-        </div>
-    }
-    <div class="mb-3">
-        <label class="form-label" for="imageFileInput">Replace image (optional)</label>
-        <input id="imageFileInput" name="imageFile" type="file" class="form-control" accept="image/jpeg,image/png,image/gif,image/webp,.jpg,.jpeg,.png,.gif,.webp" capture="environment" />
-        <span class="text-danger d-block">@Html.ValidationMessage("imageFile")</span>
-        <div class="form-text">Leave empty to keep the current image. Max 5 MB.</div>
-        <div class="mt-2">
-            <img id="newImagePreview" src="" alt="New preview" class="img-thumbnail d-none" style="max-height:220px" />
+    <div class="mb-2">
+        <span class="form-label d-block">Current images (@galleryCount of @ItemGallery.MaxImages)</span>
+        <div class="d-flex flex-wrap gap-2">
+            @foreach (var u in galleryUrls)
+            {
+                <img src="@u" alt="" class="img-thumbnail" style="max-height:100px" />
+            }
         </div>
     </div>
+    @if (canAdd)
+    {
+        <div class="mb-3" id="add-images">
+            <label class="form-label" for="additionalImageInput">Add more images (optional)</label>
+            <input id="additionalImageInput" name="additionalImageFiles" type="file" class="form-control" accept="image/*" multiple />
+            <span class="text-danger d-block">@Html.ValidationMessage("additionalImageFiles")</span>
+            <div class="form-text">Add up to @(ItemGallery.MaxImages - galleryCount) more. Max 5 MB each.</div>
+            <div class="mt-2 d-flex flex-wrap gap-2" id="newImagePreviewRow"></div>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted small" id="add-images">This listing already has the maximum of @ItemGallery.MaxImages images.</p>
+    }
 
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-action="Index" class="btn btn-link">Back</a>
@@ -80,16 +90,25 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        document.getElementById('imageFileInput')?.addEventListener('change', function (e) {
-            const f = e.target.files && e.target.files[0];
-            const prev = document.getElementById('newImagePreview');
-            if (!f || !prev) return;
-            const r = new FileReader();
-            r.onload = function (ev) {
-                prev.src = ev.target.result;
-                prev.classList.remove('d-none');
-            };
-            r.readAsDataURL(f);
+        document.getElementById('additionalImageInput')?.addEventListener('change', function (e) {
+            const row = document.getElementById('newImagePreviewRow');
+            if (!row) return;
+            row.innerHTML = '';
+            const files = e.target.files;
+            if (!files || !files.length) return;
+            for (let i = 0; i < files.length; i++) {
+                const f = files[i];
+                if (!f.type.startsWith('image/')) continue;
+                const r = new FileReader();
+                r.onload = function (ev) {
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    img.className = 'img-thumbnail';
+                    img.style.maxHeight = '100px';
+                    row.appendChild(img);
+                };
+                r.readAsDataURL(f);
+            }
         });
     </script>
 }

@@ -8,10 +8,12 @@
 
 <div class="row g-4">
     <div class="col-md-6">
-        @if (!string.IsNullOrEmpty(Model.ImageUrl))
-        {
-            <img src="@Model.ImageUrl" class="img-fluid rounded border" alt="" />
-        }
+        <div class="d-flex flex-wrap gap-2">
+            @foreach (var u in ItemGallery.GetAllImageUrls(Model))
+            {
+                <img src="@u" class="img-fluid rounded border" alt="" style="max-width: 100%; max-height: 220px; object-fit: cover;" />
+            }
+        </div>
     </div>
     <div class="col-md-6">
         <h1 class="h3">@Model.Name</h1>

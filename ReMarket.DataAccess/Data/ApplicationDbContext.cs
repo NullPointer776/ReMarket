@@ -36,6 +36,7 @@ namespace ReMarket.Data
                 entity.HasIndex(e => e.Slug).IsUnique().HasFilter("[Slug] IS NOT NULL");
                 entity.Property(e => e.Description).HasMaxLength(1000);
                 entity.Property(e => e.ImageUrl).HasMaxLength(2000);
+                entity.Property(e => e.MoreImageUrlsJson).HasMaxLength(8000);
                 entity.Property(e => e.Location).HasMaxLength(500);
                 entity.Property(e => e.Price).HasPrecision(18, 2);
                 entity.Property(e => e.QrCodeUrl).HasMaxLength(2000);

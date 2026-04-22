@@ -60,7 +60,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Item model, IFormFile? imageFile)
+        public async Task<IActionResult> Create(Item model, IFormFile[]? imageFiles)
         {
             var uid = UserId;
             if (uid == null)
@@ -73,13 +73,23 @@ namespace ReMarket.Web.Areas.Seller.Controllers
 
             ClearNavigationModelState();
 
-            var imageError = ItemImageUpload.Validate(imageFile, required: true);
+            var imageError = ItemImageUpload.ValidateImageFiles(imageFiles, requireAtLeastOne: true);
             if (imageError != null)
-                ModelState.AddModelError("imageFile", imageError);
+                ModelState.AddModelError("imageFiles", imageError);
 
             if (ModelState.IsValid)
             {
-                model.ImageUrl = await ItemImageUpload.SaveAsync(_env, imageFile!, model.Slug);
+                var fileList = imageFiles!
+                    .Where(f => f is { Length: > 0 })
+                    .ToList();
+                var urls = new List<string>(ItemGallery.MaxImages);
+                for (var i = 0; i < fileList.Count; i++)
+                {
+                    var url = await ItemImageUpload.SaveAsync(_env, fileList[i], model.Slug!, i);
+                    urls.Add(url);
+                }
+
+                ItemGallery.SetGalleryFromUrls(model, urls);
                 _unitOfWork.Item.Add(model);
                 _unitOfWork.Save();
 
@@ -111,7 +121,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Description,Price,Quantity,Condition,DeliveryOption,Location,CategoryId")] Item model, IFormFile? imageFile)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,Description,Price,Quantity,Condition,DeliveryOption,Location,CategoryId")] Item model, IFormFile[]? additionalImageFiles)
         {
             var uid = UserId;
             if (uid == null)
@@ -123,11 +133,25 @@ namespace ReMarket.Web.Areas.Seller.Controllers
 
             ClearNavigationModelState();
 
-            if (imageFile is { Length: > 0 })
+            var newFiles = additionalImageFiles?.Where(f => f is { Length: > 0 }).ToList() ?? new List<IFormFile>();
+            if (newFiles.Count > 0)
             {
-                var imageError = ItemImageUpload.Validate(imageFile, required: false);
-                if (imageError != null)
-                    ModelState.AddModelError("imageFile", imageError);
+                var currentCount = ItemGallery.GetAllImageUrls(existing).Count;
+                if (currentCount >= ItemGallery.MaxImages)
+                {
+                    ModelState.AddModelError("additionalImageFiles", "This item already has the maximum of 8 images.");
+                }
+                else
+                {
+                    var room = ItemGallery.MaxImages - currentCount;
+                    if (newFiles.Count > room)
+                        ModelState.AddModelError("additionalImageFiles", $"You can add at most {room} more image(s).");
+                    else
+                    {
+                        var err = ItemImageUpload.ValidateImageFiles(additionalImageFiles, requireAtLeastOne: false);
+                        if (err != null) ModelState.AddModelError("additionalImageFiles", err);
+                    }
+                }
             }
 
             if (ModelState.IsValid)
@@ -137,13 +161,24 @@ namespace ReMarket.Web.Areas.Seller.Controllers
                 existing.Price = model.Price;
                 existing.Quantity = model.Quantity;
                 existing.Condition = model.Condition;
+                existing.DeliveryOption = model.DeliveryOption;
                 existing.Location = model.Location;
                 existing.CategoryId = model.CategoryId;
                 existing.Status = ItemStatus.Pending;
                 existing.RejectionReason = null;
 
-                if (imageFile is { Length: > 0 })
-                    existing.ImageUrl = await ItemImageUpload.SaveAsync(_env, imageFile, existing.Slug);
+                if (newFiles.Count > 0)
+                {
+                    var urls = ItemGallery.GetAllImageUrls(existing).ToList();
+                    foreach (var file in newFiles)
+                    {
+                        if (urls.Count >= ItemGallery.MaxImages) break;
+                        var url = await ItemImageUpload.SaveAsync(_env, file, existing.Slug!, urls.Count);
+                        urls.Add(url);
+                    }
+
+                    ItemGallery.SetGalleryFromUrls(existing, urls);
+                }
 
                 await WriteQrPngAsync(existing);
                 _unitOfWork.Item.Update(existing);
@@ -160,6 +195,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             model.Status = existing.Status;
             model.DatePosted = existing.DatePosted;
             model.ImageUrl = existing.ImageUrl;
+            model.MoreImageUrlsJson = existing.MoreImageUrlsJson;
             model.QrCodeUrl = existing.QrCodeUrl;
             return View(model);
         }

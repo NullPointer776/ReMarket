@@ -118,7 +118,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,Quantity,Condition,DeliveryOption,Location,CategoryId,Status")] Item posted, IFormFile? imageFile)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,Quantity,Condition,DeliveryOption,Location,CategoryId,Status")] Item posted, IFormFile[]? additionalImageFiles)
         {
             var item = _unitOfWork.Item.Get(i => i.Id == id);
             if (item == null) return NotFound();
@@ -128,10 +128,25 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             ModelState.Remove(nameof(Item.SellerId));
             ModelState.Remove(nameof(Item.Slug));
 
-            if (imageFile is { Length: > 0 })
+            var newFiles = additionalImageFiles?.Where(f => f is { Length: > 0 }).ToList() ?? new List<IFormFile>();
+            if (newFiles.Count > 0)
             {
-                var err = ItemImageUpload.Validate(imageFile, required: false);
-                if (err != null) ModelState.AddModelError("imageFile", err);
+                var currentCount = ItemGallery.GetAllImageUrls(item).Count;
+                if (currentCount >= ItemGallery.MaxImages)
+                {
+                    ModelState.AddModelError("additionalImageFiles", "This item already has the maximum of 8 images.");
+                }
+                else
+                {
+                    var room = ItemGallery.MaxImages - currentCount;
+                    if (newFiles.Count > room)
+                        ModelState.AddModelError("additionalImageFiles", $"You can add at most {room} more image(s).");
+                    else
+                    {
+                        var err = ItemImageUpload.ValidateImageFiles(additionalImageFiles, requireAtLeastOne: false);
+                        if (err != null) ModelState.AddModelError("additionalImageFiles", err);
+                    }
+                }
             }
 
             if (!ModelState.IsValid)
@@ -162,8 +177,18 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             if (item.Status == ItemStatus.Available)
                 item.RejectionReason = null;
 
-            if (imageFile is { Length: > 0 })
-                item.ImageUrl = await ItemImageUpload.SaveAsync(_env, imageFile, item.Slug);
+            if (newFiles.Count > 0)
+            {
+                var urls = ItemGallery.GetAllImageUrls(item).ToList();
+                foreach (var file in newFiles)
+                {
+                    if (urls.Count >= ItemGallery.MaxImages) break;
+                    var url = await ItemImageUpload.SaveAsync(_env, file, item.Slug!, urls.Count);
+                    urls.Add(url);
+                }
+
+                ItemGallery.SetGalleryFromUrls(item, urls);
+            }
 
             _unitOfWork.Item.Update(item);
             _unitOfWork.Save();

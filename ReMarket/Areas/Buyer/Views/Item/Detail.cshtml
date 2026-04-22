@@ -8,30 +8,37 @@
 <div class="row g-4">
     <div class="col-md-6">
         <div class="row g-2 item-detail-gallery">
-            @{
-                var imageUrl = string.IsNullOrEmpty(Model.Item.ImageUrl) ? null : Model.Item.ImageUrl;
-            }
-            @for (var i = 0; i < 8; i++)
+            @if (Model.ImageUrls.Count == 0)
             {
-                var url = imageUrl;
-                <div class="col-6 col-lg-3">
-                    <div class="ratio ratio-1x1 border rounded overflow-hidden bg-light position-relative">
-                        @if (url is not null)
-                        {
-                            <a href="@url" title="Click to enlarge" target="_blank" class="d-block w-100 h-100 position-absolute top-0 start-0">
-                                <img src="@url" class="w-100 h-100" alt="@Model.Item.Name" style="object-fit: cover;" />
-                            </a>
-                        }
-                        else
-                        {
-                            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
-                                <span class="text-muted small">No image</span>
-                            </div>
-                        }
+                <div class="col-12">
+                    <div class="ratio ratio-1x1 border rounded overflow-hidden bg-light position-relative" style="max-width: 400px;">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                            <span class="text-muted">No image</span>
+                        </div>
                     </div>
                 </div>
             }
+            else
+            {
+                @foreach (var url in Model.ImageUrls)
+                {
+                    <div class="col-6 col-lg-3">
+                        <div class="ratio ratio-1x1 border rounded overflow-hidden bg-light position-relative">
+                            <a href="@url" title="Open image" target="_blank" class="d-block w-100 h-100 position-absolute top-0 start-0">
+                                <img src="@url" class="w-100 h-100" alt="@Model.Item.Name" style="object-fit: cover;" />
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
         </div>
+        @if (Model.CanAddMoreImages && !string.IsNullOrEmpty(Model.AddMoreImagesUrl))
+        {
+            <a href="@Model.AddMoreImagesUrl" class="btn btn-outline-primary btn-sm mt-2">
+                <i class="bi bi-plus-lg me-1"></i>Add image
+            </a>
+            <p class="text-muted small mt-1 mb-0">Up to @ItemGallery.MaxImages images total. You can add more in your listing editor.</p>
+        }
     </div>
 
     <div class="col-md-6">

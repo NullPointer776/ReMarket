@@ -30,7 +30,30 @@ namespace ReMarket.Utility
             return null;
         }
 
-        public static async Task<string> SaveAsync(IWebHostEnvironment env, IFormFile file, string slugBase)
+        /// <summary>Validates a batch of uploads: count and each file (max 8 by default).</summary>
+        public static string? ValidateImageFiles(IFormFile[]? files, bool requireAtLeastOne, int maxFiles = 8)
+        {
+            var list = files == null
+                ? new List<IFormFile>()
+                : files.Where(f => f != null && f.Length > 0).Cast<IFormFile>().ToList();
+
+            if (requireAtLeastOne && list.Count == 0)
+                return "Please select at least one image.";
+
+            if (list.Count > maxFiles)
+                return $"You can upload at most {maxFiles} images.";
+
+            foreach (var f in list)
+            {
+                var err = Validate(f, required: false);
+                if (err != null) return err;
+            }
+
+            return null;
+        }
+
+        /// <param name="imageIndex">0 = primary <c>{slug}{ext}</c>, 1+ = <c>{slug}-2{ext}</c>, etc.</param>
+        public static async Task<string> SaveAsync(IWebHostEnvironment env, IFormFile file, string slugBase, int imageIndex = 0)
         {
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (string.IsNullOrEmpty(ext) || !AllowedExtensions.Contains(ext))
@@ -39,7 +62,8 @@ namespace ReMarket.Utility
             var dir = Path.Combine(env.WebRootPath, "images", "items");
             Directory.CreateDirectory(dir);
 
-            var name = $"{slugBase}{ext}";
+            var suffix = imageIndex <= 0 ? "" : $"-{imageIndex + 1}";
+            var name = $"{slugBase}{suffix}{ext}";
             var path = Path.Combine(dir, name);
 
             await using (var stream = new FileStream(path, FileMode.Create))

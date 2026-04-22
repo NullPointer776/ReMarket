@@ -12,6 +12,14 @@ namespace ReMarket.Models.ViewModel
         public Item Item { get; set; } = null!;
         public string SellerName { get; set; } = string.Empty;
         public string SellerEmail { get; set; } = string.Empty;
+
+        /// <summary>Distinct image URLs in display order (1–8).</summary>
+        public IReadOnlyList<string> ImageUrls { get; set; } = System.Array.Empty<string>();
+
+        public bool CanAddMoreImages { get; set; }
+
+        /// <summary>Link for the seller to add more images; null if not allowed.</summary>
+        public string? AddMoreImagesUrl { get; set; }
     }
 
     public class RejectItemViewModel

@@ -59,14 +59,12 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label" for="imageFileInput">Item image</label>
-        <input id="imageFileInput" name="imageFile" type="file" class="form-control" accept="image/*"
-               data-val="true" data-val-required="Please select an item image." />
-        <span class="text-danger" data-valmsg-for="imageFile" data-valmsg-replace="true"></span>
-        <div class="form-text">jpg / png / gif / webp, max 5 MB</div>
-        <div class="mt-2">
-            <img id="imagePreview" src="" alt="Preview" class="img-thumbnail d-none" style="max-height:220px" />
-        </div>
+        <label class="form-label" for="imageFileInput">Item images (1 to @ItemGallery.MaxImages)</label>
+        <input id="imageFileInput" name="imageFiles" type="file" class="form-control" accept="image/*" multiple
+               data-val="true" data-val-required="Please select at least one image." />
+        <span class="text-danger" data-valmsg-for="imageFiles" data-valmsg-replace="true"></span>
+        <div class="form-text">jpg / png / gif / webp, max 5 MB each. First image is the cover on listings.</div>
+        <div class="mt-2 d-flex flex-wrap gap-2" id="imagePreviewRow"></div>
     </div>
 
     <button type="submit" class="btn btn-primary">Submit for review</button>
@@ -79,17 +77,25 @@
         $(function () {
             $.validator.unobtrusive.parse(document);
         });
-        document.getElementById('imageFileInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const preview = document.getElementById('imagePreview');
-            if (!file || !preview) return;
-
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                preview.src = ev.target.result;
-                preview.classList.remove('d-none');
-            };
-            reader.readAsDataURL(file);
+        document.getElementById('imageFileInput')?.addEventListener('change', function (e) {
+            const row = document.getElementById('imagePreviewRow');
+            if (!row) return;
+            row.innerHTML = '';
+            const files = e.target.files;
+            if (!files || !files.length) return;
+            for (let i = 0; i < files.length; i++) {
+                const f = files[i];
+                if (!f.type.startsWith('image/')) continue;
+                const r = new FileReader();
+                r.onload = function (ev) {
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    img.className = 'img-thumbnail';
+                    img.style.maxHeight = '100px';
+                    row.appendChild(img);
+                };
+                r.readAsDataURL(f);
+            }
         });
     </script>
 }

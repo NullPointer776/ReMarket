@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ReMarket.DataAccess.Repository.IRepository;
 using ReMarket.Models;
+using ReMarket.Models.ViewModel;
 using ReMarket.Utility;
 
 namespace ReMarket.Web.Areas.Admin.Controllers
@@ -75,25 +76,29 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             if (id is null or 0) return NotFound();
             var item = _unitOfWork.Item.Get(u => u.Id == id);
             if (item == null) return NotFound();
-            return View(item);
+            return View(new RejectItemViewModel
+            {
+                Id = item.Id,
+                ItemName = item.Name,
+                RejectionReason = null
+            });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Reject(int id, string? rejectionReason)
+        public IActionResult Reject(RejectItemViewModel model)
         {
-            var item = _unitOfWork.Item.Get(u => u.Id == id);
+            var item = _unitOfWork.Item.Get(u => u.Id == model.Id);
             if (item == null) return NotFound();
 
-            if (string.IsNullOrWhiteSpace(rejectionReason))
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError(nameof(rejectionReason), "Please enter a rejection reason.");
-                ViewBag.RejectionReason = rejectionReason;
-                return View(item);
+                model.ItemName = item.Name;
+                return View(model);
             }
 
             item.Status = ItemStatus.Rejected;
-            item.RejectionReason = rejectionReason.Trim();
+            item.RejectionReason = model.RejectionReason!.Trim();
             _unitOfWork.Item.Update(item);
             _unitOfWork.Save();
             TempData["success"] = "Item rejected.";
@@ -131,7 +136,16 @@ namespace ReMarket.Web.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                LoadCategories(posted.CategoryId);
+                item.Name = posted.Name;
+                item.Description = posted.Description;
+                item.Price = posted.Price;
+                item.Quantity = posted.Quantity;
+                item.Condition = posted.Condition;
+                item.DeliveryOption = posted.DeliveryOption;
+                item.Location = posted.Location;
+                item.CategoryId = posted.CategoryId;
+                item.Status = posted.Status;
+                LoadCategories(item.CategoryId);
                 return View(item);
             }
 

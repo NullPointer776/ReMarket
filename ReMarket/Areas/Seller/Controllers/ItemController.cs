@@ -170,7 +170,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             model.QrCodeUrl = existing.QrCodeUrl;
             return View(model);
         }
-
+        /* Reserved for final project - image deletion from gallery
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteImage(int id, int imageIndex, string? returnSlug)
@@ -200,8 +200,8 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             var slug = !string.IsNullOrWhiteSpace(returnSlug) ? returnSlug : item.Slug;
             return string.IsNullOrEmpty(slug)
                 ? RedirectToAction(nameof(Index))
-                : RedirectToAction("Detail", "Item", new { area = "Buyer", slug });
-        }
+               : RedirectToAction("Detail", "Item", new { area = "Buyer", slug });
+        }*/
         public IActionResult Delete(int? id)
         {
             var item = GetOwnedItem(id);

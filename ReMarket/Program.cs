@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ReMarket.Data;
 using ReMarket.DataAccess.Data;
 using ReMarket.DataAccess.Repository;
 using ReMarket.DataAccess.Repository.IRepository;

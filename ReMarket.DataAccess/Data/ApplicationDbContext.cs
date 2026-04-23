@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ReMarket.Models;
 
-namespace ReMarket.Data
+namespace ReMarket.DataAccess.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

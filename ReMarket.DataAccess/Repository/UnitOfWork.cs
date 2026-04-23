@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ReMarket.Data;
+﻿using ReMarket.DataAccess.Data;
 using ReMarket.DataAccess.Repository.IRepository;
 
 namespace ReMarket.DataAccess.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private ApplicationDbContext _db;
+        private readonly ApplicationDbContext _db;
 
-        public ICategoryRepository Category { get; private set; }
-        public IItemRepository Item { get; private set; }
+        public ICategoryRepository Category { get; }
+        public IItemRepository Item { get; }
 
         public UnitOfWork(ApplicationDbContext db)
         {

@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using ReMarket.Data;
+using ReMarket.DataAccess.Data;
 using ReMarket.DataAccess.Repository.IRepository;
 
 namespace ReMarket.DataAccess.Repository
@@ -15,11 +15,14 @@ namespace ReMarket.DataAccess.Repository
         private readonly ApplicationDbContext _db;
         internal DbSet<T> dbSet;
 
+        public ApplicationDbContext Db { get; }
+
         public Repository(ApplicationDbContext db)
         {
             _db = db;
             dbSet = _db.Set<T>();
         }
+
 
         void IRepository<T>.Add(T entity)
         {

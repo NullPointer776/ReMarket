@@ -217,7 +217,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
         // Removes one image from the gallery; at least one image must remain. Redirects back to public item detail.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteImage(int id, int imageIndex, string? returnSlug)
+        public IActionResult DeleteImage(int id, int imageIndex, string? returnSlug)
         {
             var uid = UserId;
             if (uid == null)

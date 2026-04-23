@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using ReMarket.Data;
+using ReMarket.DataAccess.Data;
 using ReMarket.Models;
 using System;
 using System.Collections.Generic;

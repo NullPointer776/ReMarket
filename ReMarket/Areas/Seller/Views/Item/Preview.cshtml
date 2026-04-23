@@ -9,7 +9,7 @@
 <div class="row g-4">
     <div class="col-md-6">
         <div class="d-flex flex-wrap gap-2">
-            @foreach (var u in ItemGallery.GetAllImageUrls(Model))
+            @foreach (var u in ReMarket.Utility.ItemGallery.GetAllImageUrls(Model))
             {
                 <img src="@u" class="img-fluid rounded border" alt="" style="max-width: 100%; max-height: 220px; object-fit: cover;" />
             }

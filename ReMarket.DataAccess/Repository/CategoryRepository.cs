@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using ReMarket.Data;
+using ReMarket.DataAccess.Data;
 using ReMarket.DataAccess.Repository.IRepository;
 using ReMarket.Models;
 

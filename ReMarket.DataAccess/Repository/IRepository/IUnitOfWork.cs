@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ReMarket.DataAccess.Repository.IRepository;
 
 namespace ReMarket.DataAccess.Repository.IRepository
 {
@@ -10,8 +6,6 @@ namespace ReMarket.DataAccess.Repository.IRepository
     {
         ICategoryRepository Category { get; }
         IItemRepository Item { get; }
-
-
         void Save();
     }
 }

@@ -2,14 +2,14 @@
     ViewData["Title"] = "Home";
 }
 
-<section class="hero-card mb-4">
+<section class="hero-card mb-4 d-flex flex-column align-items-center text-center">
     <span class="hero-chip">Second-hand marketplace</span>
     <h1 class="hero-title mt-3 mb-2">Welcome to ReMarket</h1>
     <p class="hero-subtitle mb-4">
-        Browse quality pre-owned items !
-        Give products a meaningful second life !       
+        Browse quality pre-owned items !<br>
+        Give products a meaningful second life !
     </p>
-    <div class="d-flex gap-2 flex-wrap">
+    <div class="d-flex gap-2 flex-wrap justify-content-center">
         <a class="btn btn-primary px-4" asp-area="Buyer" asp-controller="Item" asp-action="Index">Browse Items</a>
         <a class="btn btn-outline-primary px-4" asp-area="Seller" asp-controller="Item" asp-action="Create">List Item</a>
     </div>

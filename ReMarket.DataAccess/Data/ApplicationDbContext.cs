@@ -61,11 +61,16 @@ namespace ReMarket.DataAccess.Data
 
             // Seed Categories 
             builder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Electronics", Description = "Gadgets and devices", Slug = "electronics", IsActive = true },
-                new Category { Id = 2, Name = "Furniture", Description = "Home and office furniture", Slug = "furniture", IsActive = true },
-                new Category { Id = 3, Name = "Clothing", Description = "Apparel and accessories", Slug = "clothing", IsActive = true },
-                new Category { Id = 4, Name = "Mobile Phones", Description = "Smartphones and accessories", Slug = "mobile-phones", ParentCategoryId = 1, IsActive = true },
-                new Category { Id = 5, Name = "Laptops", Description = "Notebooks and accessories", Slug = "laptops", ParentCategoryId = 1, IsActive = true }
+                new Category { Id = 1, Name = "Electronics", Description = "Gadgets and devices", Slug = "electronics" },
+                new Category { Id = 2, Name = "Furniture", Description = "Home and office furniture", Slug = "furniture" },
+                new Category { Id = 3, Name = "Clothing", Description = "Apparel and accessories", Slug = "clothing" },
+                new Category { Id = 4, Name = "Mobile Phones", Description = "Smartphones and accessories", Slug = "mobile-phones", ParentCategoryId = 1 },
+                new Category { Id = 5, Name = "Laptops", Description = "Notebooks and accessories", Slug = "laptops", ParentCategoryId = 1 },
+                new Category { Id = 6, Name = "Sofas", Description = "Comfortable seating", Slug = "sofas", ParentCategoryId = 2 },
+                new Category { Id = 7, Name = "Tables", Description = "Dining and office tables", Slug = "tables", ParentCategoryId = 2 },
+                new Category { Id = 8, Name = "Food & Beverages", Description = "Groceries and drinks", Slug = "food-beverages" },  
+                new Category { Id = 9, Name = "Books", Description = "Fiction and non-fiction books", Slug = "books" },
+                new Category { Id = 10, Name = "Toys & Games", Description = "Toys and board games", Slug = "toys-games" }
             );
         }
     }

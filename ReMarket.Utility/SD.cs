@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReMarket.Utility
 {
+    //Resevre for final project, for now just a placeholder for role names
     public static class SD
     {
         public const string Role_Admin = "Admin";

@@ -10,6 +10,7 @@ using ReMarket.Utility;
 namespace ReMarket.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    //Image upload size limit
     [RequestFormLimits(MultipartBodyLengthLimit = 10 * 1024 * 1024)]
     public class ItemController : Controller
     {
@@ -41,7 +42,6 @@ namespace ReMarket.Web.Areas.Admin.Controllers
 
             ViewBag.Status = status;
             ViewBag.Search = search;
-            ViewBag.PendingCount = _unitOfWork.Item.GetAll(filter: i => i.Status == ItemStatus.Pending).Count();
 
             return View(items.OrderByDescending(i => i.DatePosted).ToList());
         }
@@ -94,7 +94,6 @@ namespace ReMarket.Web.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                // ItemName is display-only.
                 model.ItemName = item.Name;
                 return View(model);
             }

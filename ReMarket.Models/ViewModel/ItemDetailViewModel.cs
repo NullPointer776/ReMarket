@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace ReMarket.Models.ViewModel
 {
-    // Public item detail (buyer) with gallery and optional seller "add image" link.
     public class ItemDetailViewModel
     {
         public Item Item { get; set; } = null!;
@@ -18,7 +17,5 @@ namespace ReMarket.Models.ViewModel
         public bool CanAddMoreImages { get; set; }
         public string? AddMoreImagesUrl { get; set; }
     }
-
-    // Admin: reject pending item.
 
 }

@@ -12,11 +12,14 @@ using System.Security.Claims;
 namespace ReMarket.Web.Areas.Seller.Controllers
 {
     [Area("Seller")]
+    [Authorize]
     [RequestFormLimits(MultipartBodyLengthLimit = 10 * 1024 * 1024)]
     public class ItemController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _env;
+        private string? _cachedUserId;
+        private string? UserId => _cachedUserId ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         public ItemController(IUnitOfWork unitOfWork, IWebHostEnvironment env)
         {
@@ -24,33 +27,19 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             _env = env;
         }
 
-        private string? UserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        public IActionResult Preview(int? id)
-        {
-            var uid = UserId;
-            if (uid == null)
-                return Challenge();
-
-            var item = _unitOfWork.Item
-                .GetAll(filter: i => i.Id == id && i.SellerId == uid, includeProperties: "Category")
-                .FirstOrDefault();
-            if (item == null)
-                return NotFound();
-            return View(item);
-        }
-
         public IActionResult Index()
         {
-            var uid = UserId;
-            if (uid == null)
-                return Challenge();
-
             var items = _unitOfWork.Item
-                .GetAll(filter: i => i.SellerId == uid, includeProperties: "Category")
+                .GetAll(filter: i => i.SellerId == UserId, includeProperties: "Category")
                 .OrderByDescending(i => i.DatePosted)
                 .ToList();
             return View(items);
+        }
+
+        public IActionResult Preview(int? id)
+        {
+            var item = _unitOfWork.Item.Get(i => i.Id == id && i.SellerId == UserId, includeProperties: "Category");
+            return item == null ? NotFound() : View(item);
         }
 
         public IActionResult Create()
@@ -59,16 +48,11 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             return View(new Item { Quantity = 1, Condition = Condition.Good });
         }
 
-        // Creates listing; saves 1–8 images to the gallery.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Item model, IFormFile[]? imageFiles)
         {
-            var uid = UserId;
-            if (uid == null)
-                return Challenge();
-
-            model.SellerId = uid;
+            model.SellerId = UserId!;
             model.Status = ItemStatus.Pending;
             model.DatePosted = DateTime.UtcNow;
             model.Slug = NextAvailableSlug(SlugHelper.ToSlug(model.Name));
@@ -81,9 +65,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
 
             if (ModelState.IsValid)
             {
-                var fileList = imageFiles!
-                    .Where(f => f is { Length: > 0 })
-                    .ToList();
+                var fileList = imageFiles!.Where(f => f is { Length: > 0 }).ToList();
                 var urls = new List<string>(ItemGallery.MaxImages);
                 for (var i = 0; i < fileList.Count; i++)
                 {
@@ -109,30 +91,19 @@ namespace ReMarket.Web.Areas.Seller.Controllers
 
         public IActionResult Edit(int? id)
         {
-            var uid = UserId;
-            if (uid == null)
-                return Challenge();
+            var item = GetOwnedItem(id);
+            if (item == null) return NotFound();
 
-            var item = GetOwnedItem(id, uid);
-            if (item == null)
-                return NotFound();
-
-            LoadCategories();
+            LoadCategories(item.CategoryId);
             return View(item);
         }
 
-        // Updates fields on [Bind] list; can append more images.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Name,Description,Price,Quantity,Condition,DeliveryOption,Location,CategoryId")] Item model, IFormFile[]? additionalImageFiles)
         {
-            var uid = UserId;
-            if (uid == null)
-                return Challenge();
-
-            var existing = GetOwnedItem(id, uid);
-            if (existing == null)
-                return NotFound();
+            var existing = GetOwnedItem(id);
+            if (existing == null) return NotFound();
 
             ClearNavigationModelState();
 
@@ -141,9 +112,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             {
                 var currentCount = ItemGallery.GetAllImageUrls(existing).Count;
                 if (currentCount >= ItemGallery.MaxImages)
-                {
                     ModelState.AddModelError("additionalImageFiles", "This item already has the maximum of 8 images.");
-                }
                 else
                 {
                     var room = ItemGallery.MaxImages - currentCount;
@@ -179,7 +148,6 @@ namespace ReMarket.Web.Areas.Seller.Controllers
                         var url = await ItemImageUpload.SaveAsync(_env, file, existing.Slug!, urls.Count);
                         urls.Add(url);
                     }
-
                     ItemGallery.SetGalleryFromUrls(existing, urls);
                 }
 
@@ -191,7 +159,7 @@ namespace ReMarket.Web.Areas.Seller.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            LoadCategories();
+            LoadCategories(model.CategoryId);
             model.Id = existing.Id;
             model.Slug = existing.Slug;
             model.SellerId = existing.SellerId;
@@ -203,39 +171,22 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             return View(model);
         }
 
-        public IActionResult Delete(int? id)
-        {
-            var uid = UserId;
-            if (uid == null)
-                return Challenge();
-
-            var item = GetOwnedItem(id, uid);
-            if (item == null)
-                return NotFound();
-            return View(item);
-        }
-
-        // Removes one image from the gallery; at least one image must remain. Redirects back to public item detail.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteImage(int id, int imageIndex, string? returnSlug)
         {
-            var uid = UserId;
-            if (uid == null)
-                return Challenge();
-
-            var item = GetOwnedItem(id, uid);
-            if (item == null)
-                return NotFound();
+            var item = GetOwnedItem(id);
+            if (item == null) return NotFound();
 
             var urls = ItemGallery.GetAllImageUrls(item).ToList();
-            if (imageIndex < 0 || imageIndex >= urls.Count)
-                return NotFound();
-
+            if (imageIndex < 0 || imageIndex >= urls.Count) return NotFound();
             if (urls.Count <= 1)
             {
                 TempData["error"] = "Add another image before removing the only one.";
-                return RedirectToDetail(returnSlug, item);
+                var fallbackSlug = !string.IsNullOrWhiteSpace(returnSlug) ? returnSlug : item.Slug;
+                return string.IsNullOrEmpty(fallbackSlug)
+                    ? RedirectToAction(nameof(Index))
+                    : RedirectToAction("Detail", "Item", new { area = "Buyer", slug = fallbackSlug });
             }
 
             var removed = urls[imageIndex];
@@ -246,73 +197,53 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             _unitOfWork.Save();
 
             TempData["success"] = "Image removed.";
-            return RedirectToDetail(returnSlug, item);
+            var slug = !string.IsNullOrWhiteSpace(returnSlug) ? returnSlug : item.Slug;
+            return string.IsNullOrEmpty(slug)
+                ? RedirectToAction(nameof(Index))
+                : RedirectToAction("Detail", "Item", new { area = "Buyer", slug });
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public IActionResult Delete(int id)
         {
-            var uid = UserId;
-            if (uid == null)
-                return Challenge();
-
-            var item = GetOwnedItem(id, uid);
-            if (item == null)
-                return NotFound();
+            var item = GetOwnedItem(id);
+            if (item == null) return NotFound();
 
             _unitOfWork.Item.Remove(item);
             _unitOfWork.Save();
             TempData["success"] = "Item deleted.";
             return RedirectToAction(nameof(Index));
         }
+
         public IActionResult RejectReason(int id)
         {
-            var uid = UserId;
-            if (uid == null)
-                return Challenge();
+            var item = _unitOfWork.Item.Get(i => i.Id == id && i.SellerId == UserId);
+            if (item == null || item.Status != ItemStatus.Rejected) return NotFound();
 
-            var item = _unitOfWork.Item.Get(i => i.Id == id && i.SellerId == uid);
-            if (item == null || item.Status != ItemStatus.Rejected)
-                return NotFound();
-
-            var viewModel = new RejectItemViewModel
+            return View(new RejectItemViewModel
             {
                 Id = item.Id,
                 ItemName = item.Name,
                 RejectionReason = item.RejectionReason
-            };
-            return View(viewModel);
+            });
         }
-        private Item? GetOwnedItem(int? id, string uid)
+
+        private Item? GetOwnedItem(int? id)
         {
-            if (id is null or 0)
-                return null;
+            if (id is null or 0) return null;
             var item = _unitOfWork.Item.Get(i => i.Id == id);
-            if (item == null || item.SellerId != uid)
-                return null;
-            return item;
+            return item != null && item.SellerId == UserId ? item : null;
         }
 
-        private IActionResult RedirectToDetail(string? returnSlug, Item item)
-        {
-            var slug = !string.IsNullOrWhiteSpace(returnSlug) ? returnSlug : item.Slug;
-            if (string.IsNullOrEmpty(slug))
-                return RedirectToAction(nameof(Index));
-            return RedirectToAction("Detail", "Item", new { area = "Buyer", slug });
-        }
-
-        private void LoadCategories()
+        private void LoadCategories(int? selectedId = null)
         {
             var list = _unitOfWork.Category.GetAll().OrderBy(c => c.Name).ToList();
-            ViewBag.CategoryId = new SelectList(list, "Id", "Name");
+            ViewBag.CategoryId = new SelectList(list, "Id", "Name", selectedId);
         }
 
-        // Removes model keys that the form does not post.
         private void ClearNavigationModelState()
         {
-            ModelState.Remove(nameof(Item.Seller));
-            ModelState.Remove(nameof(Item.Category));
             ModelState.Remove(nameof(Item.SellerId));
             ModelState.Remove(nameof(Item.Slug));
         }
@@ -320,12 +251,15 @@ namespace ReMarket.Web.Areas.Seller.Controllers
         private string NextAvailableSlug(string baseSlug)
         {
             var slug = baseSlug;
+            var existingSlugs = _unitOfWork.Item.GetAll(i => i.Slug.StartsWith(baseSlug))
+                .Select(i => i.Slug)
+                .ToHashSet();
+
+            if (!existingSlugs.Contains(slug)) return slug;
+
             var n = 1;
-            while (_unitOfWork.Item.Get(i => i.Slug == slug) != null)
-            {
-                slug = $"{baseSlug}-{n++}";
-            }
-            return slug;
+            while (existingSlugs.Contains($"{baseSlug}-{n}")) n++;
+            return $"{baseSlug}-{n}";
         }
 
         private async Task WriteQrPngAsync(Item item)

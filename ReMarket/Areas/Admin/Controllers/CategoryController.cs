@@ -31,11 +31,12 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             return View(new Category { IsActive = true });
         }
 
-        // Ensures category name is unique under the same parent.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Category obj)
         {
+
             var existing = _unitOfWork.Category.Get(c => c.Name == obj.Name && c.ParentCategoryId == obj.ParentCategoryId);
             if (existing != null)
             {
@@ -65,7 +66,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
             return View(categoryFromDb);
         }
 
-        // Same duplicate-name check as Create, except for this category id.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public Task<IActionResult> Edit(int id, Category obj)
@@ -76,6 +77,7 @@ namespace ReMarket.Web.Areas.Admin.Controllers
                 c.Name == obj.Name
                 && c.ParentCategoryId == obj.ParentCategoryId
                 && c.Id != obj.Id);
+            // Same duplicate-name check as Create, except for this category id.
             if (duplicate != null)
             {
                 ModelState.AddModelError(nameof(Category.Name), "A category with the same name already exists.");

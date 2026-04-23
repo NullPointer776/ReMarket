@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ReMarket.Utility
 {
-
+    //Image upload helper for item images. Validates file size and extension, saves files to wwwroot/images/items/, and can delete old files.
     public static class ItemImageUpload
     {
         public static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];

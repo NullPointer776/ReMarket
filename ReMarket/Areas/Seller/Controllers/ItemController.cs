@@ -202,7 +202,12 @@ namespace ReMarket.Web.Areas.Seller.Controllers
                 ? RedirectToAction(nameof(Index))
                 : RedirectToAction("Detail", "Item", new { area = "Buyer", slug });
         }
-
+        public IActionResult Delete(int? id)
+        {
+            var item = GetOwnedItem(id);
+            if (item == null) return NotFound();
+            return View(item);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)

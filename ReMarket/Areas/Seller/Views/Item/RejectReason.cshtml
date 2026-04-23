@@ -1,0 +1,17 @@
+﻿@model ReMarket.Models.ViewModel.RejectItemViewModel
+@{
+    ViewData["Title"] = "Rejection Reason";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>Rejection Reason</h4>
+    </div>
+    <div class="card-body">
+        <h5 class="mb-3">@Model.ItemName</h5>
+        <p class="mb-0">@(Model.RejectionReason ?? "No reason provided.")</p>
+    </div>
+    <div class="card-footer">
+        <a asp-action="Index" class="btn btn-secondary">Back to My Items</a>
+    </div>
+</div>

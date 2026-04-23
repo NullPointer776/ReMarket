@@ -1,11 +1,16 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
 namespace ReMarket.DataAccess.Migrations
 {
-    public partial class InitialMigration : Migration
+    /// <inheritdoc />
+    public partial class addMigration : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -201,6 +206,7 @@ namespace ReMarket.DataAccess.Migrations
                     Location = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     DeliveryOption = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    MoreImageUrlsJson = table.Column<string>(type: "nvarchar(max)", maxLength: 8000, nullable: true),
                     QrCodeUrl = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     SellerId = table.Column<string>(type: "nvarchar(450)", nullable: false)

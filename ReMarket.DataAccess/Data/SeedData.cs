@@ -64,7 +64,7 @@ namespace ReMarket.DataAccess.Data
                         Status = ItemStatus.Pending,
                         CategoryId = 1,
                         SellerId = customer.Id,
-                        Location = "Auckland CBD"     
+                        Location = "Auckland"     
                       },
                     new Item
                     {

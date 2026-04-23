@@ -3,7 +3,6 @@
     ViewData["Title"] = "My items";
 }
 
-
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h3">My items</h1>
     <a asp-action="Create" class="btn btn-primary">List an item</a>
@@ -35,13 +34,32 @@ else
                         <td>@item.Name</td>
                         <td>@(item.Category?.Name ?? "-")</td>
                         <td>@item.Price.ToString("C")</td>
-                        <td>@item.Status</td>
+                        <td>
+                            @if (item.Status == ItemStatus.Rejected)
+                            {
+                                <a asp-action="RejectReason" asp-route-id="@item.Id" title="View rejection reason" class="badge bg-danger-subtle text-danger-emphasis text-decoration-none">
+                                    @item.Status
+                                </a>
+                            }
+                            else if (item.Status == ItemStatus.Pending)
+                            {
+                                <span class="badge bg-warning-subtle text-warning-emphasis">@item.Status</span>
+                            }
+                            else if (item.Status == ItemStatus.Available)
+                            {
+                                <span class="badge bg-success-subtle text-success-emphasis">@item.Status</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary-subtle text-secondary-emphasis">@item.Status</span>
+                            }
+                        </td>
                         <td>@item.DatePosted.ToLocalTime().ToString("g")</td>
                         <td>
                             @if (!string.IsNullOrEmpty(item.QrCodeUrl))
                             {
                                 <a href="@item.QrCodeUrl" title="Click on the picture to enlarge it." target="_blank">
-                                <img src="@item.QrCodeUrl" alt="QR" width="64" height="64" class="border rounded" />
+                                    <img src="@item.QrCodeUrl" alt="QR" width="64" height="64" class="border rounded" />
                                 </a>
                             }
                         </td>

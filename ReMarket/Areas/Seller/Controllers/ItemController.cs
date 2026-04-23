@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +5,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using QRCoder;
 using ReMarket.DataAccess.Repository.IRepository;
 using ReMarket.Models;
+using ReMarket.Models.ViewModel;
 using ReMarket.Utility;
+using System.Security.Claims;
 
 namespace ReMarket.Web.Areas.Seller.Controllers
 {
@@ -265,7 +266,24 @@ namespace ReMarket.Web.Areas.Seller.Controllers
             TempData["success"] = "Item deleted.";
             return RedirectToAction(nameof(Index));
         }
+        public IActionResult RejectReason(int id)
+        {
+            var uid = UserId;
+            if (uid == null)
+                return Challenge();
 
+            var item = _unitOfWork.Item.Get(i => i.Id == id && i.SellerId == uid);
+            if (item == null || item.Status != ItemStatus.Rejected)
+                return NotFound();
+
+            var viewModel = new RejectItemViewModel
+            {
+                Id = item.Id,
+                ItemName = item.Name,
+                RejectionReason = item.RejectionReason
+            };
+            return View(viewModel);
+        }
         private Item? GetOwnedItem(int? id, string uid)
         {
             if (id is null or 0)

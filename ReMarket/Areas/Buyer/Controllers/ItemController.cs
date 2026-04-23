@@ -9,6 +9,7 @@ using ReMarket.Utility;
 namespace ReMarket.Web.Areas.Buyer.Controllers
 {
     [Area("Buyer")]
+    [Authorize(Roles = "Buyer, Admin, Anonymous")]
     public class ItemController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

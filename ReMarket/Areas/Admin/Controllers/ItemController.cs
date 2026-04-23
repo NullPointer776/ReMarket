@@ -10,6 +10,7 @@ using ReMarket.Utility;
 namespace ReMarket.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     //Image upload size limit
     [RequestFormLimits(MultipartBodyLengthLimit = 10 * 1024 * 1024)]
     public class ItemController : Controller

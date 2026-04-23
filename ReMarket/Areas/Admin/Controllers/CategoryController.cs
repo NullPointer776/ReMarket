@@ -8,6 +8,7 @@ using ReMarket.Utility;
 namespace ReMarket.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

@@ -1,0 +1,87 @@
+@model ReMarket.Models.ViewModel.ShoppingCartVM
+@{
+    ViewData["Title"] = "Order Summary";
+}
+
+<form method="post" asp-action="Summary">
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0">Shipping Details</h2>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="OrderHeader.Name" class="form-label"></label>
+                        <input asp-for="OrderHeader.Name" class="form-control" />
+                        <span asp-validation-for="OrderHeader.Name" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="OrderHeader.PhoneNumber" class="form-label"></label>
+                        <input asp-for="OrderHeader.PhoneNumber" class="form-control" />
+                        <span asp-validation-for="OrderHeader.PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="OrderHeader.StreetAddress" class="form-label"></label>
+                        <input asp-for="OrderHeader.StreetAddress" class="form-control" />
+                        <span asp-validation-for="OrderHeader.StreetAddress" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="OrderHeader.City" class="form-label"></label>
+                        <input asp-for="OrderHeader.City" class="form-control" />
+                        <span asp-validation-for="OrderHeader.City" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="OrderHeader.State" class="form-label"></label>
+                        <input asp-for="OrderHeader.State" class="form-control" />
+                        <span asp-validation-for="OrderHeader.State" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="OrderHeader.PostalCode" class="form-label"></label>
+                        <input asp-for="OrderHeader.PostalCode" class="form-control" />
+                        <span asp-validation-for="OrderHeader.PostalCode" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-bag-check me-1"></i>Place Order
+                    </button>
+                    <a asp-action="Index" class="btn btn-link btn-sm mt-2 px-0">Back to cart</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0">Order Summary</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small">
+                        Estimated arrival:
+                        @DateTime.Now.AddDays(7).ToShortDateString()
+                        –
+                        @DateTime.Now.AddDays(14).ToShortDateString()
+                    </p>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var cart in Model.ShoppingCartList)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-start px-0">
+                                <div>
+                                    <span class="fw-semibold">@cart.Item.Name</span>
+                                    <span class="text-muted small d-block">Qty @cart.Count × @cart.Item.Price.ToString("C")</span>
+                                </div>
+                                <span class="fw-semibold">@cart.Price.ToString("C")</span>
+                            </li>
+                        }
+                    </ul>
+                    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                        <span class="h5 mb-0">Order Total</span>
+                        <span class="h5 mb-0 text-primary">@Model.OrderHeader.OrderTotal.ToString("C")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

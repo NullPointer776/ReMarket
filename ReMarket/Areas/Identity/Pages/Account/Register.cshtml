@@ -1,0 +1,135 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    ViewData["AuthPage"] = true;
+}
+
+<div class="auth-card auth-card--wide">
+    <div class="auth-card-header">
+        <h1>@ViewData["Title"]</h1>
+        <p>Create your ReMarket account</p>
+    </div>
+
+    <div class="auth-card-body">
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="auth-field mb-0">
+                        <label asp-for="Input.FirstName"><i class="bi bi-person"></i>First Name</label>
+                        <input asp-for="Input.FirstName" class="form-control" autocomplete="given-name" placeholder="First name" />
+                        <span asp-validation-for="Input.FirstName" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="auth-field mb-0">
+                        <label asp-for="Input.LastName"><i class="bi bi-person"></i>Last Name</label>
+                        <input asp-for="Input.LastName" class="form-control" autocomplete="family-name" placeholder="Last name" />
+                        <span asp-validation-for="Input.LastName" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-field">
+                <label asp-for="Input.Email"><i class="bi bi-envelope"></i>Email</label>
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="you@example.com" />
+                <span asp-validation-for="Input.Email" class="text-danger small"></span>
+            </div>
+
+            <div class="auth-field">
+                <label asp-for="Input.PhoneNumber"><i class="bi bi-telephone"></i>Phone Number</label>
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="+64 …" />
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger small"></span>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="auth-field mb-0">
+                        <label asp-for="Input.Password"><i class="bi bi-lock"></i>Password</label>
+                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" placeholder="Password" />
+                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="auth-field mb-0">
+                        <label asp-for="Input.ConfirmPassword"><i class="bi bi-check-circle"></i>Confirm Password</label>
+                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Confirm password" />
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="auth-divider" />
+            <p class="auth-section-title"><i class="bi bi-geo-alt me-1"></i>Address</p>
+
+            <div class="auth-field">
+                <label asp-for="Input.StreetAddress"><i class="bi bi-house-door"></i>Street Address</label>
+                <input asp-for="Input.StreetAddress" class="form-control" placeholder="Street address" />
+                <span asp-validation-for="Input.StreetAddress" class="text-danger small"></span>
+            </div>
+
+            <div class="auth-field">
+                <label asp-for="Input.Suburb"><i class="bi bi-building"></i>Suburb</label>
+                <input asp-for="Input.Suburb" class="form-control" placeholder="Suburb" />
+                <span asp-validation-for="Input.Suburb" class="text-danger small"></span>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="auth-field mb-0">
+                        <label asp-for="Input.City"><i class="bi bi-geo"></i>City</label>
+                        <input asp-for="Input.City" class="form-control" placeholder="City" />
+                        <span asp-validation-for="Input.City" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="auth-field mb-0">
+                        <label asp-for="Input.State"><i class="bi bi-map"></i>State</label>
+                        <input asp-for="Input.State" class="form-control" placeholder="State" />
+                        <span asp-validation-for="Input.State" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="auth-field mb-0">
+                        <label asp-for="Input.PostalCode"><i class="bi bi-mailbox"></i>Postal Code</label>
+                        <input asp-for="Input.PostalCode" class="form-control" placeholder="Postal code" />
+                        <span asp-validation-for="Input.PostalCode" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-field">
+                <label asp-for="Input.Country"><i class="bi bi-globe"></i>Country</label>
+                <input asp-for="Input.Country" class="form-control" placeholder="Country" />
+                <span asp-validation-for="Input.Country" class="text-danger small"></span>
+            </div>
+
+            <hr class="auth-divider" />
+
+            <div class="auth-field">
+                <label asp-for="Input.Role"><i class="bi bi-person-badge"></i>Role</label>
+                <select asp-for="Input.Role" class="form-select" asp-items="Model.Input.RoleList">
+                    <option value="">Select a role</option>
+                </select>
+                <span asp-validation-for="Input.Role" class="text-danger small"></span>
+            </div>
+
+            <button id="registerSubmit" type="submit" class="btn btn-primary btn-lg w-100 mt-2">
+                <i class="bi bi-person-plus me-2"></i>Create Account
+            </button>
+        </form>
+    </div>
+
+    <div class="auth-card-footer">
+        <p class="mb-0">
+            Already have an account?
+            <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Sign in</a>
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "mssql2": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('serviceConnectorResourceGroupName')]/providers/Microsoft.Web/sites/ReMarketWeb20260527230527/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsReMarketWebContextConne_2C94FC7715",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/remarketwebdbserver/databases/ReMarket.Web_db",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:ReMarketWebContextConnection",
+      "dynamicId": null
+    }
+  }
+}

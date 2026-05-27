@@ -1,0 +1,5 @@
+@model string?
+@if (!string.IsNullOrWhiteSpace(Model))
+{
+    <div class="rich-text-content">@Html.Raw(Model)</div>
+}

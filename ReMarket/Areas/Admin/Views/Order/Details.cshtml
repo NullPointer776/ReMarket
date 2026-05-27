@@ -1,0 +1,195 @@
+@model ReMarket.Models.ViewModel.OrderVM
+@using ReMarket.Utility
+@{
+    ViewData["Title"] = "Order Details";
+    var header = Model.OrderHeader;
+    var canManage = User.IsInRole(SD.Role_Admin);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">Order #@header.Id</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Back to Orders</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        @if (canManage)
+        {
+            <form asp-action="UpdateOrderDetail" method="post" class="card shadow-sm border-0 mb-3">
+                <input type="hidden" asp-for="OrderHeader.Id" />
+                <div class="card-header bg-white">
+                    <h2 class="h6 mb-0">Pickup / Shipping Details</h2>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="OrderHeader.Name" class="form-label"></label>
+                        <input asp-for="OrderHeader.Name" class="form-control" />
+                        <span asp-validation-for="OrderHeader.Name" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="OrderHeader.PhoneNumber" class="form-label"></label>
+                        <input asp-for="OrderHeader.PhoneNumber" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="OrderHeader.StreetAddress" class="form-label"></label>
+                        <input asp-for="OrderHeader.StreetAddress" class="form-control" />
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="OrderHeader.City" class="form-label"></label>
+                            <input asp-for="OrderHeader.City" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="OrderHeader.State" class="form-label"></label>
+                            <input asp-for="OrderHeader.State" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="OrderHeader.PostalCode" class="form-label"></label>
+                        <input asp-for="OrderHeader.PostalCode" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="OrderHeader.Carrier" class="form-label"></label>
+                        <input asp-for="OrderHeader.Carrier" id="carrier" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="OrderHeader.TrackingNumber" class="form-label"></label>
+                        <input asp-for="OrderHeader.TrackingNumber" id="trackingNumber" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Update Order Details</button>
+                </div>
+            </form>
+        }
+        else
+        {
+            <div class="card shadow-sm border-0 mb-3">
+                <div class="card-header bg-white"><h2 class="h6 mb-0">Pickup / Shipping Details</h2></div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-4">Name</dt>
+                        <dd class="col-8">@header.Name</dd>
+                        <dt class="col-4">Phone</dt>
+                        <dd class="col-8">@header.PhoneNumber</dd>
+                        <dt class="col-4">Address</dt>
+                        <dd class="col-8">@header.StreetAddress</dd>
+                        <dt class="col-4">City</dt>
+                        <dd class="col-8">@header.City</dd>
+                        <dt class="col-4">State</dt>
+                        <dd class="col-8">@header.State</dd>
+                        <dt class="col-4">Postal</dt>
+                        <dd class="col-8">@header.PostalCode</dd>
+                    </dl>
+                </div>
+            </div>
+        }
+
+        <div class="card shadow-sm border-0 mb-3">
+            <div class="card-body small">
+                <dl class="row mb-0">
+                    <dt class="col-5">Email</dt>
+                    <dd class="col-7">@header.ApplicationUser?.Email</dd>
+                    <dt class="col-5">Order Date</dt>
+                    <dd class="col-7">@header.OrderDate.ToString("g")</dd>
+                    <dt class="col-5">Shipping Date</dt>
+                    <dd class="col-7">@header.ShippingDate.ToString("d")</dd>
+                    <dt class="col-5">Payment Status</dt>
+                    <dd class="col-7">@header.PaymentStatus</dd>
+                    <dt class="col-5">Order Status</dt>
+                    <dd class="col-7">@header.OrderStatus</dd>
+                    @if (header.PaymentDate != default)
+                    {
+                        <dt class="col-5">Payment Date</dt>
+                        <dd class="col-7">@header.PaymentDate.ToString("g")</dd>
+                    }
+                </dl>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2">
+            @if (canManage)
+            {
+                @if (header.OrderStatus == SD.StatusApproved)
+                {
+                    <form asp-action="StartProcessing" method="post">
+                        <input type="hidden" asp-for="OrderHeader.Id" />
+                        <button type="submit" class="btn btn-primary w-100">Start Processing</button>
+                    </form>
+                }
+                @if (header.OrderStatus == SD.StatusInProcess)
+                {
+                    <form asp-action="ShipOrder" method="post" id="shipForm" onsubmit="return validateInput()">
+                        <input type="hidden" asp-for="OrderHeader.Id" />
+                        <input type="hidden" asp-for="OrderHeader.TrackingNumber" id="shipTracking" />
+                        <input type="hidden" asp-for="OrderHeader.Carrier" id="shipCarrier" />
+                        <button type="submit" class="btn btn-info w-100 text-white" onclick="copyShipFields()">Ship Order</button>
+                    </form>
+                }
+                @if (header.OrderStatus != SD.StatusRefunded
+                            && header.OrderStatus != SD.StatusCancelled
+                            && header.OrderStatus != SD.StatusShipped)
+                {
+                    <form asp-action="CancelOrder" method="post">
+                        <input type="hidden" asp-for="OrderHeader.Id" />
+                        <button type="submit" class="btn btn-danger w-100">Cancel Order</button>
+                    </form>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white"><h2 class="h6 mb-0">Order Summary</h2></div>
+            <div class="card-body p-0">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr><th>Item</th><th>Price</th><th>Qty</th><th>Total</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var detail in Model.OrderDetail)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">@detail.Item.Name</div>
+                                    <div class="small text-muted">@(detail.Item.Description ?? "")</div>
+                                </td>
+                                <td>@detail.Price.ToString("C")</td>
+                                <td>@detail.Count</td>
+                                <td>@((detail.Price * detail.Count).ToString("C"))</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" class="text-end">Order Total</th>
+                            <th>@header.OrderTotal.ToString("C")</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function copyShipFields() {
+            var tracking = document.getElementById('trackingNumber') || document.getElementById('shipTracking');
+            var carrier = document.getElementById('carrier') || document.getElementById('shipCarrier');
+            if (document.getElementById('shipTracking') && tracking)
+                document.getElementById('shipTracking').value = tracking.value;
+            if (document.getElementById('shipCarrier') && carrier)
+                document.getElementById('shipCarrier').value = carrier.value;
+        }
+        function validateInput() {
+            copyShipFields();
+            var t = document.getElementById('trackingNumber')?.value || document.getElementById('shipTracking')?.value;
+            var c = document.getElementById('carrier')?.value || document.getElementById('shipCarrier')?.value;
+            if (!t) { Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please enter tracking number!' }); return false; }
+            if (!c) { Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please enter carrier!' }); return false; }
+            return true;
+        }
+    </script>
+}

@@ -1,0 +1,97 @@
+@using ReMarket.DataAccess.Services
+@using ReMarket.Utility
+@model ReMarket.Models.ViewModel.OrderVM
+@{
+    ViewData["Title"] = "Order details";
+    var header = Model.OrderHeader;
+    var canCancel = OrderCancellationService.CanCancel(header);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">Order #@header.Id</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Back to my orders</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card shadow-sm border-0 mb-3">
+            <div class="card-header bg-white"><h2 class="h6 mb-0">Shipping details</h2></div>
+            <div class="card-body">
+                <dl class="row mb-0 small">
+                    <dt class="col-4">Name</dt>
+                    <dd class="col-8">@header.Name</dd>
+                    <dt class="col-4">Phone</dt>
+                    <dd class="col-8">@header.PhoneNumber</dd>
+                    <dt class="col-4">Address</dt>
+                    <dd class="col-8">@header.StreetAddress</dd>
+                    <dt class="col-4">City</dt>
+                    <dd class="col-8">@header.City</dd>
+                    <dt class="col-4">State</dt>
+                    <dd class="col-8">@header.State</dd>
+                    <dt class="col-4">Postal</dt>
+                    <dd class="col-8">@header.PostalCode</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 mb-3">
+            <div class="card-body small">
+                <dl class="row mb-0">
+                    <dt class="col-5">Order date</dt>
+                    <dd class="col-7">@header.OrderDate.ToString("g")</dd>
+                    <dt class="col-5">Shipping date</dt>
+                    <dd class="col-7">@header.ShippingDate.ToString("d")</dd>
+                    <dt class="col-5">Payment status</dt>
+                    <dd class="col-7">@header.PaymentStatus</dd>
+                    <dt class="col-5">Order status</dt>
+                    <dd class="col-7">@header.OrderStatus</dd>
+                    @if (!string.IsNullOrEmpty(header.TrackingNumber))
+                    {
+                        <dt class="col-5">Tracking</dt>
+                        <dd class="col-7">@header.TrackingNumber (@header.Carrier)</dd>
+                    }
+                </dl>
+            </div>
+        </div>
+
+        @if (canCancel)
+        {
+            <form asp-action="Cancel" asp-route-id="@header.Id" method="post"
+                  onsubmit="return confirm('Cancel this order? Paid orders will be refunded to your original payment method.');">
+                <button type="submit" class="btn btn-danger w-100">Cancel order</button>
+            </form>
+        }
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white"><h2 class="h6 mb-0">Order summary</h2></div>
+            <div class="card-body p-0">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr><th>Item</th><th>Price</th><th>Qty</th><th>Total</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var detail in Model.OrderDetail)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">@detail.Item.Name</div>
+                                </td>
+                                <td>@detail.Price.ToString("C")</td>
+                                <td>@detail.Count</td>
+                                <td>@((detail.Price * detail.Count).ToString("C"))</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" class="text-end">Order total</th>
+                            <th>@header.OrderTotal.ToString("C")</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

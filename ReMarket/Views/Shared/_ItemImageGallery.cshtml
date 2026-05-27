@@ -1,0 +1,110 @@
+@using ReMarket.Utility
+@using ReMarket.Models.ViewModel
+@model ItemImageGalleryViewModel
+@{
+    var urls = Model.ImageUrls;
+    var hasImages = urls.Count > 0;
+    var modeClass = Model.Mode.ToString().ToLowerInvariant();
+    var placeholderSlots = Math.Min(4, ItemGallery.MaxImages);
+    var mainUrl = hasImages ? urls[0] : "";
+    var showThumbStrip = !hasImages || urls.Count > 1 || Model.Mode == ItemImageGalleryMode.Detail;
+}
+
+<div class="item-image-gallery item-image-gallery--@modeClass"
+     id="gallery-@Model.GalleryId"
+     data-item-image-gallery
+     data-gallery-id="@Model.GalleryId">
+    <div class="item-image-gallery__stage border rounded overflow-hidden bg-light position-relative">
+        @if (hasImages)
+        {
+            <div class="item-image-gallery__viewport">
+                <div class="item-image-gallery__track">
+                    @for (var i = 0; i < urls.Count; i++)
+                    {
+                        var url = urls[i];
+                        <a href="@url"
+                           class="item-image-gallery__slide item-image-gallery__main-link"
+                           target="_blank"
+                           rel="noopener"
+                           title="Open image">
+                            <img src="@url"
+                                 alt="@Model.AltText"
+                                 class="item-image-gallery__main w-100 h-100"
+                                 style="object-fit: cover;" />
+                        </a>
+                    }
+                </div>
+            </div>
+            @if (urls.Count > 1)
+            {
+                <button type="button" class="item-image-gallery__nav item-image-gallery__nav--prev" aria-label="Previous image">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <button type="button" class="item-image-gallery__nav item-image-gallery__nav--next" aria-label="Next image">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            }
+            @if (Model.Mode == ItemImageGalleryMode.Card && urls.Count > 1)
+            {
+                <span class="item-image-gallery__count badge bg-dark bg-opacity-75 position-absolute bottom-0 end-0 m-2">
+                    <i class="bi bi-images me-1"></i>@urls.Count
+                </span>
+            }
+        }
+        else
+        {
+            <div class="item-image-gallery__empty w-100 h-100 d-flex flex-column align-items-center justify-content-center text-muted">
+                <i class="bi bi-images fs-3 mb-1"></i>
+                <span class="small">No images yet</span>
+            </div>
+        }
+    </div>
+
+    @if (showThumbStrip)
+    {
+    <div class="item-image-gallery__thumbs mt-2" role="tablist" aria-label="Image thumbnails">
+        @if (hasImages)
+        {
+            @for (var i = 0; i < urls.Count; i++)
+            {
+                var url = urls[i];
+                var isActive = i == 0;
+                <div class="item-image-gallery__thumb-wrap position-relative">
+                    <button type="button"
+                            class="item-image-gallery__thumb border rounded overflow-hidden p-0 @(isActive ? "active" : "")"
+                            data-index="@i"
+                            data-src="@url"
+                            aria-label="Show image @(i + 1)"
+                            aria-selected="@isActive">
+                        <img src="@url" alt="" class="w-100 h-100" style="object-fit: cover;" />
+                    </button>
+                    @if (Model.ShowOwnerDelete && Model.ItemId.HasValue && urls.Count > 1)
+                    {
+                        <form asp-area="@Model.DeleteArea" asp-controller="Item" asp-action="DeleteImage" method="post"
+                              class="item-image-gallery__delete position-absolute top-0 end-0">
+                            <input type="hidden" name="id" value="@Model.ItemId" />
+                            <input type="hidden" name="imageIndex" value="@i" />
+                            @if (!string.IsNullOrEmpty(Model.ReturnSlug))
+                            {
+                                <input type="hidden" name="returnSlug" value="@Model.ReturnSlug" />
+                            }
+                            @if (!string.IsNullOrEmpty(Model.ReturnTo))
+                            {
+                                <input type="hidden" name="returnTo" value="@Model.ReturnTo" />
+                            }
+                            <button type="submit" class="btn btn-sm btn-danger shadow-sm py-0 px-1 lh-1" title="Remove this photo" aria-label="Remove this photo">×</button>
+                        </form>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            @for (var i = 0; i < placeholderSlots; i++)
+            {
+                <div class="item-image-gallery__thumb item-image-gallery__thumb--placeholder border rounded bg-light" aria-hidden="true"></div>
+            }
+        }
+    </div>
+    }
+</div>

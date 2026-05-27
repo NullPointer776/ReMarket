@@ -1,0 +1,14 @@
+@model int
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="container row pt-4">
+    <div class="col-12 text-center">
+        <h1 class="text-primary">Order Placed Successfully!</h1>
+        <p class="lead mt-3">Your Order Number is: <strong>@Model</strong></p>
+        <p class="text-muted">Your order has been placed successfully.</p>
+        <a asp-area="Buyer" asp-controller="Order" asp-action="Index" class="btn btn-outline-secondary mt-3 me-2">My orders</a>
+        <a asp-area="Buyer" asp-controller="Item" asp-action="Index" class="btn btn-primary mt-3">Continue shopping</a>
+    </div>
+</div>

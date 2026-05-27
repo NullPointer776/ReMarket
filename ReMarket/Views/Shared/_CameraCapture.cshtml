@@ -1,0 +1,124 @@
+﻿@* _CameraCapture.cshtml - Camera capture component *@
+<div id="cameraSection" style="display: none; margin-bottom: 1rem;">
+    <div class="border rounded p-2 bg-light">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <small class="text-muted"><i class="bi bi-camera"></i> Take a photo</small>
+            <button type="button" class="btn-close btn-sm" id="closeCameraBtn" aria-label="Close"></button>
+        </div>
+        <video id="video" autoplay playsinline style="width: 100%; max-width: 300px; border-radius: 8px;"></video>
+        <canvas id="canvas" style="display: none;"></canvas>
+        <div class="mt-2">
+            <button type="button" id="captureBtn" class="btn btn-sm btn-success">Capture</button>
+            <button type="button" id="switchCameraBtn" class="btn btn-sm btn-secondary">Switch Camera</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        let stream = null;
+        let facingMode = "environment";
+        let currentTargetInput = null;
+
+        window.openCamera = function(targetInputId) {
+            currentTargetInput = targetInputId;
+            const section = document.getElementById('cameraSection');
+
+            if (section.style.display === 'block') {
+                stopCamera();
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+            startCamera();
+        };
+
+        function startCamera() {
+            if (stream) stopCamera();
+
+            const constraints = {
+                video: { facingMode: { exact: facingMode } }
+            };
+
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then(s => {
+                    stream = s;
+                    const video = document.getElementById('video');
+                    video.srcObject = stream;
+                    video.play();
+                })
+                .catch(() => {
+                    navigator.mediaDevices.getUserMedia({ video: true })
+                        .then(s => {
+                            stream = s;
+                            const video = document.getElementById('video');
+                            video.srcObject = stream;
+                            video.play();
+                        })
+                        .catch(err => {
+                            alert('Cannot access camera: ' + err.message);
+                            document.getElementById('cameraSection').style.display = 'none';
+                        });
+                });
+        }
+
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            const video = document.getElementById('video');
+            if (video) video.srcObject = null;
+        }
+
+        document.getElementById('captureBtn')?.addEventListener('click', function() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const width = video.videoWidth;
+            const height = video.videoHeight;
+
+            if (width === 0 || height === 0) {
+                alert('Camera not ready');
+                return;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            canvas.getContext('2d').drawImage(video, 0, 0, width, height);
+
+            canvas.toBlob(function(blob) {
+                const fileName = `camera_${Date.now()}.jpg`;
+                const file = new File([blob], fileName, { type: 'image/jpeg' });
+
+                if (currentTargetInput) {
+                    const fileInput = document.getElementById(currentTargetInput);
+                    if (fileInput) {
+                        const dt = new DataTransfer();
+                        for (let i = 0; i < fileInput.files.length; i++) {
+                            dt.items.add(fileInput.files[i]);
+                        }
+                        dt.items.add(file);
+                        fileInput.files = dt.files;
+
+                        const event = new Event('change', { bubbles: true });
+                        fileInput.dispatchEvent(event);
+                    }
+                }
+
+                document.getElementById('closeCameraBtn')?.click();
+            }, 'image/jpeg', 0.8);
+        });
+
+        document.getElementById('switchCameraBtn')?.addEventListener('click', function() {
+            facingMode = facingMode === "environment" ? "user" : "environment";
+            startCamera();
+        });
+
+        document.getElementById('closeCameraBtn')?.addEventListener('click', function() {
+            stopCamera();
+            document.getElementById('cameraSection').style.display = 'none';
+            currentTargetInput = null;
+        });
+    })();
+</script>

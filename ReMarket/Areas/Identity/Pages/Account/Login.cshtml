@@ -1,0 +1,69 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Log in";
+    ViewData["AuthPage"] = true;
+}
+
+<div class="auth-card">
+    <div class="auth-card-header">
+        <h1>@ViewData["Title"]</h1>
+        <p>Welcome back! Sign in to your account</p>
+    </div>
+
+    <div class="auth-card-body">
+        <form id="account" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+
+            <div class="auth-field">
+                <label asp-for="Input.Email">
+                    <i class="bi bi-envelope"></i>Email
+                </label>
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="you@example.com" />
+                <span asp-validation-for="Input.Email" class="text-danger small"></span>
+            </div>
+
+            <div class="auth-field">
+                <label asp-for="Input.Password">
+                    <i class="bi bi-lock"></i>Password
+                </label>
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Enter your password" />
+                <span asp-validation-for="Input.Password" class="text-danger small"></span>
+            </div>
+
+            <div class="remember-me-check">
+                <label class="remember-me-label" for="Input_RememberMe">
+                    <span class="remember-me-wrap">
+                        <input class="remember-me-input" type="checkbox" asp-for="Input.RememberMe" data-val="false" />
+                        <span class="remember-me-box" aria-hidden="true"></span>
+                    </span>
+                    <span class="remember-me-text">@Html.DisplayNameFor(m => m.Input.RememberMe)</span>
+                </label>
+            </div>
+
+            <button id="login-submit" type="submit" class="btn btn-primary btn-lg w-100">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Log in
+            </button>
+
+            <div class="text-center mt-3">
+                <a id="forgot-password" asp-page="./ForgotPassword" class="small text-muted">
+                    <i class="bi bi-key me-1"></i>Forgot your password?
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="auth-card-footer">
+        <p class="mb-1">
+            Don't have an account?
+            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Create one</a>
+        </p>
+        <p class="mb-0">
+            <a id="resend-confirmation" asp-page="./ResendEmailConfirmation" class="small">Resend email confirmation</a>
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

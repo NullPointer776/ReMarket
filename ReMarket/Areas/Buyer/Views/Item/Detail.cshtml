@@ -1,0 +1,149 @@
+@using System.Globalization
+@using ReMarket.Utility
+@model ReMarket.Models.ViewModel.ItemDetailViewModel
+@{
+    ViewData["Title"] = Model.Item.Name;
+    var enUs = CultureInfo.GetCultureInfo("en-US");
+    var deleteArea = User.IsInRole(SD.Role_Admin) ? "Admin" : "Seller";
+}
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <partial name="_ItemImageGallery" model="@(new ReMarket.Models.ViewModel.ItemImageGalleryViewModel {
+            ImageUrls = Model.ImageUrls,
+            AltText = Model.Item.Name,
+            GalleryId = $"detail-{Model.Item.Id}",
+            Mode = ReMarket.Models.ViewModel.ItemImageGalleryMode.Detail,
+            ItemId = Model.Item.Id,
+            ShowOwnerDelete = Model.IsListingOwner,
+            ReturnSlug = Model.Item.Slug,
+            DeleteArea = deleteArea
+        })" />
+        @if (Model.CanAddMoreImages && !string.IsNullOrEmpty(Model.AddMoreImagesUrl))
+        {
+            <a href="@Model.AddMoreImagesUrl" class="btn btn-outline-primary btn-sm mt-2">
+                <i class="bi bi-plus-lg me-1"></i>Add image
+            </a>
+            <p class="text-muted small mt-1 mb-0">Up to @ItemGallery.MaxImages images total. You can add more in your listing editor.</p>
+        }
+    </div>
+
+    <div class="col-md-6">
+        <h1 class="h2 mb-3">@Model.Item.Name</h1>
+
+        <div class="mb-3">
+            <span class="display-6 text-primary fw-bold">@Model.Item.Price.ToString("C")</span>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Item Details</h5>
+                <table class="table table-sm table-borderless mb-0">
+                    <tr>
+                        <th style="width: 120px;">Condition:</th>
+                        <td>@Model.Item.Condition</td>
+                    </tr>
+                    <tr>
+                        <th>Quantity:</th>
+                        <td>
+                            @if (Model.Item.Quantity > 0)
+                            {
+                                <span class="text-success">@Model.Item.Quantity in stock</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">Sold out</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Location:</th>
+                        <td>@(string.IsNullOrEmpty(Model.Item.Location) ? "N/A" : Model.Item.Location)</td>
+                    </tr>
+                    <tr>
+                        <th>Category:</th>
+                        <td>@(Model.Item.Category?.Name ?? "No category")</td>
+                    </tr>
+                    <tr>
+                        <th>Delivery Option:</th>
+                        <td>@Model.Item.DeliveryOption</td>
+                    </tr>
+                    <tr>
+                        <th>Posted:</th>
+                        <td>@Model.Item.DatePosted.ToString("MMMM dd, yyyy", enUs)</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Seller Information</h5>
+                <table class="table table-sm table-borderless mb-0">
+                    <tr>
+                        <th style="width: 120px;">Name:</th>
+                        <td>@Model.SellerName</td>
+                    </tr>
+                    <tr>
+                        <th>Email:</th>
+                        <td>@Model.SellerEmail</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Item.QrCodeUrl))
+        {
+            <div class="mb-3">
+                <a href="@Model.Item.QrCodeUrl" target="_blank" title="Click to view QR code" class="btn btn-outline-secondary">
+                    <i class="bi bi-qr-code me-1"></i>View QR Code
+                </a>
+            </div>
+        }
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Description</h5>
+                <p class="card-text">@(string.IsNullOrEmpty(Model.Item.Description) ? "No description provided." : Model.Item.Description)</p>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2">
+            @if (Model.Item.Quantity > 0 && Model.Item.Status == ItemStatus.Available)
+            {
+                @if (Model.IsListingOwner)
+                {
+                    <p class="text-muted mb-0">This is your listing. You cannot add it to your cart.</p>
+                }
+                else
+                {
+                    <form asp-action="AddToCart" method="post" class="card border-0 bg-light p-3">
+                        <input type="hidden" asp-for="CartInput.ItemId" />
+                        <div class="mb-3">
+                            <label asp-for="CartInput.Count" class="form-label">Quantity</label>
+                            <input asp-for="CartInput.Count" class="form-control" type="number" min="1" max="@Model.Item.Quantity" />
+                            <span asp-validation-for="CartInput.Count" class="text-danger small"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                        </button>
+                    </form>
+                }
+            }
+            else
+            {
+                <button class="btn btn-secondary btn-lg" disabled>Sold Out</button>
+            }
+        </div>
+    </div>
+</div>
+
+<p class="mt-4">
+    <a asp-action="Index" class="btn btn-link">
+        <i class="bi bi-arrow-left me-1"></i>Back to list
+    </a>
+</p>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

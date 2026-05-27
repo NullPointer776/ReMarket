@@ -1,0 +1,98 @@
+@model List<Category>
+
+@{
+    ViewData["Title"] = "Category Management";
+}
+
+<div class="container-fluid admin-category-page">
+    <div class="d-flex justify-content-between align-items-center my-3">
+        <h2 class="fw-semibold">Category Management</h2>
+        <a asp-action="Create" class="btn btn-primary btn-sm">New Category</a>
+    </div>
+
+    <table class="table table-hover align-middle admin-category-table">
+        <thead class="table-light">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Slug</th>
+                <th>Active</th>
+                <th>Subcategories</th>
+                <th>Description</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var parent in Model)
+            {
+                <tr class="admin-parent-row">
+                    <td class="fw-semibold text-dark">@parent.Name</td>
+                    <td><span class="badge bg-primary-subtle text-primary-emphasis">Root</span></td>
+                    <td><code class="text-muted small">@parent.Slug</code></td>
+                    <td>
+                        @if (parent.IsActive)
+                        {
+                            <span class="badge bg-success-subtle text-success-emphasis">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary-subtle text-secondary-emphasis">No</span>
+                        }
+                    </td>
+                    <td>
+                        @if (parent.SubCategories != null && parent.SubCategories.Any())
+                        {
+                            <span class="badge bg-info-subtle text-info-emphasis">@parent.SubCategories.Count()</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">-</span>
+                        }
+                    </td>
+                    <td class="text-muted small">@(parent.Description ?? "—")</td>
+                    <td class="text-end text-nowrap">
+                        <a asp-action="Edit" asp-route-id="@parent.Id" class="btn btn-sm btn-outline-secondary me-1">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@parent.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+
+                @if (parent.SubCategories != null)
+                {
+                    foreach (var sub in parent.SubCategories)
+                    {
+                        <tr class="admin-sub-row">                            
+                            <td class="text-dark fw-semibold">@sub.Name</td>
+                            <td><span class="badge bg-secondary-subtle text-secondary-emphasis">Sub</span></td>
+                            <td><code class="text-muted small">@sub.Slug</code></td>
+                            <td>
+                                @if (sub.IsActive)
+                                {
+                                    <span class="badge bg-success-subtle text-success-emphasis">Yes</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary-subtle text-secondary-emphasis">No</span>
+                                }
+                            </td>
+                            <td>
+                                @if (sub.SubCategories != null && sub.SubCategories.Any())
+                                {
+                                    <span class="badge bg-info-subtle text-info-emphasis">@sub.SubCategories.Count()</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td class="text-muted small">@(sub.Description ?? "—")</td>
+                            <td class="text-end text-nowrap">
+                                <a asp-action="Edit" asp-route-id="@sub.Id" class="btn btn-sm btn-outline-secondary me-1">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@sub.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>

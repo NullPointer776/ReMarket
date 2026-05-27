@@ -1,0 +1,168 @@
+﻿@using System.Globalization
+@using ReMarket.Utility
+@model ReMarket.Models.ViewModel.ItemIndexViewModel
+@{
+    ViewData["Title"] = "Items";
+    var enUs = CultureInfo.GetCultureInfo("en-US");
+}
+
+<h1 class="h3 mb-3">Items for sale</h1>
+@*Search bar*@
+<form method="get" class="mb-3">
+    <div class="input-group">
+        <input type="search" name="search" value="@Model.Search" class="form-control" placeholder="Search by name or description..." />
+        <input type="hidden" name="activeTab" value="@Model.ActiveTab" />
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search"></i>
+        </button>
+    </div>
+</form>
+@*Category and Filters swith Tabs*@
+<ul class="nav nav-tabs mb-3" id="filterTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(Model.ActiveTab == "category" ? "active" : "")" id="category-tab" data-bs-toggle="tab" data-bs-target="#category" type="button" role="tab">Categories</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link @(Model.ActiveTab == "filter" ? "active" : "")" id="filter-tab" data-bs-toggle="tab" data-bs-target="#filter" type="button" role="tab">Filters & Sort</button>
+    </li>
+</ul>
+@*Category bar*@
+<div class="tab-content mb-4">
+
+    <div class="tab-pane fade @(Model.ActiveTab == "category" ? "show active" : "")" id="category" role="tabpanel">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    <a asp-action="Index" asp-route-search="@Model.Search" asp-route-activeTab="category" class="btn btn-outline-secondary">
+                        All Categories
+                    </a>
+                    @*All root catrgories*@
+                    @foreach (var parent in Model.Categories.Where(c => c.ParentCategoryId == null && c.IsActive))
+                    {
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" title="@parent.Description">
+                                @parent.Name
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-action="Index" asp-route-categoryId="@parent.Id" asp-route-search="@Model.Search" asp-route-activeTab="category" title="@parent.Description">
+                                        All @parent.Name
+                                    </a>
+                                </li>
+                                @if (parent.SubCategories != null && parent.SubCategories.Any(c => c.IsActive))
+                                {
+                                    foreach (var child in parent.SubCategories.Where(c => c.IsActive))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-action="Index" asp-route-categoryId="@child.Id" asp-route-search="@Model.Search" asp-route-activeTab="category" title="@child.Description">
+                                                @child.Name
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    }
+                </div>
+                @if (Model.CategoryId.HasValue)
+                {
+                    var selected = Model.Categories.FirstOrDefault(c => c.Id == Model.CategoryId);
+                    <p class="mt-3 mb-0 text-muted">
+                        <i class="bi bi-funnel-fill me-1"></i>Filtered by: @(selected?.Name ?? "Category")
+                        <a asp-action="Index" asp-route-search="@Model.Search" asp-route-activeTab="category" class="ms-2">Clear</a>
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+@*Filter and sort bar*@
+    <div class="tab-pane fade @(Model.ActiveTab == "filter" ? "show active" : "")" id="filter" role="tabpanel">
+        <div class="card">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <input type="hidden" name="categoryId" value="@Model.CategoryId" />
+                    <input type="hidden" name="search" value="@Model.Search" />
+                    <input type="hidden" name="activeTab" value="filter" />
+
+                    <div class="col-md-3">
+                        <label class="form-label">Condition</label>
+                        <select name="condition" class="form-select">
+                            <option value="">All</option>
+                            @foreach (var cond in Enum.GetNames(typeof(Condition)))
+                            {
+                                <option value="@cond" selected="@(Model.Condition == cond)">@cond</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Delivery Option</label>
+                        <select name="deliveryOption" class="form-select">
+                            <option value="">All</option>
+                            @foreach (var opt in Enum.GetNames(typeof(DeliveryOption)))
+                            {
+                                <option value="@opt" selected="@(Model.DeliveryOption == opt)">@opt</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Location</label>
+                        <input type="text" name="location" value="@Model.Location" class="form-control" placeholder="City or area..." />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Sort By</label>
+                        <select name="sortBy" class="form-select">
+                            <option value="">Posted Date: Newest First</option>
+                            <option value="oldest" selected="@(Model.SortBy == "oldest")">Posted Date: Oldest First</option>
+                            <option value="price_high" selected="@(Model.SortBy == "price_high")">Price: High to Low</option>
+                            <option value="price_low" selected="@(Model.SortBy == "price_low")">Price: Low to High</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Apply Filters</button>
+                        <a asp-action="Index" asp-route-activeTab="filter" class="btn btn-outline-secondary">Clear All</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@*Item contents*@
+@if (!Model.Items.Any())
+{
+    <p class="text-muted">No items match your filters.</p>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var item in Model.Items)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <partial name="_ItemImageGallery" model="@(new ReMarket.Models.ViewModel.ItemImageGalleryViewModel {
+                        ImageUrls = ItemGallery.GetAllImageUrls(item),
+                        AltText = item.Name,
+                        GalleryId = $"card-{item.Id}",
+                        Mode = ReMarket.Models.ViewModel.ItemImageGalleryMode.Card
+                    })" />
+                    <div class="card-body">
+                        <h2 class="card-title h5">@item.Name</h2>
+                        <p class="card-text mb-1">
+                            <strong>Price:</strong> <span class="text-primary fw-bold">@item.Price.ToString("C")</span>
+                        </p>
+                        <p class="card-text mb-1"><strong>Condition:</strong> @item.Condition</p>
+                        <p class="card-text mb-1"><strong>Quantity:</strong> @item.Quantity</p>
+                        <p class="card-text mb-1"><strong>Location:</strong> @(string.IsNullOrEmpty(item.Location) ? "N/A" : item.Location)</p>
+                        <p class="card-text mb-1"><strong>Delivery:</strong> @item.DeliveryOption</p>
+                        <p class="card-text mb-1"><strong>Seller:</strong> @(item.Seller?.UserName ?? "Unknown")</p>
+                        <p class="card-text mb-1"><strong>Posted:</strong> @item.DatePosted.ToString("MMM dd, yyyy", enUs)</p>
+                        <a asp-action="Detail" asp-route-slug="@item.Slug" class="btn btn-outline-primary w-100 mt-2">View Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,23 @@
+@model ReMarket.Models.ViewModel.RejectItemViewModel
+@{
+    ViewData["Title"] = "Reject item";
+}
+
+
+<h1 class="h3 mb-3">Reject: @Model.ItemName</h1>
+
+<form asp-action="Reject" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+    <div class="mb-3">
+        <label asp-for="RejectionReason" class="form-label"></label>
+        <textarea asp-for="RejectionReason" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="RejectionReason" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-danger">Confirm reject</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

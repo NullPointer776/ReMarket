@@ -1,0 +1,13 @@
+@model Item
+@{
+    ViewData["Title"] = "Delete item";
+}
+
+<h1 class="h3 mb-3">Confirm delete</h1>
+<p>Delete <strong>@Model.Name</strong>? This cannot be undone.</p>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+</form>

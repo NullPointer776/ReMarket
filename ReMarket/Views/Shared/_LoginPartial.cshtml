@@ -1,0 +1,35 @@
+@using Microsoft.AspNetCore.Identity
+@using ReMarket.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+    var displayName = !string.IsNullOrEmpty(currentUser?.FirstName) ? currentUser.FirstName : User.Identity?.Name;
+}
+
+<ul class="navbar-nav align-items-sm-center gap-1">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage account">
+                <i class="bi bi-person-circle me-1"></i>@displayName
+            </a>
+        </li>
+        <li class="nav-item">
+            <form class="d-inline" asp-area="Identity" asp-page="/Account/Logout"
+                  asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "Buyer" })" method="post">
+                <button type="submit" class="nav-link btn btn-link nav-auth-btn nav-auth-btn--login">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link nav-auth-btn nav-auth-btn--login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link nav-auth-btn nav-auth-btn--register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+    }
+</ul>

@@ -1,0 +1,46 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="hero-card mb-4 d-flex flex-column align-items-center text-center">
+    <span class="hero-chip">Second-hand marketplace</span>
+    <h1 class="hero-title mt-3 mb-2">Welcome to ReMarket</h1>
+    <p class="hero-subtitle mb-4">
+        Browse quality pre-owned items and give products a meaningful second life.
+    </p>
+    <div class="d-flex gap-2 flex-wrap justify-content-center">
+        <a class="btn btn-primary btn-lg px-4" asp-area="Buyer" asp-controller="Item" asp-action="Index">
+            <i class="bi bi-bag me-2"></i>Browse Items
+        </a>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a class="btn btn-outline-primary btn-lg px-4" asp-area="Seller" asp-controller="Item" asp-action="Create">
+                <i class="bi bi-plus-circle me-2"></i>List Item
+            </a>
+        }
+        else
+        {
+            <a class="btn btn-outline-primary btn-lg px-4" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="/Seller/Item/Create">
+                <i class="bi bi-plus-circle me-2"></i>List Item
+            </a>
+        }
+    </div>
+</section>
+
+<div class="highlight-grid">
+    <div class="highlight-card">
+        <i class="bi bi-shield-check"></i>
+        <div class="highlight-title">Trusted Listings</div>
+        <p class="highlight-text">Every item is reviewed by our admin team before going live.</p>
+    </div>
+    <div class="highlight-card">
+        <i class="bi bi-images"></i>
+        <div class="highlight-title">Rich Galleries</div>
+        <p class="highlight-text">Browse multiple photos per item so you know exactly what you're getting.</p>
+    </div>
+    <div class="highlight-card">
+        <i class="bi bi-truck"></i>
+        <div class="highlight-title">Flexible Delivery</div>
+        <p class="highlight-text">Choose shipping, pickup, or both — whatever works for you.</p>
+    </div>
+</div>

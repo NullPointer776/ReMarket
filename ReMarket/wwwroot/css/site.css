@@ -1,0 +1,745 @@
+/* ── ReMarket Design System (light theme — overrides Bootswatch Superhero) ── */
+:root,
+[data-bs-theme=light] {
+    /* Bootstrap body tokens → force readable light UI */
+    --bs-body-bg: #fafbfc;
+    --bs-body-color: #334155;
+    --bs-body-color-rgb: 51, 65, 85;
+    --bs-emphasis-color: #1e293b;
+    --bs-secondary-color: #64748b;
+    --bs-secondary-bg: #f1f5f9;
+    --bs-tertiary-bg: #f8fafc;
+    --bs-heading-color: #1e293b;
+    --bs-link-color: #c45a12;
+    --bs-link-hover-color: #9a4610;
+    --bs-border-color: #e2e8f0;
+    --bs-card-bg: #ffffff;
+    --bs-card-color: #334155;
+    --bs-card-cap-bg: #fff7ed;
+    --bs-card-border-color: #e2e8f0;
+    --bs-table-bg: #ffffff;
+    --bs-table-color: #334155;
+    --bs-table-striped-bg: #f8fafc;
+    --bs-input-bg: #ffffff;
+    --bs-input-color: #334155;
+    --bs-input-border-color: #cbd5e1;
+    --bs-dropdown-bg: #ffffff;
+    --bs-dropdown-link-color: #334155;
+    --bs-dropdown-link-hover-bg: #fff7ed;
+    --bs-dropdown-link-hover-color: #9a4610;
+
+    /* ReMarket tokens — warm light palette */
+    --rm-primary: #e07b24;
+    --rm-primary-dark: #c45a12;
+    --rm-primary-light: #ffedd5;
+    --rm-primary-soft: #fff7ed;
+    --rm-bg: #fafbfc;
+    --rm-surface: #ffffff;
+    --rm-text: #1e293b;
+    --rm-text-muted: #64748b;
+    --rm-border: #e2e8f0;
+    --rm-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
+    --rm-shadow-lg: 0 8px 28px rgba(15, 23, 42, 0.1);
+    --rm-radius: 10px;
+    --rm-radius-lg: 14px;
+    --rm-font: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+}
+html {
+    font-size: 15px;
+    position: relative;
+    min-height: 100%;
+}
+
+@media (min-width: 768px) {
+    html { font-size: 16px; }
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--rm-font);
+    background: var(--rm-bg) !important;
+    color: var(--rm-text) !important;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Force light surfaces on Bootstrap components (Superhero dark defaults) */
+.card,
+.card-body,
+.modal-content,
+.list-group-item,
+.dropdown-menu,
+.form-control,
+.form-select,
+.input-group-text {
+    background-color: #ffffff !important;
+    color: var(--rm-text) !important;
+}
+
+.table {
+    --bs-table-bg: #ffffff;
+    --bs-table-color: var(--rm-text);
+    --bs-table-striped-bg: #f8fafc;
+    --bs-table-hover-bg: #fff7ed;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: var(--rm-text) !important;
+}
+
+.text-dark {
+    color: var(--rm-text) !important;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    color: var(--rm-text);
+}
+
+/* ── Focus ── */
+.btn:focus,
+.btn:active:focus,
+.form-control:focus,
+.form-select:focus {
+    box-shadow: 0 0 0 3px rgba(224, 123, 36, 0.28);
+}
+
+/* ── Navbar ── */
+.app-navbar {
+    background: var(--rm-surface) !important;
+    border-bottom: 1px solid var(--rm-border) !important;
+    box-shadow: 0 1px 8px rgba(26, 35, 50, 0.04);
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+}
+
+.navbar-brand {
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--rm-primary) !important;
+    letter-spacing: -0.02em;
+}
+
+.navbar-brand i {
+    color: var(--rm-primary);
+}
+
+.navbar .nav-link {
+    color: var(--rm-text) !important;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 0.45rem 0.85rem !important;
+    transition: background 0.15s, color 0.15s;
+}
+
+.navbar .nav-link:hover {
+    background: var(--rm-primary-soft);
+    color: var(--rm-primary-dark) !important;
+}
+
+.navbar .nav-link.btn-link {
+    border: none;
+    text-decoration: none;
+}
+
+.app-search-form {
+    min-width: 220px;
+    max-width: 280px;
+}
+
+.app-search-form .form-control {
+    border-color: var(--rm-border);
+    border-radius: 8px 0 0 8px;
+    font-size: 0.9rem;
+}
+
+.app-search-form .btn {
+    border-radius: 0 8px 8px 0;
+}
+
+.nav-auth-btn {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    padding: 0.4rem 1rem !important;
+}
+
+.nav-auth-btn--login {
+    color: var(--rm-primary) !important;
+}
+
+.nav-auth-btn--login:hover {
+    background: var(--rm-primary-soft) !important;
+}
+
+.nav-auth-btn--register {
+    background: var(--rm-primary) !important;
+    color: #fff !important;
+    margin-left: 0.25rem;
+}
+
+.nav-auth-btn--register:hover {
+    background: var(--rm-primary-dark) !important;
+    color: #fff !important;
+}
+
+/* ── Page shell ── */
+.page-shell {
+    flex: 1;
+    background: var(--rm-surface);
+    border: 1px solid var(--rm-border);
+    border-radius: var(--rm-radius-lg);
+    box-shadow: var(--rm-shadow);
+    padding: 1.25rem 1.25rem 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.page-shell--auth {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.auth-card--wide {
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.page-shell--auth:has(.auth-card--wide) {
+    max-width: 680px;
+}
+
+.page-shell--wide {
+    max-width: 100%;
+}
+
+/* ── Footer ── */
+.app-footer {
+    background: transparent;
+    border-top: 1px solid var(--rm-border) !important;
+    color: var(--rm-text-muted) !important;
+    padding: 1.5rem 0;
+    margin-top: auto;
+}
+
+.app-footer i {
+    color: var(--rm-primary);
+}
+
+/* ── Buttons (align with Bootstrap primary) ── */
+.btn {
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+}
+
+.btn-primary {
+    background: var(--rm-primary) !important;
+    border-color: var(--rm-primary) !important;
+    color: #ffffff !important;
+}
+
+.btn-primary:hover {
+    background: var(--rm-primary-dark) !important;
+    border-color: var(--rm-primary-dark) !important;
+    color: #ffffff !important;
+}
+
+.btn-outline-primary {
+    color: var(--rm-primary) !important;
+    border-color: var(--rm-primary) !important;
+}
+
+.btn-outline-primary:hover {
+    background: var(--rm-primary) !important;
+    color: #fff !important;
+}
+
+/* ── Cards ── */
+.card {
+    border: 1px solid var(--rm-border);
+    border-radius: var(--rm-radius);
+    box-shadow: var(--rm-shadow);
+    overflow: hidden;
+}
+
+.card-header {
+    background: var(--rm-primary-soft) !important;
+    color: var(--rm-text) !important;
+    border-bottom: 1px solid var(--rm-border);
+    font-weight: 600;
+}
+
+.card-footer {
+    background: #f8fafc !important;
+    border-top: 1px solid var(--rm-border);
+}
+
+/* ── Forms ── */
+.form-control,
+.form-select {
+    border-color: var(--rm-border);
+    border-radius: 8px;
+    color: var(--rm-text);
+    padding: 0.65rem 0.85rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--rm-primary);
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--rm-text);
+    margin-bottom: 0.35rem;
+}
+
+.form-floating > label {
+    color: var(--rm-text-muted) !important;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    color: var(--rm-primary) !important;
+}
+
+/* Restore Bootstrap form-floating layout (global .form-control rules break label/input overlap) */
+.form-floating > .form-control,
+.form-floating > .form-select {
+    padding: 1rem 0.75rem;
+    height: calc(3.5rem + 2px);
+    min-height: calc(3.5rem + 2px);
+    line-height: 1.25;
+}
+
+.form-floating > .form-control::placeholder,
+.form-floating > .form-control::-moz-placeholder {
+    color: transparent !important;
+}
+
+.form-floating > label,
+.form-floating > label.form-label {
+    margin-bottom: 0;
+}
+
+.text-muted {
+    color: var(--rm-text-muted) !important;
+}
+
+/* ── Nav tabs ── */
+.nav-tabs {
+    border-bottom-color: var(--rm-border);
+}
+
+.nav-tabs .nav-link {
+    color: var(--rm-text-muted);
+    border: none;
+    border-radius: 8px 8px 0 0;
+    font-weight: 500;
+    background: transparent;
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--rm-primary);
+    background: var(--rm-primary-soft);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--rm-primary) !important;
+    background: var(--rm-surface);
+    border: 1px solid var(--rm-border);
+    border-bottom-color: var(--rm-surface);
+    font-weight: 600;
+}
+
+/* ── Tables ── */
+.table {
+    --bs-table-border-color: var(--rm-border);
+    color: var(--rm-text);
+}
+
+.table thead th {
+    background: #f8fafc;
+    color: var(--rm-text);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-bottom-width: 1px;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-accent-bg: rgba(223, 105, 25, 0.03);
+}
+
+/* ── Links ── */
+a {
+    color: var(--rm-primary);
+}
+
+a:hover {
+    color: var(--rm-primary-dark);
+}
+
+/* ── Dropdown ── */
+.dropdown-menu {
+    border: 1px solid var(--rm-border);
+    border-radius: var(--rm-radius);
+    box-shadow: var(--rm-shadow-lg);
+}
+
+.dropdown-item:hover {
+    background: var(--rm-primary-soft);
+    color: var(--rm-primary-dark);
+}
+
+/* Category filter: dropdown must sit above item cards below */
+#category .card {
+    overflow: visible;
+    position: relative;
+    z-index: 20;
+}
+
+#category .dropdown-menu {
+    z-index: 1050;
+}
+
+/* ── Hero / Home ── */
+.hero-card {
+    border-radius: var(--rm-radius-lg);
+    border: 1px solid var(--rm-border);
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, var(--rm-surface) 0%, var(--rm-primary-soft) 100%);
+    box-shadow: var(--rm-shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-card::before {
+    content: "";
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(223, 105, 25, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.hero-chip {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--rm-primary);
+    background: var(--rm-primary-light);
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
+}
+
+.hero-title {
+    font-weight: 800;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    line-height: 1.15;
+    color: var(--rm-text);
+    letter-spacing: -0.03em;
+}
+
+.hero-subtitle {
+    color: var(--rm-text-muted);
+    max-width: 32rem;
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.highlight-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+}
+
+@media (max-width: 768px) {
+    .highlight-grid { grid-template-columns: 1fr; }
+}
+
+.highlight-card {
+    background: var(--rm-surface);
+    border: 1px solid var(--rm-border);
+    border-radius: var(--rm-radius);
+    padding: 1.25rem;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.highlight-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--rm-shadow);
+}
+
+.highlight-card i {
+    font-size: 1.5rem;
+    color: var(--rm-primary);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.highlight-title {
+    font-weight: 700;
+    color: var(--rm-text);
+    margin-bottom: 0.35rem;
+}
+
+.highlight-text {
+    color: var(--rm-text-muted);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* ── Auth pages ── */
+.auth-card {
+    background: var(--rm-surface);
+    border: 1px solid var(--rm-border);
+    border-radius: var(--rm-radius-lg);
+    box-shadow: var(--rm-shadow-lg);
+    overflow: hidden;
+}
+
+.auth-card-header {
+    background: linear-gradient(135deg, #e07b24 0%, #c45a12 100%);
+    color: #fff;
+    text-align: center;
+    padding: 2rem 1.5rem 1.75rem;
+}
+
+.auth-card-header h1,
+.auth-card-header p {
+    color: #fff !important;
+}
+
+.auth-card-header h1 {
+    font-weight: 800;
+    font-size: 1.5rem;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.auth-card-header p {
+    margin: 0.5rem 0 0;
+    opacity: 0.92;
+    font-size: 0.95rem;
+}
+
+.auth-card-body {
+    padding: 1.75rem 1.75rem 1.5rem;
+}
+
+.auth-card-footer {
+    background: #f8fafc;
+    border-top: 1px solid var(--rm-border);
+    text-align: center;
+    padding: 1.25rem 1.5rem;
+    font-size: 0.9rem;
+    color: var(--rm-text-muted);
+}
+
+.auth-card-footer a {
+    font-weight: 600;
+}
+
+.auth-field {
+    margin-bottom: 1rem;
+}
+
+.auth-field label {
+    display: block;
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--rm-text);
+    margin-bottom: 0.35rem;
+}
+
+.auth-field label i {
+    color: var(--rm-primary);
+    margin-right: 0.35rem;
+}
+
+.auth-field .form-control {
+    padding: 0.7rem 0.9rem;
+}
+
+.auth-divider {
+    border: none;
+    border-top: 1px solid var(--rm-border);
+    margin: 1.5rem 0;
+}
+
+.auth-section-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--rm-text);
+    margin-bottom: 1rem;
+}
+
+/* Remember me checkbox */
+.remember-me-check {
+    margin: 0.25rem 0 1.25rem;
+}
+
+.remember-me-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    cursor: pointer;
+    margin: 0;
+    user-select: none;
+}
+
+.remember-me-wrap {
+    position: relative;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+}
+
+.remember-me-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.remember-me-box {
+    display: block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #cbd5e1;
+    border-radius: 4px;
+    background: #fff;
+    position: relative;
+    transition: background 0.15s, border-color 0.15s;
+    box-sizing: border-box;
+}
+
+.remember-me-box::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 5px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg) scale(0);
+    transition: transform 0.12s ease;
+}
+
+.remember-me-input:checked ~ .remember-me-box {
+    background: #e07b24;
+    border-color: #e07b24;
+}
+
+.remember-me-input:checked ~ .remember-me-box::after {
+    transform: rotate(45deg) scale(1);
+}
+
+.remember-me-input:focus-visible ~ .remember-me-box {
+    outline: 2px solid rgba(223, 105, 25, 0.4);
+    outline-offset: 2px;
+}
+
+.remember-me-text {
+    color: var(--rm-text);
+    font-size: 0.9rem;
+}
+
+/* ── Badges ── */
+.badge.bg-success-subtle { background: #dcfce7 !important; color: #166534 !important; }
+.badge.bg-warning-subtle { background: #fef9c3 !important; color: #854d0e !important; }
+.badge.bg-danger-subtle { background: #fee2e2 !important; color: #991b1b !important; }
+.badge.bg-secondary-subtle { background: #f1f5f9 !important; color: #475569 !important; }
+
+/* ── Admin category table ── */
+.admin-category-table thead th {
+    background: #f8fafc;
+}
+
+.admin-category-table tbody tr.admin-parent-row > * {
+    --bs-table-bg: var(--rm-primary-soft);
+}
+
+/* ── Pagination ── */
+.pagination {
+    --bs-pagination-color: var(--rm-primary);
+    --bs-pagination-active-bg: var(--rm-primary);
+    --bs-pagination-active-border-color: var(--rm-primary);
+}
+
+/* ── Item cards on browse page ── */
+.card.shadow-sm {
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.card.shadow-sm:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--rm-shadow-lg) !important;
+}
+
+.card-title {
+    color: var(--rm-text) !important;
+}
+
+.card-text {
+    color: var(--rm-text-muted) !important;
+}
+
+.tab-content,
+.tab-pane,
+.list-group-item-action {
+    background-color: #ffffff !important;
+    color: var(--rm-text) !important;
+}
+
+.alert {
+    color: var(--rm-text);
+}
+
+.alert-danger {
+    background-color: #fef2f2 !important;
+    border-color: #fecaca !important;
+    color: #991b1b !important;
+}
+
+.alert-success {
+    background-color: #f0fdf4 !important;
+    border-color: #bbf7d0 !important;
+    color: #166534 !important;
+}
+
+.form-control::placeholder,
+.form-select::placeholder {
+    color: #94a3b8 !important;
+}
+
+.form-floating > .form-control::placeholder,
+.form-floating > .form-control::-moz-placeholder {
+    color: transparent !important;
+}
+
+.card-text .text-primary {
+    color: var(--rm-primary) !important;
+}
+
+.card-text strong {
+    color: var(--rm-text) !important;
+}

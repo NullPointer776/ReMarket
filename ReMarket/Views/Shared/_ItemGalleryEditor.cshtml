@@ -1,0 +1,59 @@
+@using ReMarket.Utility
+@model Item
+@{
+    var galleryUrls = ItemGallery.GetAllImageUrls(Model);
+    var galleryCount = galleryUrls.Count;
+    var canAdd = galleryCount < ItemGallery.MaxImages;
+    var area = ViewContext.RouteData.Values["area"]?.ToString() ?? "Seller";
+}
+
+<input type="hidden" asp-for="ImageUrl" />
+<input type="hidden" asp-for="MoreImageUrlsJson" />
+
+<div class="mb-3">
+    <span class="form-label d-block">Current images (@galleryCount of @ItemGallery.MaxImages)</span>
+    <partial name="_ItemImageGallery" model="@(new ReMarket.Models.ViewModel.ItemImageGalleryViewModel {
+        ImageUrls = galleryUrls,
+        AltText = Model.Name ?? "Item",
+        GalleryId = $"editor-{Model.Id}",
+        Mode = ReMarket.Models.ViewModel.ItemImageGalleryMode.Detail,
+        ItemId = Model.Id,
+        ShowOwnerDelete = galleryCount > 0,
+        DeleteArea = area,
+        ReturnTo = "edit"
+    })" />
+</div>
+
+@if (galleryCount > 0)
+{
+    <div class="mb-3">
+        <label class="form-label" for="coverImageFile">Replace cover image</label>
+        <input id="coverImageFile" name="coverImageFile" type="file" class="form-control" accept="image/*" />
+        <span class="text-danger d-block">@Html.ValidationMessage("coverImageFile")</span>
+        <div class="form-text">Uploading replaces the cover photo. The previous file is deleted from disk.</div>
+    </div>
+}
+
+@if (canAdd)
+{
+    <div class="mb-3" id="add-images">
+        <label class="form-label" for="additionalImageInput">Add more images (optional)</label>
+        <input id="additionalImageInput" name="additionalImageFiles" type="file" class="form-control" accept="image/*" multiple />
+        <span class="text-danger d-block">@Html.ValidationMessage("additionalImageFiles")</span>
+        <div class="form-text">Add up to @(ItemGallery.MaxImages - galleryCount) more. Max 5 MB each.</div>
+    </div>
+}
+else if (galleryCount >= ItemGallery.MaxImages)
+{
+    <p class="text-muted small" id="add-images">This listing already has the maximum of @ItemGallery.MaxImages images.</p>
+}
+
+<div class="mb-3">
+    <span class="form-label d-block">New upload preview</span>
+    <partial name="_ItemImageGallery" model="@(new ReMarket.Models.ViewModel.ItemImageGalleryViewModel {
+        ImageUrls = Array.Empty<string>(),
+        AltText = "Upload preview",
+        GalleryId = "upload-preview",
+        Mode = ReMarket.Models.ViewModel.ItemImageGalleryMode.Detail
+    })" />
+</div>

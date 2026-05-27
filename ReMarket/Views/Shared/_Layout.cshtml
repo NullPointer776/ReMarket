@@ -1,0 +1,108 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using ReMarket.Models
+@using ReMarket.Utility
+@{
+    var isAuthPage = ViewData["AuthPage"] as bool? == true;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ReMarket</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/item-image-gallery.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ReMarket.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light app-navbar mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="Buyer" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-recycle me-1"></i>ReMarket
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto align-items-sm-center gap-sm-1">
+                        @if (User.IsInRole(SD.Role_Admin))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Admin" asp-controller="Category" asp-action="Index">
+                                    <i class="bi bi-tags me-1"></i>Categories
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Admin" asp-controller="Item" asp-action="Index">
+                                    <i class="bi bi-shield-check me-1"></i>Audit Items
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">
+                                    <i class="bi bi-box-seam me-1"></i>Orders
+                                </a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Buyer" asp-controller="Item" asp-action="Index">
+                                <i class="bi bi-bag me-1"></i>Buy Items
+                            </a>
+                        </li>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Seller" asp-controller="Item" asp-action="Index">
+                                    <i class="bi bi-plus-circle me-1"></i>My Listings
+                                </a>
+                            </li>
+                        }
+                        @if (User.IsInRole(SD.Role_Customer) || User.IsInRole(SD.Role_Admin))
+                        {
+                            <li class="nav-item">
+                                @await Component.InvokeAsync("ShoppingCart")
+                            </li>
+                        }
+                    </ul>
+                    <form method="get" asp-area="Buyer" asp-controller="Item" asp-action="Index" class="d-flex app-search-form me-sm-3 mb-2 mb-sm-0">
+                        <div class="input-group input-group-sm">
+                            <input class="form-control" type="search" name="search" placeholder="Search items…" aria-label="Search" />
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container @(isAuthPage ? "page-shell page-shell--auth" : "page-shell")">
+        <main role="main" class="pb-3">
+            <partial name="_Notification" />
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="app-footer text-center">
+        <div class="container">
+            <small>&copy; 2026 ReMarket &mdash; Give products a second life <i class="bi bi-recycle"></i></small>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/item-image-gallery.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

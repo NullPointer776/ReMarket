@@ -127,7 +127,7 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .navbar .nav-link {
-    color: var(--rm-text) !important;
+    color: #1e293b !important;
     font-weight: 500;
     border-radius: 8px;
     padding: 0.45rem 0.85rem !important;
@@ -390,11 +390,12 @@ a:hover {
 
 /* ── Dropdown ── */
 .dropdown-menu {
-    border: 1px solid var(--rm-border);
-    border-radius: var(--rm-radius);
-    box-shadow: var(--rm-shadow-lg);
+   color:aqua !important;
 }
-
+.dropdown-item {
+    background: var(--rm-primary-soft);
+    color: var(--rm-primary-dark);
+}
 .dropdown-item:hover {
     background: var(--rm-primary-soft);
     color: var(--rm-primary-dark);

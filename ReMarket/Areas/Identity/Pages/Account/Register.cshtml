@@ -109,11 +109,9 @@
             <hr class="auth-divider" />
 
             <div class="auth-field">
-                <label asp-for="Input.Role"><i class="bi bi-person-badge"></i>Role</label>
-                <select asp-for="Input.Role" class="form-select" asp-items="Model.Input.RoleList">
-                    <option value="">Select a role</option>
-                </select>
-                <span asp-validation-for="Input.Role" class="text-danger small"></span>
+                <label><i class="bi bi-person-badge"></i>Role</label>
+                <input type="hidden" asp-for="Input.Role" />
+                <input class="form-control" value="@Model.Input.Role" readonly aria-readonly="true" />
             </div>
 
             <button id="registerSubmit" type="submit" class="btn btn-primary btn-lg w-100 mt-2">

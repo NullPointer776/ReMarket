@@ -91,17 +91,18 @@ Each item automatically gets a QR code linking to its public detail page, genera
 
 "ConnectionStrings": {
   "DefaultConnection": "your-connection-string-here"
-}
+   }
+   
 3. Configure Stripe keys in appsettings.json:
-
-"Stripe": {
+  "Stripe": {
   "SecretKey": "your-stripe-secret-key",
   "PublishableKey": "your-stripe-publishable-key"
-}
+   }
+
 4. Apply database migrations:
 
-dotnet ef database update
-Run the application:
+  dotnet ef database update
+  Run the application:
 
-dotnet run --project ReMarket.Web
+  dotnet run --project ReMarket.Web
    

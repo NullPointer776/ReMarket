@@ -87,5 +87,21 @@ Each item automatically gets a QR code linking to its public detail page, genera
    ```bash
    git clone https://github.com/NullPointer776/ReMarket.git
    cd ReMarket
+2. Update the connection string in appsettings.json:
 
+"ConnectionStrings": {
+  "DefaultConnection": "your-connection-string-here"
+}
+3. Configure Stripe keys in appsettings.json:
+
+"Stripe": {
+  "SecretKey": "your-stripe-secret-key",
+  "PublishableKey": "your-stripe-publishable-key"
+}
+4. Apply database migrations:
+
+dotnet ef database update
+Run the application:
+
+dotnet run --project ReMarket.Web
    

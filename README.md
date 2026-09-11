@@ -105,6 +105,5 @@ Each item automatically gets a QR code linking to its public detail page, genera
      dotnet ef database update
 
 5.Run the application:
-  ```bash
+   ```bash
      dotnet run --project ReMarket.Web
-   

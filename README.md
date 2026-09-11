@@ -95,16 +95,16 @@ Each item automatically gets a QR code linking to its public detail page, genera
    
 3. Configure Stripe keys in appsettings.json:
    ```bash
-  "Stripe": {
-  "SecretKey": "your-stripe-secret-key",
-  "PublishableKey": "your-stripe-publishable-key"
-   }
+     "Stripe": {
+     "SecretKey": "your-stripe-secret-key",
+     "PublishableKey": "your-stripe-publishable-key"
+      }
 
 4. Apply database migrations:
    ```bash
-  dotnet ef database update
+     dotnet ef database update
 
 5.Run the application:
   ```bash
-  dotnet run --project ReMarket.Web
+     dotnet run --project ReMarket.Web
    

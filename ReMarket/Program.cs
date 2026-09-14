@@ -28,11 +28,6 @@ namespace ReMarket
             {
                 options.Limits.MaxRequestBodySize = 10 * 1024 * 1024;
             });
-            /*builder.Configuration
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true);
-                        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));*/
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ReMarketWebContextConnection"), 

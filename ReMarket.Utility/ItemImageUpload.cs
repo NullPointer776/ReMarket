@@ -1,16 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using ReMarket.Models;
 
 namespace ReMarket.Utility
 {
-    //Image upload helper for item images. Validates file size and extension, saves files to wwwroot/images/items/, and can delete old files.
     public static class ItemImageUpload
     {
         public static readonly string[] AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };

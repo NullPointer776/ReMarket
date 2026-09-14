@@ -2,19 +2,14 @@ using Microsoft.EntityFrameworkCore;
 using ReMarket.DataAccess.Data;
 using ReMarket.DataAccess.Repository.IRepository;
 using ReMarket.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ReMarket.DataAccess.Repository
 {
     public class ItemRepository : Repository<Item>, IItemRepository
     {
+        private readonly ApplicationDbContext _db;
 
-        private ApplicationDbContext _db;
         public ItemRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
@@ -39,18 +34,15 @@ namespace ReMarket.DataAccess.Repository
 
             return query.ToList();
         }
+
         public void Add(Item item)
         {
             _db.Items.Add(item);
         }
+
         public void Remove(Item item)
         {
             _db.Items.Remove(item);
-        }
-
-        public void Save()
-        {
-            _db.SaveChanges();
         }
 
         public void Update(Item obj)

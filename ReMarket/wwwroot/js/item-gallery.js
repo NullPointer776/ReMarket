@@ -1,8 +1,10 @@
 (function () {
+    'use strict';
+
     function previewFile(file, onLoad) {
         if (!file || !file.type.startsWith('image/')) return;
         const reader = new FileReader();
-        reader.onload = function (ev) { onLoad(ev.target.result); };
+        reader.onload = (ev) => onLoad(ev.target.result);
         reader.readAsDataURL(file);
     }
 
@@ -15,9 +17,9 @@
         const urls = [];
         let pending = 0;
 
-        Array.from(files).forEach(function (file) {
+        Array.from(files).forEach((file) => {
             pending++;
-            previewFile(file, function (src) {
+            previewFile(file, (src) => {
                 urls.push(src);
                 pending--;
                 if (pending === 0) {
@@ -31,7 +33,7 @@
         const input = document.getElementById(inputId);
         if (!input) return;
 
-        input.addEventListener('change', function (e) {
+        input.addEventListener('change', (e) => {
             const files = e.target.files;
             if (!files?.length) {
                 window.ItemImageGallery?.updatePreview(galleryId, []);
@@ -41,10 +43,10 @@
         });
     }
 
-    document.getElementById('coverImageFile')?.addEventListener('change', function (e) {
+    document.getElementById('coverImageFile')?.addEventListener('change', (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        previewFile(file, function (src) {
+        previewFile(file, (src) => {
             window.ItemImageGallery?.updatePreview('upload-preview', [src]);
         });
     });

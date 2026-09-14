@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ReMarket.Utility
 {
-    // For normalizing strings into URL-friendly
     public static class SlugHelper
     {
         public static string ToSlug(string? text)

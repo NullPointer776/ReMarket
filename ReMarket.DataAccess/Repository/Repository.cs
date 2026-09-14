@@ -5,13 +5,10 @@ using ReMarket.DataAccess.Repository.IRepository;
 
 namespace ReMarket.DataAccess.Repository
 {
-    // All data access uses EF Core LINQ (parameterized queries). Do not concatenate user input into raw SQL.
     public class Repository<T> : IRepository<T> where T : class
     {
         private readonly ApplicationDbContext _db;
         internal DbSet<T> dbSet;
-
-        public ApplicationDbContext Db { get; }
 
         public Repository(ApplicationDbContext db)
         {

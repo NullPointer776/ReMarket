@@ -1,6 +1,4 @@
-﻿using ReMarket.DataAccess.Repository.IRepository;
-
-namespace ReMarket.DataAccess.Repository.IRepository
+﻿namespace ReMarket.DataAccess.Repository.IRepository
 {
     public interface IUnitOfWork
     {
